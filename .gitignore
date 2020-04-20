@@ -44,3 +44,6 @@ docs/_build/
 
 # tagging stuff
 grader/_gittag.py
+
+.gitignore
+.gitattributes
