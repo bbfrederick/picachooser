@@ -205,7 +205,7 @@ def writegrades():
 
     with open(outputfile, 'w') as thefile:
         for i in range(len(filelist)):
-            thefile.write('{0}, {1}\n'.format(filelist[i], alldata[filelist[i]]['grade']))
+            thefile.write('{0}, {1:d}, {2:f}\n'.format(filelist[i], alldata[filelist[i]]['grade'], alldata[filelist[i]]['samplerate']))
 
 
 def keyPressed(evt):
@@ -331,6 +331,7 @@ def main():
             print('filespec returned no files')
             sys.exit()
         grades = None
+        samplerates = None
     elif args.reopen is not None:
         df = pd.read_csv(args.reopen, header=None)
         filelist = df.iloc[:, 0].to_numpy()
@@ -338,6 +339,7 @@ def main():
             print('reopen returned no files')
             sys.exit()
         grades = df.iloc[:, 1].to_numpy()
+        samplerates = df.iloc[:, 2].to_numpy()
     else:
         print('either filespec or reopen must be specified')
         sys.exit()
@@ -349,17 +351,24 @@ def main():
     numfiles = 0
     for idx in range(len(filelist)):
         thefile = filelist[idx]
+        if grades is not None:
+            thegrade = grades[idx]
+        else:
+            thegrade = 0
+        if samplerates is not None:
+            thesamplerate = samplerates[idx]
+        else:
+            thesamplerate = samplerate
         alldata[thefile] = {}
         invec = np.loadtxt(thefile)
         alldata[thefile]['timecourse'] = invec * 1.0
-        alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / samplerate
+        alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
         alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
-            spectrum(hamming(len(invec)) * invec, Fs=samplerate, mode='power')
-        if grades is not None:
-            alldata[thefile]['grade'] = grades[idx]
-            print(filelist[idx], grades[idx])
-        else:
-            alldata[thefile]['grade'] = 0
+            spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='power')
+        alldata[thefile]['grade'] = thegrade
+        alldata[thefile]['samplerate'] = thesamplerate
+        print(thefile, thegrade, thesamplerate)
+
         numfiles += 1
     print('Read in', numfiles, 'files')
 
