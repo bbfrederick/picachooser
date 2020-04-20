@@ -30,7 +30,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 addtidepool = True
 addgrader = True
 
-modules_list = ['grader/graderTemplate_qt5']
+modules_list = ['grader/graderTemplate']
 
 script_list = ['grader/scripts/grader']
 

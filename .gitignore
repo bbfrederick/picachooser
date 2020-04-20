@@ -38,3 +38,9 @@ docs/_build/
 # local test files
 *.txt
 *.csv
+
+# temp files
+*.swp
+
+# tagging stuff
+grader/_gittag.py
