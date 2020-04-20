@@ -24,13 +24,13 @@ __gittag__ = '%s'
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 addtidepool = True
 addgrader = True
 
-modules_list = ['grader/graderTemplate_qt5')
+modules_list = ['grader/graderTemplate_qt5']
 
 script_list = ['grader/scripts/grader']
 
@@ -131,29 +131,14 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=["numpy>=1.16",
                         'scipy',
-                        'pandas',
-                        'scikit-image',
-                        'scikit-learn',
-                        'nibabel',
-                        'matplotlib',
-                        'pyfftw',
-                        'pyqtgraph',
-                        'statsmodels'],
+                        'pandas'
+                        ],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'jit': ['numba'],
-        'doc': [
-            'sphinx>=1.5.3',
-            'sphinx_rtd_theme',
-            'sphinx-argparse',
-            'sphinx-gallery',
-            'numpydoc',
-            'm2r',
-            ],
     },
 
     # If there are data files included in your packages that need to be
