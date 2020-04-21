@@ -40,7 +40,8 @@ import argparse
 import pandas as pd
 from scipy import fftpack
 
-import grader.graderTemplate as uiTemplate
+#import grader.graderTemplate as uiTemplate
+import grader.aromaviewTemplate as uiTemplate
 
 
 hammingwindows = {}
@@ -189,36 +190,36 @@ class KeyPressWindow(QtGui.QMainWindow):
 
 
 def incrementgrade(whichfile):
-    global alldata, filelist
+    global alldata, namelist
 
-    alldata[filelist[whichfile]]['grade'] += 1
+    alldata[namelist[whichfile]]['grade'] += 1
 
 
 def decrementgrade(whichfile):
-    global alldata, filelist
+    global alldata, namelist
 
-    alldata[filelist[whichfile]]['grade'] -= 1
+    alldata[namelist[whichfile]]['grade'] -= 1
 
 
 def writegrades():
-    global alldata, filelist, numfiles, outputfile
+    global alldata, namelist, numelements, outputfile
 
     with open(outputfile, 'w') as thefile:
-        for i in range(len(filelist)):
-            thefile.write('{0}, {1:d}, {2:f}\n'.format(filelist[i], alldata[filelist[i]]['grade'], alldata[filelist[i]]['samplerate']))
+        for i in range(len(namelist)):
+            thefile.write('{0}, {1:d}, {2:f}\n'.format(namelist[i], alldata[namelist[i]]['grade'], alldata[namelist[i]]['samplerate']))
 
 
 def keyPressed(evt):
-    global whichfile, numfiles
+    global whichfile, numelements
 
     if evt.key() == QtCore.Qt.Key_Up:
         incrementgrade(whichfile)
     elif evt.key() == QtCore.Qt.Key_Down:
         decrementgrade(whichfile)
     elif evt.key() == QtCore.Qt.Key_Left:
-        whichfile = (whichfile - 1) % numfiles
+        whichfile = (whichfile - 1) % numelements
     elif evt.key() == QtCore.Qt.Key_Right:
-        whichfile = (whichfile + 1) % numfiles
+        whichfile = (whichfile + 1) % numelements
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
         print('done')
@@ -229,9 +230,9 @@ def keyPressed(evt):
 
 
 def updateTimecourse():
-    global timecourse_ax, whichfile, alldata, filelist, win, numfiles
-    thisfile = alldata[filelist[whichfile]]
-    windowtitle = 'Grader - {0} ({1} of {2})'.format(filelist[whichfile], whichfile, numfiles)
+    global timecourse_ax, spectrum_ax, whichfile, alldata, namelist, win, numelements
+    thisfile = alldata[namelist[whichfile]]
+    windowtitle = 'Grader - {0} ({1} of {2})'.format(namelist[whichfile], whichfile, numelements)
     win.setWindowTitle(windowtitle)
 
     if thisfile['grade'] is None:
@@ -270,9 +271,52 @@ def updateTimecourse():
     spectrum_ax.addLegend(offset=(200, 30))
 
 
+def updateMotion():
+    global transmot_ax, rotmot_ax, whichfile, alldata, namelist, win, numelements
+    thisfile = alldata[namelist[whichfile]]
+    windowtitle = 'Grader - {0} ({1} of {2})'.format(namelist[whichfile], whichfile, numelements)
+    win.setWindowTitle(windowtitle)
+
+    if thisfile['grade'] is None:
+        pencolor = 'w'
+    elif thisfile['grade'] == 0:
+        pencolor = 'w'
+    elif thisfile['grade'] > 0:
+        pencolor = 'g'
+    else:
+        pencolor = 'r'
+
+    timecourse_ax.plot(thisfile['timeaxis'], thisfile['timecourse'],
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=1), clear=True)
+
+    if thisfile['grade'] is None:
+        thelabel = 'Grade: None'
+    else:
+        thelabel = 'Grade: {0}'.format(thisfile['grade'])
+
+    spectrum_ax.plot(thisfile['freqaxis'], thisfile['spectrum'],
+                     name=thelabel,
+                     stepMode=False,
+                     fillLevel=0,
+                     pen=pg.mkPen(pencolor, width=1),
+                     clear=True)
+
+    spectop = 1.25 * np.max(thisfile['spectrum'])
+    spectrum_ax.setYRange(0.0, spectop, padding=0)
+
+
+    #text = pg.TextItem(text=thelabel,
+    #                   anchor = (0.0, 1.0),
+    #                   angle = 0,
+    #                   fill = (0, 0, 0, 100))
+    #spectrum_ax.addItem(text)
+    spectrum_ax.addLegend(offset=(200, 30))
+
+
+
 def main():
     global ui, win
-    global filelist, outputfile, alldata, whichfile, numfiles
+    global namelist, outputfile, alldata, whichfile, numelements
 
     parser = argparse.ArgumentParser(description='A program to sort through timecourses and assign grades')
     datasource = parser.add_mutually_exclusive_group()
@@ -310,6 +354,8 @@ def main():
 
     args = parser.parse_args()
 
+    runmode = 'aroma'
+
     if (args.filespec is None) and (args.reopen is None):
         print('a data source must be specified')
         sys.exit()
@@ -326,16 +372,16 @@ def main():
 
     outputfile = args.outputfile
     if args.filespec is not None:
-        filelist = glob.glob(args.filespec)
-        if len(filelist) == 0:
+        namelist = glob.glob(args.filespec)
+        if len(namelist) == 0:
             print('filespec returned no files')
             sys.exit()
         grades = None
         samplerates = None
     elif args.reopen is not None:
         df = pd.read_csv(args.reopen, header=None)
-        filelist = df.iloc[:, 0].to_numpy()
-        if len(filelist) == 0:
+        namelist = df.iloc[:, 0].to_numpy()
+        if len(namelist) == 0:
             print('reopen returned no files')
             sys.exit()
         grades = df.iloc[:, 1].to_numpy()
@@ -348,9 +394,9 @@ def main():
 
     print('reading data...')
     alldata = {}
-    numfiles = 0
-    for idx in range(len(filelist)):
-        thefile = filelist[idx]
+    numelements = 0
+    for idx in range(len(namelist)):
+        thefile = namelist[idx]
         if grades is not None:
             thegrade = grades[idx]
         else:
@@ -369,8 +415,8 @@ def main():
         alldata[thefile]['samplerate'] = thesamplerate
         print(thefile, thegrade, thesamplerate)
 
-        numfiles += 1
-    print('Read in', numfiles, 'files')
+        numelements += 1
+    print('Read in', numelements, 'files')
 
         # make the main window
     app = QtGui.QApplication([])
@@ -395,6 +441,24 @@ def main():
     global spectrum_ax
     spectrumwin = ui.spectrum_graphicsView
     spectrum_ax = spectrumwin.addPlot()
+
+    global transmot_ax, rotmot_ax
+    if runmode == 'aroma':
+        # set up the translational motion window
+        print('about to set up the translational motion')
+        transmotwin = ui.translation_graphicsView
+        transmot_ax = transmotwin.addPlot()
+
+        # set up the translational motion window
+        print('about to set up the translational motion')
+        rotmotwin = ui.rotation_graphicsView
+        rotmot_ax = rotmotwin.addPlot()
+    elif runmode == 'timecourse':
+        transmot_ax = None
+        rotmot_ax = None
+    else:
+        transmot_ax = None
+        rotmot_ax = None
 
     updateTimecourse()
 
