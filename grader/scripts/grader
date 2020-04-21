@@ -40,9 +40,6 @@ import argparse
 import pandas as pd
 from scipy import fftpack
 
-#import grader.graderTemplate as uiTemplate
-import grader.aromaviewTemplate as uiTemplate
-
 
 hammingwindows = {}
 
@@ -179,6 +176,7 @@ def spectrum(inputdata, Fs=1.0, mode='power', trim=True):
         specvals = None
     return specaxis, specvals
 
+
 class KeyPressWindow(QtGui.QMainWindow):
     sigKeyPress = QtCore.pyqtSignal(object)
 
@@ -313,6 +311,22 @@ def updateMotion():
     spectrum_ax.addLegend(offset=(200, 30))
 
 
+'''def updateLightbox():
+    global hist
+    global currentdataset
+    global maps
+    global panetomap
+    global ui
+    global mainwin
+    global currentloc
+    global xdim, ydim, zdim
+    global overlays
+    global imagadj
+
+    mainwin.setMap(overlays[currentdataset.focusmap])
+    mainwin.setTpos(currentloc.tpos)
+    mainwin.updateAllViews()'''
+
 
 def main():
     global ui, win
@@ -354,7 +368,12 @@ def main():
 
     args = parser.parse_args()
 
-    runmode = 'aroma'
+    runmode = 'timecourse'
+    args.aromaICfile = '/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/melodic_IC.nii.gz'
+    args.aromaBGfile = '/Users/frederic/Documents/MR_data/Axial/derivatives/fmriprep/sub-005/anat/sub-005_space-MNI152NLin6Asym_desc-preproc_T1w.nii.gz'
+    args.aromaMotionfile = '/Users/frederic/Documents/MR_data/Axial/derivatives/fmriprep/sub-005/ses-001/func/sub-005_ses-001_run-2_task-rest_desc-confounds_regressors.json'
+    args.aromaMix = '/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/melodic_mix'
+    args.aromaPreclean = '/Users/frederic/Documents/MR_data/Axial/derivatives/fmriprep/sub-005/ses-001/func/sub-005_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz'
 
     if (args.filespec is None) and (args.reopen is None):
         print('a data source must be specified')
@@ -418,7 +437,15 @@ def main():
         numelements += 1
     print('Read in', numelements, 'files')
 
-        # make the main window
+    # make the main window
+    if runmode == 'timecourse':
+        import grader.graderTemplate as uiTemplate
+    elif runmode == 'aroma':
+        import grader.aromaviewTemplate as uiTemplate
+    else:
+        print('illegal runmode')
+        sys.exit()
+
     app = QtGui.QApplication([])
     print("setting up output window")
     #win = QtGui.QMainWindow()
