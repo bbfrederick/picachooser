@@ -86,7 +86,7 @@ def newViewWindow(view, left, top, impixpervoxx, impixpervoxy, imgxsize, imgysiz
 class LightboxItem(QtGui.QWidget):
     updated = QtCore.pyqtSignal()
 
-    def __init__(self, map, thisview, enableMouse=False, button=None, imgxsize=64, imgysize,=64, bgmap=None, verbose=False):
+    def __init__(self, map, thisview, enableMouse=False, button=None, imgxsize=64, imgysize=64, bgmap=None, verbose=False):
         QtGui.QWidget.__init__(self)
         self.map = map
         self.bgmap = bgmap
@@ -100,29 +100,25 @@ class LightboxItem(QtGui.QWidget):
         self.tdim = self.map.tdim     # this is the number of voxels along this axis
         self.xsize = self.map.xsize   # this is the mapping between voxel and physical space
         self.ysize = self.map.ysize   # this is the mapping between voxel and physical space
-        self.zsize = self.map.zsize   # this is the mapping between voxel and physical space
         self.imgxsize = imgxsize
-        self.imgxsize = imgxsize
+        self.imgysize = imgysize
         self.xfov = self.xdim * self.xsize
         self.yfov = self.ydim * self.ysize
-        self.zfov = self.zdim * self.zsize
         self.xpos = int(self.xdim // 2)
         self.ypos = int(self.ydim // 2)
         self.zpos = int(self.zdim // 2)
         self.tpos = int(0)
-        self.maxfov = np.max([self.xfov, self.yfov, self.zfov])
+        self.maxfov = np.max([self.xfov, self.yfov])
         self.impixpervoxx = self.imgsize * (self.xfov / self.maxfov) / self.xdim
         self.impixpervoxy = self.imgsize * (self.yfov / self.maxfov) / self.ydim
-        self.impixpervoxz = self.imgsize * (self.zfov / self.maxfov) / self.zdim
         self.offsetx = self.imgsize * (0.5 - self.xfov / (2.0 * self.maxfov))
         self.offsety = self.imgsize * (0.5 - self.yfov / (2.0 * self.maxfov))
-        self.offsetz = self.imgsize * (0.5 - self.zfov / (2.0 * self.maxfov))
 
         if self.verbose:
             print('OrthoImageItem intialization:')
             print('    Dimensions:', self.xdim, self.ydim, self.zdim)
-            print('    Voxel sizes:', self.xsize, self.ysize, self.zsize)
-            print('    FOVs:', self.xfov, self.yfov, self.zfov)
+            print('    Voxel sizes:', self.xsize, self.ysize)
+            print('    FOVs:', self.xfov, self.yfov)
             print('    Maxfov, imgsize:', self.maxfov, self.imgsize)
             print('    Scale factors:', self.impixpervoxx, self.impixpervoxy, self.impixpervoxz)
             print('    Offsets:', self.offsetx, self.offsety, self.offsetz)
