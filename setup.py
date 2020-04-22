@@ -33,6 +33,7 @@ addgrader = True
 modules_list = ['grader/graderTemplate',
                 'grader/aromaviewTemplate',
                 'grader/io',
+                'grader/colormaps',
                 'grader/LightboxItem']
 
 script_list = ['grader/scripts/grader',
