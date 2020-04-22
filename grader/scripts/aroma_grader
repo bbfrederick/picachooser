@@ -532,14 +532,14 @@ def main():
     updateMotion()
 
     if runmode == 'aroma':
-        thresh = 0.5
+        thresh = 2.3
         print('setting up image window')
         maskimage = lb.imagedataset('ICmask', aromaICmask, 'ICmask', lut_state=lb.mask_state)
-        fgimage = lb.imagedataset('IC', aromaICfile, 'IC', lut_state=lb.ry_blb_state, mask=maskimage.data)
-        #maskimage = fgimage.data * 1.0
-        #maskimage[np.where(np.fabs(maskimage) < thresh)] = 0
-        #fgimage.setMask(maskimage)
-        bgimage = lb.imagedataset('BG', aromaBGfile, 'background', lut_state=lb.viridis_state)
+        fgimage = lb.imagedataset('IC', aromaICfile, 'IC', lut_state=lb.redyellow_state, mask=maskimage.data)
+        funcmaskimage = fgimage.maskeddata * 0.0
+        funcmaskimage[np.where(np.fabs(funcmaskimage) >= thresh)] = 1.0
+        fgimage.setFuncMask(funcmaskimage, maskdata=True)
+        bgimage = lb.imagedataset('BG', aromaBGfile, 'background', lut_state=lb.gray_state)
         mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage)
         updateLightbox()
 
