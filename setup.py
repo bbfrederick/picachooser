@@ -31,9 +31,12 @@ addtidepool = True
 addgrader = True
 
 modules_list = ['grader/graderTemplate',
-                'grader/aromaviewTemplate']
+                'grader/aromaviewTemplate',
+                'grader/io',
+                'grader/LightboxItem']
 
-script_list = ['grader/scripts/grader']
+script_list = ['grader/scripts/grader',
+               'grader/scripts/aroma_grader']
 
 
 def update_gittag_py():

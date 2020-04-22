@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1268</width>
-    <height>733</height>
+    <width>1648</width>
+    <height>786</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
            <bool>true</bool>
           </property>
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -41,38 +41,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>3000</width>
-            <height>1000</height>
-           </size>
-          </property>
-          <property name="sizeIncrement">
-           <size>
-            <width>1</width>
-            <height>1</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="GraphicsLayoutWidget" name="timecourse_graphicsView">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
             <width>610</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>3000</width>
             <height>1000</height>
            </size>
           </property>
@@ -90,7 +59,7 @@
            <bool>true</bool>
           </property>
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -103,7 +72,38 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>3000</width>
+            <width>610</width>
+            <height>1000</height>
+           </size>
+          </property>
+          <property name="sizeIncrement">
+           <size>
+            <width>1</width>
+            <height>1</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="GraphicsLayoutWidget" name="timecourse_graphicsView">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>610</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>610</width>
             <height>1000</height>
            </size>
           </property>
@@ -121,7 +121,7 @@
            <bool>true</bool>
           </property>
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -134,7 +134,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>3000</width>
+            <width>610</width>
             <height>1000</height>
            </size>
           </property>
@@ -154,20 +154,20 @@
          <bool>true</bool>
         </property>
         <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>610</width>
+          <width>1000</width>
           <height>100</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>3000</width>
+          <width>2000</width>
           <height>1000</height>
          </size>
         </property>
@@ -188,7 +188,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1268</width>
+     <width>1648</width>
      <height>22</height>
     </rect>
    </property>
