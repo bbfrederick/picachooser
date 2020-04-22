@@ -41,7 +41,7 @@ except ImportError:
     PILexists = False
 
 
-import rapidtide.io as tide_io
+import grader.io as io
 import rapidtide.stats as tide_stats
 
 
@@ -305,7 +305,7 @@ class imagedataset:
     def readImageData(self, isaMask=False):
         if self.verbose:
             print('entering readImageData')
-        self.nim, self.data, self.header, self.dims, self.sizes = tide_io.readfromnifti(self.filename)
+        self.nim, self.data, self.header, self.dims, self.sizes = io.readfromnifti(self.filename)
         if isaMask:
             self.data[np.where(self.data < 0.5)] = 0.0
             self.data[np.where(self.data > 0.5)] = 1.0
@@ -313,9 +313,9 @@ class imagedataset:
             print('imagedata data range:', np.min(self.data), np.max(self.data))
             print('header', self.header)
         self.xdim, self.ydim, self.zdim, self.tdim = \
-            tide_io.parseniftidims(self.dims)
+            io.parseniftidims(self.dims)
         self.xsize, self.ysize, self.zsize, self.tr = \
-            tide_io.parseniftisizes(self.sizes)
+            io.parseniftisizes(self.sizes)
         self.toffset = self.header['toffset']
         if self.verbose:
             print('imagedata dims:', self.xdim, self.ydim, self.zdim, self.tdim)
