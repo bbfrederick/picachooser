@@ -30,6 +30,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 modules_list = ['PICAchooser/graderTemplate',
                 'PICAchooser/PICAchooserTemplate',
                 'PICAchooser/io',
+                'PICAchooser/stats',
                 'PICAchooser/colormaps',
                 'PICAchooser/LightboxItem']
 

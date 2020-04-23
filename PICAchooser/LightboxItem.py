@@ -42,7 +42,7 @@ except ImportError:
 
 
 import PICAchooser.io as io
-import rapidtide.stats as tide_stats
+import PICAchooser.stats as stats
 import PICAchooser.colormaps as cm
 
 
@@ -180,7 +180,7 @@ class imagedataset:
         self.numstatvoxels = len(calcmaskeddata)
         self.minval = calcmaskeddata.min()
         self.maxval = calcmaskeddata.max()
-        self.robustmin, self.pct25, self.pct50, self.pct75, self.robustmax = tide_stats.getfracvals(calcmaskeddata, [0.02, 0.25, 0.5, 0.75, 0.98], nozero=False)
+        self.robustmin, self.pct25, self.pct50, self.pct75, self.robustmax = stats.getfracvals(calcmaskeddata, [0.02, 0.25, 0.5, 0.75, 0.98], nozero=False)
         self.dispmin = self.robustmin
         self.dispmax = self.robustmax
         self.dispmaxmag = np.max([self.dispmax, -self.dispmin])
