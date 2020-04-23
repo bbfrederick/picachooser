@@ -40,7 +40,7 @@ script_list = ['PICAchooser/scripts/grader',
 def update_gittag_py():
     if not path.isdir(".git"):
         print("This does not appear to be a Git repository.")
-        f = open("grader/_gittag.py", "w")
+        f = open("PICAchooser/_gittag.py", "w")
         f.write(GITTAG_PY % "UNKNOWN-UNKNOWN")
         f.close()
         return
