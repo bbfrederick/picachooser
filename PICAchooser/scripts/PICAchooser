@@ -346,7 +346,7 @@ def updateMotion():
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
-    transmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxtrans']))
+    #transmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxtrans']))
 
     curve4 = rotmot_ax.plot()
     curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
@@ -357,7 +357,7 @@ def updateMotion():
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
-    rotmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxrot']))
+    #rotmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxrot']))
 
 
 def updateLightbox():
@@ -587,7 +587,7 @@ def main():
     # set up the translational motion window
     print('about to set up the translational motion')
     transmotwin = ui.translation_graphicsView
-    transmot_ax = transmotwin.addPlot(title='Temporal mode', labels={'left': 'Displacement (mm)', 'bottom': 'Time (s)'})
+    transmot_ax = transmotwin.addPlot(title='Translation timecourses', labels={'left': 'Displacement (mm)', 'bottom': 'Time (s)'})
 
     # set up the translational motion window
     print('about to set up the translational motion')
