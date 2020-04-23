@@ -43,7 +43,7 @@ except ImportError:
 
 import grader.io as io
 import rapidtide.stats as tide_stats
-import grader.colormaps
+import grader.colormaps as cm
 
 
 def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
@@ -77,17 +77,22 @@ def newViewWindow(view, left, top, imgxsize, imgysize, enableMouse=False):
     theviewbox.setRange(QtCore.QRectF(0, 0, imgxsize, imgysize), padding=0., disableAutoRange=False)
     theviewbox.setBackgroundColor([50, 50, 50])
 
-    theviewfgwin = pg.ImageItem()
-    theviewbox.addItem(theviewfgwin)
-    theviewfgwin.setZValue(10)
-    theviewfgwin.translate(left, top)
+    theviewfgposwin = pg.ImageItem()
+    theviewbox.addItem(theviewfgposwin)
+    theviewfgposwin.setZValue(10)
+    theviewfgposwin.translate(left, top)
+
+    theviewfgnegwin = pg.ImageItem()
+    theviewbox.addItem(theviewfgnegwin)
+    theviewfgnegwin.setZValue(5)
+    theviewfgnegwin.translate(left, top)
 
     theviewbgwin = pg.ImageItem()
     theviewbox.addItem(theviewbgwin)
     theviewbgwin.setZValue(0)
     theviewbgwin.translate(left, top)
 
-    return theviewfgwin, theviewbgwin, theviewbox
+    return theviewfgposwin, theviewfgnegwin, theviewbgwin, theviewbox
 
 
 class imagedataset:
@@ -99,7 +104,7 @@ class imagedataset:
                  isaMask=False,
                  geommask=None,
                  funcmask=None,
-                 lut_state=gray_state,
+                 lut_state=cm.gray_state,
                  verbose=False):
         self.verbose = verbose
         self.name = name
@@ -112,6 +117,14 @@ class imagedataset:
         if self.verbose:
             print('reading map ', self.name, ' from ', self.filename, '...')
         self.isaMask = isaMask
+        self.gradient = pg.GradientWidget(orientation='right', allowAdd=True)
+        self.ry_gradient = pg.GradientWidget(orientation='right', allowAdd=True)
+        self.blb_gradient = pg.GradientWidget(orientation='right', allowAdd=True)
+        self.lut_state = lut_state
+        self.theLUT = None
+        self.theRedyellowLUT = None
+        self.theBluelightblueLUT = None
+        self.setLUT(self.lut_state)
         self.readImageData(isaMask=self.isaMask)
         self.mask = None
         self.maskeddata = None
@@ -119,10 +132,6 @@ class imagedataset:
         self.setGeomMask(geommask, maskdata=False)
         self.maskData()
         self.updateStats()
-        self.gradient = pg.GradientWidget(orientation='right', allowAdd=True)
-        self.lut_state = lut_state
-        self.theLUT = None
-        self.setLUT(self.lut_state)
         self.space = 'unspecified'
         if (self.header['sform_code'] == 4) or (self.header['qform_code'] == 4):
             if ((self.xdim == 61) and (self.ydim == 73) and (self.zdim == 61)) or \
@@ -162,7 +171,8 @@ class imagedataset:
         if self.mask is None:
             calcmaskeddata = self.maskeddata
         else:
-            calcmaskeddata = self.data[np.where(self.mask > 0.0)]
+            calcmaskeddata = self.maskeddata[np.where(self.mask > 0.0)]
+        self.numstatvoxels = len(calcmaskeddata)
         self.minval = calcmaskeddata.min()
         self.maxval = calcmaskeddata.max()
         self.robustmin, self.pct25, self.pct50, self.pct75, self.robustmax = tide_stats.getfracvals(calcmaskeddata, [0.02, 0.25, 0.5, 0.75, 0.98], nozero=False)
@@ -193,24 +203,39 @@ class imagedataset:
                 self.funcmask = 1.0 + 0.0 * self.data[:, :, :, 0]
         else:
             self.funcmask = funcmask.copy()
+        print('setFuncMask - mask dims', self.funcmask.shape)
         if maskdata:
             self.maskData()
+
+
+    def setFuncMaskByThresh(self, threshval=2.3, maskdata=True):
+        self.funcmask = np.where(np.fabs(self.data) > threshval, 1.0, 0.0)
+        if maskdata:
+            self.maskData()
+
 
     def setGeomMask(self, geommask, maskdata=True):
         self.geommask = geommask
         if self.geommask is None:
-            if self.tdim == 1:
-                self.geommask = 1.0 + 0.0 * self.data
-            else:
-                self.geommask = 1.0 + 0.0 * self.data[:, :, :, 0]
+            self.geommask = 1.0 + 0.0 * self.data
         else:
             self.geommask = geommask.copy()
+        print('setGeomMask - mask dims', self.geommask.shape)
         if maskdata:
             self.maskData()
 
 
     def maskData(self):
-        self.mask = self.geommask * self.funcmask
+        if len(self.funcmask.shape) == 3:
+            self.mask = self.funcmask * self.geommask
+        else:
+            self.mask = self.funcmask * self.geommask[:, :, :, None]
+        if self.mask is None:
+            print('self.mask is None')
+        if self.funcmask is None:
+            print('self.funcmask is None')
+        if self.geommask is None:
+            print('self.geommask is None')
         self.maskeddata = self.data.copy()
         self.maskeddata[np.where(self.mask < 0.5)] = 0.0
         self.updateStats()
@@ -272,12 +297,6 @@ class imagedataset:
         else:
             return self.maskeddata[self.xpos, self.ypos, self.zpos]
 
-    def maskData(self):
-        self.maskeddata = self.data.copy()
-        if self.mask is not None:
-            self.maskeddata[np.where(self.mask < 0.5)] = 0.0
-        self.updateStats()
-
     def setTR(self, trval):
         self.tr = trval
 
@@ -288,6 +307,12 @@ class imagedataset:
         self.lut_state = lut_state
         self.gradient.restoreState(lut_state)
         self.theLUT = self.gradient.getLookupTable(512, alpha=True)
+
+        self.ry_gradient.restoreState(cm.redyellow_state)
+        self.theRedyellowLUT = self.ry_gradient.getLookupTable(512, alpha=True)
+
+        self.blb_gradient.restoreState(cm.bluelightblue_state)
+        self.theBluelightblueLUT = self.blb_gradient.getLookupTable(512, alpha=True)
 
     def summarize(self):
         print()
@@ -310,6 +335,19 @@ class imagedataset:
         print('    dispmax:          ', self.dispmax)
         print('    data shape:       ', np.shape(self.data))
         print('    masked data shape:', np.shape(self.maskeddata))
+        if self.geommask is None:
+            print('    geometric mask not set')
+        else:
+            print('    geometric mask is set')
+        if self.funcmask is None:
+            print('    functional mask not set')
+        else:
+            print('    functional mask is set')
+        if self.mask is None:
+            print('    overall mask not set')
+        else:
+            print('    overall mask is set')
+
 
 
 class LightboxItem(QtGui.QWidget):
@@ -353,6 +391,7 @@ class LightboxItem(QtGui.QWidget):
         self.impixpervoxy = self.imgysize * (self.yfov / self.maxfov) / self.ydim
         self.offsetx = self.imgxsize * (0.5 - self.xfov / (2.0 * self.maxfov))
         self.offsety = self.imgysize * (0.5 - self.yfov / (2.0 * self.maxfov))
+        self.thresh = 2.3
 
         if self.verbose:
             print('OrthoImageItem intialization:')
@@ -369,7 +408,7 @@ class LightboxItem(QtGui.QWidget):
         self.thisview.ci.layout.setContentsMargins(0, 0, 0, 0)
         self.thisview.ci.layout.setSpacing(5)
 
-        self.thisviewwin, self.thisviewbgwin, self.thisviewbox = \
+        self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thisviewbox = \
             newViewWindow(self.thisview,
                           self.xdim, self.ydim,
                           self.imgxsize, self.imgysize,
@@ -467,6 +506,8 @@ class LightboxItem(QtGui.QWidget):
 
         #print('tiling mask image')
         if self.fgmap.mask is None:
+            print('fyi - the mask is none')
+            self.fgmap.summarize()
             thisviewmask = tiledfgimage * 0.0 + 1.0
         else:
             if len(self.fgmap.mask.shape) < 4:
@@ -482,13 +523,15 @@ class LightboxItem(QtGui.QWidget):
             tiledbgimage = self.tileSlices(self.bgmap.maskeddata[:, :, :])
             thisviewbg = tiledbgimage
 
-        self.updateOneView(thisviewdata, thisviewmask, thisviewbg, self.fgmap.theLUT, self.thisviewwin, self.thisviewbgwin)
+        self.updateOneView(thisviewdata, thisviewmask, thisviewbg, self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin)
 
 
-    def updateOneView(self, data, mask, background, theLUT, thefgwin, thebgwin):
-        print('setting min and max to', -self.fgmap.dispmaxmag, self.fgmap.dispmaxmag)
-        im = self.applyLUT(data, mask, theLUT, -10.0 * self.fgmap.dispmaxmag, 10.0 * self.fgmap.dispmaxmag)
-        thefgwin.setImage(im.astype('float'), levels=(-10.0 * self.fgmap.dispmaxmag, 10.0 * self.fgmap.dispmaxmag))
+    def updateOneView(self, data, mask, background, thefgposwin, thefgnegwin, thebgwin):
+        print('setting min and max to', -self.fgmap.dispmaxmag, self.fgmap.dispmaxmag, '(', self.fgmap.numstatvoxels, ')')
+        impos = self.applyLUT(data, np.where(data >= self.thresh, 1, 0), self.fgmap.theRedyellowLUT, self.thresh, self.fgmap.dispmaxmag)
+        thefgposwin.setImage(impos.astype('float'))
+        imneg = self.applyLUT(data, np.where(data <= -self.thresh, 1, 0), self.fgmap.theBluelightblueLUT, self.thresh, self.fgmap.dispmaxmag)
+        thefgnegwin.setImage(imneg.astype('float'))
         if background is not None:
             thebgwin.setImage(background.astype('float'), autoLevels=True)
 
@@ -626,7 +669,7 @@ class LightboxItem(QtGui.QWidget):
         thedir = str(mydialog.getExistingDirectory(options=options, caption="Image output directory"))
         print('thedir=', thedir)
         thename = self.fgmap.namebase + self.fgmap.name
-        self.saveandcomposite(self.thisviewwin, self.thisviewbgwin, thename, thedir, self.impixpervoxx, self.impixpervoxy)
+        self.saveandcomposite(self.thisviewposwin, self.thisviewbgwin, thename, thedir, self.impixpervoxx, self.impixpervoxy)
         with open(os.path.join(thedir, thename + '_lims.txt'), 'w') as FILE:
             FILE.writelines(str(self.fgmap.dispmin) + '\t' + str(self.fgmap.dispmax))
             # img_colorbar.save(thedir + self.map.name + '_colorbar.png')

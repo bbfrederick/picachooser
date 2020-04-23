@@ -32,15 +32,14 @@ from pyqtgraph.Qt import QtGui, QtCore
 
 import pyqtgraph as pg
 import numpy as np
-import glob
 
 import sys
 import os
 import argparse
-import pandas as pd
 from scipy import fftpack
 import grader.LightboxItem as lb
 import grader.io as io
+import grader.colormaps as cm
 
 
 hammingwindows = {}
@@ -246,21 +245,24 @@ class KeyPressWindow(QtGui.QMainWindow):
 def incrementgrade(whichfile):
     global alldata, namelist
 
-    alldata[namelist[whichfile]]['grade'] += 1
+    alldata[namelist[whichfile]]['grade'] *= -1
 
 
 def decrementgrade(whichfile):
     global alldata, namelist
 
-    alldata[namelist[whichfile]]['grade'] -= 1
+    alldata[namelist[whichfile]]['grade'] *= -1
 
 
 def writegrades():
     global alldata, namelist, numelements, outputfile
 
+    badlist = []
+    for i in range(len(namelist)):
+        if alldata[namelist[i]]['grade'] < 0:
+            badlist.append(str(i + 1))
     with open(outputfile, 'w') as thefile:
-        for i in range(len(namelist)):
-            thefile.write('{0}, {1:d}, {2:f}\n'.format(namelist[i], alldata[namelist[i]]['grade'], alldata[namelist[i]]['samplerate']))
+            thefile.write(','.join(badlist))
 
 
 def windowResized(evt):
@@ -280,8 +282,10 @@ def keyPressed(evt):
         decrementgrade(whichfile)
     elif evt.key() == QtCore.Qt.Key_Left:
         whichfile = (whichfile - 1) % numelements
+        print('whichfile set to:', whichfile)
     elif evt.key() == QtCore.Qt.Key_Right:
         whichfile = (whichfile + 1) % numelements
+        print('whichfile set to:', whichfile)
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
         print('done')
@@ -436,7 +440,7 @@ def main():
     numelements = 0
     alltcs = io.readvecs(aromaTCfile)
     numelements = alltcs.shape[0]
-    grades = np.zeros(numelements, dtype=np.int)
+    grades = np.ones(numelements, dtype=np.int)
     with open(aromaRemovefile, 'r') as thefile:
         inline = thefile.readline()
     inlist = inline.split(',')
@@ -534,12 +538,12 @@ def main():
     if runmode == 'aroma':
         thresh = 2.3
         print('setting up image window')
-        maskimage = lb.imagedataset('ICmask', aromaICmask, 'ICmask', lut_state=lb.mask_state)
-        fgimage = lb.imagedataset('IC', aromaICfile, 'IC', lut_state=lb.redyellow_state, mask=maskimage.data)
-        funcmaskimage = fgimage.maskeddata * 0.0
+        maskimage = lb.imagedataset('ICmask', aromaICmask, 'ICmask', lut_state=cm.mask_state)
+        fgimage = lb.imagedataset('IC', aromaICfile, 'IC', lut_state=cm.redyellow_state, geommask=maskimage.data)
+        funcmaskimage = fgimage.maskeddata + 0.0
         funcmaskimage[np.where(np.fabs(funcmaskimage) >= thresh)] = 1.0
-        fgimage.setFuncMask(funcmaskimage, maskdata=True)
-        bgimage = lb.imagedataset('BG', aromaBGfile, 'background', lut_state=lb.gray_state)
+        fgimage.setFuncMaskByThresh(threshval=thresh)
+        bgimage = lb.imagedataset('BG', aromaBGfile, 'background', lut_state=cm.gray_state)
         mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage)
         updateLightbox()
 
