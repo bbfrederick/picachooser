@@ -27,17 +27,14 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-addtidepool = True
-addgrader = True
+modules_list = ['PICAchooser/graderTemplate',
+                'PICAchooser/PICAchooserTemplate',
+                'PICAchooser/io',
+                'PICAchooser/colormaps',
+                'PICAchooser/LightboxItem']
 
-modules_list = ['grader/graderTemplate',
-                'grader/aromaviewTemplate',
-                'grader/io',
-                'grader/colormaps',
-                'grader/LightboxItem']
-
-script_list = ['grader/scripts/grader',
-               'grader/scripts/aroma_grader']
+script_list = ['PICAchooser/scripts/grader',
+               'PICAchooser/scripts/PICAchooser']
 
 
 def update_gittag_py():
@@ -52,19 +49,19 @@ def update_gittag_py():
                               "--tags", "--dirty", "--always"],
                              stdout=subprocess.PIPE)
     except EnvironmentError:
-        print("unable to run git, leaving grader/_gittag.py alone")
+        print("unable to run git, leaving PICAchooser/_gittag.py alone")
         return
     stdout = p.communicate()[0]
     if p.returncode != 0:
-        print("unable to run git, leaving grader/_gittag.py alone")
+        print("unable to run git, leaving PICAchooser/_gittag.py alone")
         return
-    # we use tags like "python-grader-0.5", so strip the prefix
+    # we use tags like "python-PICAchooser-0.5", so strip the prefix
     if sys.version_info[0] == 3:
         ver = str(stdout.strip(), "utf-8")
     else:
         ver = stdout.strip()
     print(ver)
-    f = open("grader/_gittag.py", "w")
+    f = open("PICAchooser/_gittag.py", "w")
     f.write(GITTAG_PY % ver)
     f.close()
 
@@ -73,7 +70,7 @@ update_gittag_py()
 
 
 setup(
-    name='grader',
+    name='PICAchooser',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see

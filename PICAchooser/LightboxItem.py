@@ -41,9 +41,9 @@ except ImportError:
     PILexists = False
 
 
-import grader.io as io
+import PICAchooser.io as io
 import rapidtide.stats as tide_stats
-import grader.colormaps as cm
+import PICAchooser.colormaps as cm
 
 
 def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
