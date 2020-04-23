@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1648</width>
-    <height>786</height>
+    <width>1746</width>
+    <height>839</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>610</width>
+            <width>400</width>
             <height>100</height>
            </size>
           </property>
@@ -66,7 +66,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>610</width>
+            <width>400</width>
             <height>100</height>
            </size>
           </property>
@@ -97,7 +97,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>610</width>
+            <width>400</width>
             <height>100</height>
            </size>
           </property>
@@ -128,7 +128,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>610</width>
+            <width>400</width>
             <height>100</height>
            </size>
           </property>
@@ -161,14 +161,14 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>1000</width>
+          <width>600</width>
           <height>100</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>2000</width>
-          <height>1000</height>
+          <height>1200</height>
          </size>
         </property>
         <property name="sizeIncrement">
@@ -188,7 +188,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1648</width>
+     <width>1746</width>
      <height>22</height>
     </rect>
    </property>
