@@ -270,7 +270,10 @@ def windowResized(evt):
 
 
 def keyPressed(evt):
-    global whichcomponent, numelements, mainwin
+    global whichcomponent, numelements, mainwin, verbose
+
+    if verbose:
+        print('processing keypress event')
 
     if evt.key() == QtCore.Qt.Key_Up:
         incrementgrade(whichcomponent)
@@ -278,10 +281,10 @@ def keyPressed(evt):
         decrementgrade(whichcomponent)
     elif evt.key() == QtCore.Qt.Key_Left:
         whichcomponent = (whichcomponent - 1) % numelements
-        print('whichcomponent set to:', whichcomponent)
+        print('IC set to:', whichcomponent + 1)
     elif evt.key() == QtCore.Qt.Key_Right:
         whichcomponent = (whichcomponent + 1) % numelements
-        print('whichcomponent set to:', whichcomponent)
+        print('IC set to:', whichcomponent + 1)
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
         print('done')
@@ -295,92 +298,87 @@ def keyPressed(evt):
 
 
 def updateTimecourse():
-    global timecourse_ax, spectrum_ax, whichcomponent, alldata, namelist, win, numelements
-    thisfile = alldata[namelist[whichcomponent]]
-    windowtitle = 'PICAchooser - {0} ({1} of {2})'.format(namelist[whichcomponent], whichcomponent, numelements)
-    win.setWindowTitle(windowtitle)
+    global timecourse_ax, spectrum_ax, whichcomponent, alldata, namelist, win, numelements, verbose
 
-    if thisfile['grade'] is None:
+    if verbose:
+        print('entering updateTimecourse')
+    thiscomponent = alldata[namelist[whichcomponent]]
+    windowtitle = 'PICAchooser - Component {0} of {1}'.format(whichcomponent + 1, numelements)
+    if thiscomponent['grade'] is None:
         pencolor = 'w'
-    elif thisfile['grade'] == 0:
+    elif thiscomponent['grade'] == 0:
         pencolor = 'w'
-    elif thisfile['grade'] > 0:
+    elif thiscomponent['grade'] > 0:
         pencolor = 'g'
     else:
         pencolor = 'r'
+        windowtitle = windowtitle + ' - marked for removal'
+    win.setWindowTitle(windowtitle)
 
-    timecourse_ax.plot(thisfile['timeaxis'], thisfile['timecourse'],
+    timecourse_ax.plot(thiscomponent['timeaxis'], thiscomponent['timecourse'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=1), clear=True)
 
-    if thisfile['grade'] is None:
-        thelabel = 'Grade: None'
-    else:
-        if thisfile['grade'] == 1:
-            thelabel = 'Keep'
-        else:
-            thelabel = 'Remove'
-
-    spectrum_ax.plot(thisfile['freqaxis'], thisfile['spectrum'],
-                     name=thelabel,
+    spectrum_ax.plot(thiscomponent['freqaxis'], thiscomponent['spectrum'],
                      stepMode=False,
                      fillLevel=0,
                      pen=pg.mkPen(pencolor, width=1),
                      clear=True)
 
-    spectop = 1.25 * np.max(thisfile['spectrum'])
+    spectop = 1.25 * np.max(thiscomponent['spectrum'])
     spectrum_ax.setYRange(0.0, spectop, padding=0)
-    spectrum_ax.addLegend(offset=(0.75 * thisfile['freqaxis'][-1], 0.75 * np.max(thisfile['spectrum'])))
 
 
 def updateMotion():
-    global transmot_ax, rotmot_ax, whichcomponent, alldata, motion, namelist, win, numelements
-    thisfile = alldata[namelist[whichcomponent]]
+    global transmot_ax, rotmot_ax, whichcomponent, alldata, motion, namelist, win, numelements, verbose
+
+    if verbose:
+        print('entering updateMotion')
+    thiscomponent = alldata[namelist[whichcomponent]]
     curve1 = transmot_ax.plot()
-    curve1.setData(thisfile['timeaxis'], motion['xtrans'],
+    curve1.setData(thiscomponent['timeaxis'], motion['xtrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('FF8888', width=1), clear=True, name='xtrans')
     curve2 = transmot_ax.plot()
-    curve2.setData(thisfile['timeaxis'], motion['ytrans'],
+    curve2.setData(thiscomponent['timeaxis'], motion['ytrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('88FF88', width=1), clear=True, name='ytrans')
     curve3 = transmot_ax.plot()
-    curve3.setData(thisfile['timeaxis'], motion['ztrans'],
+    curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
     transmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxtrans']))
 
     curve4 = rotmot_ax.plot()
-    curve4.setData(thisfile['timeaxis'], motion['xrot'],
+    curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('FF8888', width=1), clear=True, name='xrot')
     curve5 = rotmot_ax.plot()
-    curve5.setData(thisfile['timeaxis'], motion['yrot'],
+    curve5.setData(thiscomponent['timeaxis'], motion['yrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('88FF88', width=1), clear=True, name='yrot')
     curve6 = rotmot_ax.plot()
-    curve6.setData(thisfile['timeaxis'], motion['zrot'],
+    curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
     rotmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxrot']))
 
 
 def updateLightbox():
-    global hist
-    global currentdataset
-    global maps
-    global panetomap
-    global ui
-    global mainwin
-    global currentloc
-    global xdim, ydim, zdim
-    global overlays
-    global imagadj
-    global whichcomponent
+    global mainwin, whichcomponent, verbose, alldata, namelist
 
+    if verbose:
+        print('entering updateLightbox')
+    thiscomponent = alldata[namelist[whichcomponent]]
+    if thiscomponent['grade'] == 1:
+        thelabel = 'Keeping IC {0}'.format(whichcomponent + 1)
+        thecolor = 'g'
+    else:
+        thelabel = 'Discarding IC {0}'.format(whichcomponent + 1)
+        thecolor = 'r'
+    mainwin.setLabel(thelabel, thecolor)
     mainwin.setTpos(whichcomponent)
-    mainwin.updateAllViews()
-
 
 def main():
     global ui, win, mainwin
     global namelist, outputfile, alldata, motion, whichcomponent, numelements, runmode
-    global mainwin
+    global mainwin, verbose
 
     mainwin = None
+    verbose = False
 
     parser = argparse.ArgumentParser(description='A program to review (and alter) melodic component selections.')
     parser.add_argument(
@@ -417,12 +415,10 @@ def main():
         help='z threshold for the displayed ICA components.  Default is 2.3.',
         default=2.3)
 
-
     args = parser.parse_args()
 
     if args.aromadir is not None:
         runmode = 'aroma'
-        #args.aromadir = os.path.join(args.featdir, 'ICA_AROMA')
     elif args.melodicdir is not None:
         runmode = 'melodic'
     elif args.fixmelodicdir is not None:
@@ -489,26 +485,27 @@ def main():
 
     ICfile, ICmask, BGfile, Funcfile, TCfile, Motionfile = findICAfiles(args.featdir, melodicdir)
 
-    print(ICfile)
-    print(ICmask)
-    print(BGfile)
-    print(Funcfile)
-    print(TCfile)
-    print(Motionfile)
-    print(Removefile)
+    if verbose:
+        print(ICfile)
+        print(ICmask)
+        print(BGfile)
+        print(Funcfile)
+        print(TCfile)
+        print(Motionfile)
+        print(Removefile)
 
     # set the sample rate
     tr, timepoints = io.fmritimeinfo(Funcfile)
     samplerate = 1.0 / tr
 
     # read in the timecourses and their current labels
-    print('reading data...')
     alldata = {}
     numelements = 0
     alltcs = io.readvecs(TCfile)
     numelements = alltcs.shape[0]
     grades = np.ones(numelements, dtype=np.int)
     if initfileexists:
+        print('reading initfile...')
         with open(Removefile, 'r') as thefile:
             inline = thefile.readline().replace('[','').replace(']','')
         inlist = inline.split(',')
@@ -518,6 +515,7 @@ def main():
         grades = None
 
     # read in the motion timecourses
+    print('reading motion timecourses...')
     allmotion = io.readvecs(Motionfile)
     motion = {}
     motion['xtrans'] = allmotion[3, :] * 1.0
@@ -532,8 +530,9 @@ def main():
     motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
 
     namelist = []
+    print('reading timecourses...')
     for idx in range(numelements):
-        thefile = str(idx)
+        thefile = str(idx + 1)
         namelist.append(thefile)
         if grades is not None:
             thegrade = grades[idx]
@@ -545,12 +544,13 @@ def main():
         alldata[thefile]['timecourse'] = invec * 1.0
         alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
         alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
-            spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='power')
+            spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
         alldata[thefile]['grade'] = thegrade
         alldata[thefile]['samplerate'] = thesamplerate
-        print(thefile, thegrade, thesamplerate)
+        if verbose:
+            print(thefile, thegrade, thesamplerate)
     print('Read in', numelements, 'files')
-    motion['maxtime'] = alldata['0']['timeaxis'][-1] + 0.0
+    motion['maxtime'] = alldata['1']['timeaxis'][-1] + 0.0
     whichcomponent = 0
 
     # make the main window
@@ -572,35 +572,36 @@ def main():
     print('about to set up the timecourse')
     global timecourse_ax
     timecoursewin = ui.timecourse_graphicsView
-    timecourse_ax = timecoursewin.addPlot()
+    timecourse_ax = timecoursewin.addPlot(title='Independent component', labels={'left': 'Intensity (a.u.)', 'bottom': 'Time (s)'})
 
     # set up the regressor spectrum window
     print('about to set up the spectrum')
     global spectrum_ax
     spectrumwin = ui.spectrum_graphicsView
-    spectrum_ax = spectrumwin.addPlot()
+    spectrum_ax = spectrumwin.addPlot(title='Power spectrum of timecourse', labels={'left': 'Power (a.u.)', 'bottom': 'Frequency (Hz)'})
 
     global transmot_ax, rotmot_ax
     # set up the translational motion window
     print('about to set up the translational motion')
     transmotwin = ui.translation_graphicsView
-    transmot_ax = transmotwin.addPlot()
+    transmot_ax = transmotwin.addPlot(title='Temporal mode', labels={'left': 'Displacement (mm)', 'bottom': 'Time (s)'})
 
     # set up the translational motion window
     print('about to set up the translational motion')
     rotmotwin = ui.rotation_graphicsView
-    rotmot_ax = rotmotwin.addPlot()
+    rotmot_ax = rotmotwin.addPlot(title='Rotation timecourses', labels = {'left': 'Rotation (radians)', 'bottom': 'Time (s)'})
 
-    updateTimecourse()
-    updateMotion()
 
-    displaythresh = 2.3
     print('setting up image window')
     geommaskimage = lb.imagedataset('ICmask', ICmask, 'ICmask', lut_state=cm.mask_state)
     fgimage = lb.imagedataset('IC', ICfile, 'IC', lut_state=cm.redyellow_state, geommask=geommaskimage.data)
-    fgimage.setFuncMaskByThresh(threshval=displaythresh)
+    fgimage.setFuncMaskByThresh(threshval=args.displaythresh)
     bgimage = lb.imagedataset('BG', BGfile, 'background', lut_state=cm.gray_state)
     mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage)
+
+    # initialize everything
+    updateTimecourse()
+    updateMotion()
     updateLightbox()
 
     QtGui.QApplication.instance().exec_()

@@ -74,25 +74,30 @@ def newViewWindow(view, left, top, imgxsize, imgysize, enableMouse=False):
     #theviewbox = view.addViewBox(enableMouse=enableMouse, enableMenu=False, lockAspect=1.0)
     theviewbox = view.addViewBox(enableMouse=False, enableMenu=False)
     theviewbox.setAspectLocked()
-    theviewbox.setRange(QtCore.QRectF(0, 0, imgxsize, imgysize), padding=0., disableAutoRange=False)
+    theviewbox.setRange(QtCore.QRectF(0, 0, imgxsize, imgysize), padding=0.0, disableAutoRange=False)
     theviewbox.setBackgroundColor([50, 50, 50])
 
     theviewfgposwin = pg.ImageItem()
     theviewbox.addItem(theviewfgposwin)
     theviewfgposwin.setZValue(10)
-    theviewfgposwin.translate(left, top)
+    #theviewfgposwin.translate(left, top)
 
     theviewfgnegwin = pg.ImageItem()
     theviewbox.addItem(theviewfgnegwin)
     theviewfgnegwin.setZValue(5)
-    theviewfgnegwin.translate(left, top)
+    #theviewfgnegwin.translate(left, top)
 
     theviewbgwin = pg.ImageItem()
     theviewbox.addItem(theviewbgwin)
     theviewbgwin.setZValue(0)
-    theviewbgwin.translate(left, top)
+    #theviewbgwin.translate(left, top)
 
-    return theviewfgposwin, theviewfgnegwin, theviewbgwin, theviewbox
+    thelabel = pg.TextItem(anchor=(0.0,1.0))
+    theviewbox.addItem(thelabel)
+    thelabel.setZValue(20)
+    #thelabel.translate(0, -imgysize)
+
+    return theviewfgposwin, theviewfgnegwin, theviewbgwin, thelabel, theviewbox
 
 
 class imagedataset:
@@ -158,7 +163,7 @@ class imagedataset:
         if self.verbose:
             print('imagedata initialized:', self.name, self.filename, self.minval, self.dispmin, self.dispmax,
                   self.maxval)
-        self.summarize()
+            self.summarize()
 
     def duplicate(self, newname, newlabel):
         return imagedataset(newname, self.filename, self.namebase,
@@ -260,11 +265,6 @@ class imagedataset:
             print('imagedata dims:', self.xdim, self.ydim, self.zdim, self.tdim)
             print('imagedata sizes:', self.xsize, self.ysize, self.zsize, self.tr)
             print('imagedata toffset:', self.toffset)
-
-    def setLabel(self, label):
-        if self.verbose:
-            print('entering setLabel')
-        self.label = label
 
     def real2tr(self, time):
         return np.round((time - self.toffset) / self.tr, 0)
@@ -392,6 +392,9 @@ class LightboxItem(QtGui.QWidget):
         self.offsetx = self.imgxsize * (0.5 - self.xfov / (2.0 * self.maxfov))
         self.offsety = self.imgysize * (0.5 - self.yfov / (2.0 * self.maxfov))
         self.thresh = 2.3
+        self.tiledbackground = None
+        self.tiledmasks = {}
+        self.tiledforegrounds = {}
 
         if self.verbose:
             print('OrthoImageItem intialization:')
@@ -408,20 +411,19 @@ class LightboxItem(QtGui.QWidget):
         self.thisview.ci.layout.setContentsMargins(0, 0, 0, 0)
         self.thisview.ci.layout.setSpacing(5)
 
-        self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thisviewbox = \
+        self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thislabel, self.thisviewbox = \
             newViewWindow(self.thisview,
-                          self.xdim, self.ydim,
+                          0, 0,
                           self.imgxsize, self.imgysize,
                           enableMouse=self.enableMouse)
         if self.enableMouse:
-            self.thisviewbox.keyPressEvent = self.handlekey
+            #self.thisviewbox.keyPressEvent = self.handlekey
             self.thisviewbox.mousePressEvent = self.handleclick
             self.thisviewbox.mouseMoveEvent = self.handlemousemove
             self.thisviewbox.mouseReleaseEvent = self.handlemouseup
 
         self.enableView()
         self.updateAllViews()
-
 
     def xvox2pix(self, xpos):
         return int(np.round(self.offsetx + self.impixpervoxx * xpos))
@@ -481,59 +483,73 @@ class LightboxItem(QtGui.QWidget):
 
     def tileSlices(self, inputimage):
         slicelist = range(self.startslice, self.endslice, self.slicestep)
-        print(self.startslice, self.endslice, self.slicestep)
-        print('slicelist', slicelist)
         numslices = len(slicelist)
         theaspect = (self.xdim * 14.0) / (self.ydim * 9.0)
         numinx, numiny = self.optmatrix(numslices, self.xdim, self.ydim, theaspect)
         tiledimage = np.zeros((numinx * self.xdim, numiny * self.ydim))
-        print('input image shape:', inputimage.shape)
-        print('tiled image shape:', tiledimage.shape)
         for whichslice in range(np.min([numslices, numinx * numiny])):
             xpos = (numinx - (whichslice % numinx) - 1) * self.xdim
             ypos = (int(whichslice // numinx)) * self.ydim
-            #print(whichslice, slicelist[whichslice], numinx, numiny, xpos, ypos)
             tiledimage[xpos:xpos + self.xdim, ypos:ypos + self.ydim] = inputimage[:, :, slicelist[whichslice]]
         return tiledimage
 
     def updateAllViews(self):
-        #print('tiling foreground image')
-        if self.tdim == 1:
-            tiledfgimage = self.tileSlices(self.fgmap.maskeddata[:, :, :])
-        else:
-            tiledfgimage = self.tileSlices(self.fgmap.maskeddata[:, :, :, self.tpos])
-        thisviewdata = tiledfgimage
+        try:
+            thisviewdata = self.tiledforegrounds[str(self.tpos)]
+            if self.verbose:
+                print('using precached tiled foreground image')
+        except KeyError:
+            if self.verbose:
+                print('tiling foreground image')
+            self.tiledforegrounds[str(self.tpos)] = self.tileSlices(self.fgmap.maskeddata[:, :, :, self.tpos])
+            thisviewdata = self.tiledforegrounds[str(self.tpos)]
 
-        #print('tiling mask image')
         if self.fgmap.mask is None:
-            print('fyi - the mask is none')
-            self.fgmap.summarize()
-            thisviewmask = tiledfgimage * 0.0 + 1.0
+            if self.verbose:
+                print('fyi - the mask is none - using fake mask')
+            thisviewmask = self.tiledforegrounds[str(self.tpos)] * 0.0 + 1.0
         else:
-            if len(self.fgmap.mask.shape) < 4:
-                tiledmaskimage = self.tileSlices(self.fgmap.mask[:, :, :])
-            else:
-                tiledmaskimage = self.tileSlices(self.fgmap.mask[:, :, :, self.tpos])
-            thisviewmask = tiledmaskimage
+            try:
+                thisviewmask = self.tiledmasks[str(self.tpos)]
+                if self.verbose:
+                    print('using precached tiled mask image')
+            except KeyError:
+                if self.verbose:
+                    print('tiling mask image')
+                self.tiledmasks[str(self.tpos)] = self.tileSlices(self.fgmap.mask[:, :, :, self.tpos])
+                thisviewmask = self.tiledmasks[str(self.tpos)]
 
-        #print('tiling background image')
         if self.bgmap is None:
             thisviewbg = None
         else:
-            tiledbgimage = self.tileSlices(self.bgmap.maskeddata[:, :, :])
-            thisviewbg = tiledbgimage
+            if self.tiledbackground is None:
+                if self.verbose:
+                    print('tiling background image')
+                self.tiledbackground = self.tileSlices(self.bgmap.maskeddata[:, :, :])
+            else:
+                if self.verbose:
+                    print('using precached tiled background image')
+            thisviewbg = self.tiledbackground
 
-        self.updateOneView(thisviewdata, thisviewmask, thisviewbg, self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin)
+        self.updateOneView(thisviewdata, thisviewbg, self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin)
 
 
-    def updateOneView(self, data, mask, background, thefgposwin, thefgnegwin, thebgwin):
-        print('setting min and max to', -self.fgmap.dispmaxmag, self.fgmap.dispmaxmag, '(', self.fgmap.numstatvoxels, ')')
+    def updateOneView(self, data, background, thefgposwin, thefgnegwin, thebgwin):
+        if self.verbose:
+            print('setting min and max to', -self.fgmap.dispmaxmag, self.fgmap.dispmaxmag, '(', self.fgmap.numstatvoxels, ')')
         impos = self.applyLUT(data, np.where(data >= self.thresh, 1, 0), self.fgmap.theRedyellowLUT, self.thresh, self.fgmap.dispmaxmag)
         thefgposwin.setImage(impos.astype('float'))
         imneg = self.applyLUT(data, np.where(data <= -self.thresh, 1, 0), self.fgmap.theBluelightblueLUT, self.thresh, self.fgmap.dispmaxmag)
         thefgnegwin.setImage(imneg.astype('float'))
         if background is not None:
             thebgwin.setImage(background.astype('float'), autoLevels=True)
+
+
+    def setLabel(self, label, color):
+        if self.verbose:
+            print('entering setLabel')
+        self.thislabel.setText(label)
+        self.thislabel.setColor(color)
 
 
     def setMap(self, themap):
