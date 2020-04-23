@@ -228,6 +228,9 @@ class KeyPressWindow(QtGui.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def closeEvent(self, event):
+        writegrades()
+
     def keyPressEvent(self, ev):
         self.sigKeyPress.emit(ev)
 
