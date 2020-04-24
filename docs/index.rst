@@ -1,4 +1,4 @@
-.. PICAchoser documentation master file, created by
+.. PICAchooser documentation master file, created by
    sphinx-quickstart on Thu Jun 16 15:27:19 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -10,7 +10,7 @@ of an FSL MELODIC ICA analysis, to decide which components to keep and which to 
 out.  It only does one thing, but it does it quickly.  You can do navigation and selection
 using only the arrow keys.
 
-PICAchoser has three modes:
+PICAchooser has three modes:
 
 Standard melodic mode: Tell PICAchooser how to find a .ica directory, and the associated .feat
 directory, and it will create a "badcomponents.txt" file in the comma separated format that you 
