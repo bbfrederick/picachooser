@@ -35,7 +35,7 @@ modules_list = ['picachooser/graderTemplate',
                 'picachooser/colormaps',
                 'picachooser/LightboxItem']
 
-script_list = ['picachooser/scripts/picachooser_dispatcher',
+script_list = ['picachooser/scripts/PICAchooser_dispatcher',
                'picachooser/scripts/grader',
                'picachooser/scripts/PICAchooser']
 
@@ -80,7 +80,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='1.0.0rc1',
 
-    description='Tools for performing correlation analysis on fMRI data.',
+    description='Lightweight GUI for sorting MELODIC ICA components.',
     long_description=long_description,
 
     # The project's main homepage.
