@@ -7,7 +7,7 @@ Basically, PICAchooser loads the results of a MELODIC ICA run and lets you step 
 
 # Usage
 
-`
+``` bash
 usage: PICAchooser featdir melodicdir runmode [options]
 
 A program to review (and alter) melodic component selections.
@@ -32,7 +32,8 @@ optional arguments:
                         default output file name).
   --displaythresh DISPLAYTHRESH
                         z threshold for the displayed ICA components. Default is 2.3.
-`
+```
+
 
 # Controls
 
