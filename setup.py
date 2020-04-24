@@ -84,7 +84,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/bbfrederick/grader',
+    url='https://github.com/bbfrederick/PICAchooser',
 
     # Author details
     author="Blaise Frederick",
@@ -144,6 +144,14 @@ setup(
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
+        'doc': [
+            'sphinx>=1.5.3',
+            'sphinx_rtd_theme',
+            'sphinx-argparse',
+            'sphinx-gallery',
+            'numpydoc',
+            'm2r',
+            ],
     },
 
     # If there are data files included in your packages that need to be
@@ -152,16 +160,6 @@ setup(
     include_package_data=True,
     zip_safe=False,
     package_data={
-        'reference': ['reference/*.txt',
-                      'reference/*.nii.gz',
-                      ],
-        'testdata': ['tests/testdata/*.txt',
-                      ],
-        'testtargets': ['tests/testtargets/*.txt',
-                      'tests/testtargets/*.nii.gz',
-                      ],
-        'tmpdata': ['tests/tmp/.placeholder.txt',
-                      ],
     },
 
     # To provide executable scripts, use entry points in preference to the
