@@ -1,0 +1,19 @@
+#!/bin/csh -f
+
+docker build . -t PICAchooser
+
+docker run -it PICAchooser bash
+
+# allow network connections in Xquartz Security settings
+xhost +
+xhost +si:localuser:PICAchooser
+
+# Allow your local user access via xhost: xhost +SI:localuser:PICAchooser and create a similar user with docker run option: --user=$(id -u):$(id -g)
+docker run \
+    --network host\
+    --volume=/Users/frederic:/data \
+    -it \
+    -e DISPLAY=192.168.7.146:0 \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -u PICAchooser PICAchooser \
+    tidepool
