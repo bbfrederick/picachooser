@@ -10,30 +10,30 @@ Usage
 =====
 
 ::
-    usage: PICAchooser featdir melodicdir runmode [options]
+usage: PICAchooser featdir melodicdir runmode [options]
 
-    A program to review (and alter) melodic component selections.
+A program to review (and alter) melodic component selections.
 
-    positional arguments:
-      featdir               The FEAT directory associated with this MELODIC run.
-      melodicdir            The .ica directory for this MELODIC run.
-      runmode               Analysis mode. Valid choices are "melodic", "AROMA", and "FIX"In melodic
-                            mode, the default output file is named "badcomponents.txt" and will be
-                            written to MELODICDIR as comma separated integers. In AROMA mode, the
-                            file "classified_motion_ICs.txt" must exist in the parent of MELODICDIR;
-                            by default the output will be written to
-                            "classified_motion_ICs_revised.txt" in the same directory. In FIX mode,
-                            the default output file is named "hand_labels_noise.txt" and will be
-                            written to MELODICDIR as comma separated integers with square brackets
-                            surrounding the line.
+positional arguments:
+  featdir               The FEAT directory associated with this MELODIC run.
+  melodicdir            The .ica directory for this MELODIC run.
+  runmode               Analysis mode. Valid choices are "melodic", "AROMA", and "FIX". In
+                        melodic mode, the default output file is named "badcomponents.txt" and
+                        will be written to MELODICDIR as comma separated integers. In AROMA mode,
+                        the file "classified_motion_ICs.txt" must exist in the parent of
+                        MELODICDIR; by default the output will be written to
+                        "classified_motion_ICs_revised.txt" in the same directory. In FIX mode,
+                        the default output file is named "hand_labels_noise.txt" and will be
+                        written to MELODICDIR as comma separated integers with square brackets
+                        surrounding the line.
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      --outputfile OUTPUTFILE
-                            The name of the newly written bad component file (this overrides the
-                            default output file name).
-      --displaythresh DISPLAYTHRESH
-                            z threshold for the displayed ICA components. Default is 2.3.
+optional arguments:
+  -h, --help            show this help message and exit
+  --outputfile OUTPUTFILE
+                        The name of the newly written bad component file (this overrides the
+                        default output file name).
+  --displaythresh DISPLAYTHRESH
+                        z threshold for the displayed ICA components. Default is 2.3.
 
 
 Controls
