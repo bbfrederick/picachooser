@@ -119,7 +119,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords=['fMRI', 'correlation', 'RIPTiDe', 'noise'],
+    keywords=['fMRI', 'MELODIC', 'ICA', 'AROMA', 'FIX'],
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
