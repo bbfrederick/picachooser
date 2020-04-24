@@ -21,8 +21,6 @@
 #
 from __future__ import print_function, division
 
-import matplotlib.pyplot as pl
-
 import numpy as np
 import scipy as sp
 import scipy.special as sps
@@ -802,13 +800,6 @@ def findmaxlag_gauss(thexcorr_x, thexcorr_y, lagmin, lagmax, widthlimit,
     if debug or displayplots:
         print("init to final: maxval", maxval_init, maxval, ", maxlag:", maxlag_init, maxlag, ", width:", maxsigma_init,
               maxsigma)
-    if displayplots and refine and (maskval != 0.0):
-        fig = pl.figure()
-        ax = fig.add_subplot(111)
-        ax.set_title('Data and fit')
-        hiresx = np.arange(X[0], X[-1], (X[1] - X[0]) / 10.0)
-        pl.plot(X, data, 'ro', hiresx, gauss_eval(hiresx, np.array([maxval, maxlag, maxsigma])), 'b-')
-        pl.show()
     return maxindex, maxlag, maxval, maxsigma, maskval, failreason, fitstart, fitend
 
 
@@ -1093,13 +1084,6 @@ def findmaxlag_gauss_rev(thexcorr_x, thexcorr_y, lagmin, lagmax, widthlimit,
     if debug or displayplots:
         print("init to final: maxval", maxval_init, maxval, ", maxlag:", maxlag_init, maxlag, ", width:", maxsigma_init,
               maxsigma)
-    if displayplots and refine and (maskval != 0.0):
-        fig = pl.figure()
-        ax = fig.add_subplot(111)
-        ax.set_title('Data and fit')
-        hiresx = np.arange(X[0], X[-1], (X[1] - X[0]) / 10.0)
-        pl.plot(X, data, 'ro', hiresx, gauss_eval(hiresx, np.array([maxval, maxlag, maxsigma])), 'b-')
-        pl.show()
     return maxindex, maxlag, flipfac * maxval, maxsigma, maskval, failreason, peakstart, peakend
 
 
@@ -1229,13 +1213,6 @@ def findmaxlag_quad(thexcorr_x, thexcorr_y, lagmin, lagmax, widthlimit,
     if debug or displayplots:
         print("init to final: maxval", maxval_init, maxval, ", maxlag:", maxlag_init, maxlag, ", width:", maxsigma_init,
               maxsigma)
-    if displayplots and refine and (maskval != 0.0):
-        fig = pl.figure()
-        ax = fig.add_subplot(111)
-        ax.set_title('Data and fit')
-        hiresx = np.arange(X[0], X[-1], (X[1] - X[0]) / 10.0)
-        pl.plot(X, data, 'ro', hiresx, gauss_eval(hiresx, np.array([maxval, maxlag, maxsigma])), 'b-')
-        pl.show()
     return maxindex, maxlag, maxval, maxsigma, maskval, failreason, 0, 0
 
 
@@ -1552,21 +1529,6 @@ def phaseanalysis(firstharmonic, displayplots=False):
     analytic_signal = hilbert(firstharmonic)
     amplitude_envelope = np.abs(analytic_signal)
     instantaneous_phase = np.angle(analytic_signal)
-    if displayplots:
-        print('making plots')
-        fig = pl.figure()
-        ax1 = fig.add_subplot(311)
-        ax1.set_title('Analytic signal')
-        X = np.linspace(0.0, 1.0, num=len(firstharmonic))
-        pl.plot(X, analytic_signal.real, 'k', X, analytic_signal.imag, 'r')
-        ax2 = fig.add_subplot(312)
-        ax2.set_title('Phase')
-        pl.plot(X, instantaneous_phase, 'g')
-        ax3 = fig.add_subplot(313)
-        ax3.set_title('Amplitude')
-        pl.plot(X, amplitude_envelope, 'b')
-        pl.show()
-        pl.savefig('phaseanalysistest.jpg')
     instantaneous_phase = np.unwrap(instantaneous_phase)
     return instantaneous_phase, amplitude_envelope
 
