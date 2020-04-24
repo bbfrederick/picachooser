@@ -1,6 +1,6 @@
 + Fix the version numbers in files:
 
-    vi setup.py PICAchooser/version.py VERSION INSTALL.rst
+    vi setup.py PICAchooser/version.py VERSION INSTALL.rst Dockerfile
 
     setup.py
         search for version=
@@ -14,6 +14,9 @@
     INSTALL.rst
         search for '(currently'
 
+    Dockerfile
+        search for 'org.label-schema.schema-version='
+
 
 + Edit CHANGELOG.md
 
@@ -21,12 +24,12 @@
 
 + Create a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.0.0 -m "v1.0.0"
+    git tag -a v1.0.0rc1 -m "v1.0.0rc1"
  
 
 + Push the tag to github:
 
-    git push origin v1.0.0
+    git push origin v1.0.0rc1
 
 
 + Edit the release notes on github
