@@ -23,13 +23,12 @@ from __future__ import print_function, division
 
 import numpy as np
 import scipy as sp
-import matplotlib.pyplot as plt
 
 
 from scipy.stats import johnsonsb, kurtosis, kurtosistest
 
-import rapidtide.io as tide_io
-import rapidtide.fit as tide_fit
+import PICAchooser.io as io
+import PICAchooser.fit as fit
 
 # ---------------------------------------- Global constants -------------------------------------------
 defaultbutterorder = 6
@@ -157,14 +156,6 @@ def fitjsbpdf(thehist, histlen, thedata, displayplots=False, nozero=False):
     johnsonsbvals *= corrfac
     johnsonsbvals[0] = zeroterm
 
-    if displayplots:
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.set_title('fitjsbpdf: histogram')
-        plt.plot(thestore[0, :], thestore[1, :], 'b',
-                thestore[0, :], johnsonsbvals, 'r')
-        plt.legend(['histogram', 'fit to johnsonsb'])
-        plt.show()
     return np.append(params, np.array([zeroterm]))
 
 
@@ -234,7 +225,7 @@ def rfromp(fitfile, thepercentiles, numbins=1000):
     -------
 
     """
-    thefit = np.array(tide_io.readvecs(fitfile)[0]).astype('float64')
+    thefit = np.array(io.readvecs(fitfile)[0]).astype('float64')
     print('thefit = ', thefit)
     return getfracvalsfromfit(thefit, thepercentiles, numbins=1000, displayplots=True)
 
@@ -371,7 +362,7 @@ def gethistprops(indata, histlen, refine=False, therange=None, pickleft=False, p
         numbins += 1
     peakwidth = (thestore[0, peakindex + numbins] - thestore[0, peakindex]) * 2.0
     if refine:
-        peakheight, peaklag, peakwidth = tide_fit.gaussfit(peakheight, peaklag, peakwidth, thestore[0, :], thestore[1, :])
+        peakheight, peaklag, peakwidth = fit.gaussfit(peakheight, peaklag, peakwidth, thestore[0, :], thestore[1, :])
     return peaklag, peakheight, peakwidth
 
 
@@ -437,18 +428,11 @@ def makeandsavehistogram(indata, histlen, endtrim, outname,
         numbins += 1
     peakwidth = (thestore[0, peakindex + numbins] - thestore[0, peakindex]) * 2.0
     if refine:
-        peakheight, peaklag, peakwidth = tide_fit.gaussfit(peakheight, peaklag, peakwidth, thestore[0, :], thestore[1, :])
+        peakheight, peaklag, peakwidth = fit.gaussfit(peakheight, peaklag, peakwidth, thestore[0, :], thestore[1, :])
     centerofmass = np.sum(thestore[0, :] * thestore[1, :]) / np.sum(thestore[1, :])
-    tide_io.writenpvecs(np.array([centerofmass]), outname + '_centerofmass.txt')
-    tide_io.writenpvecs(np.array([peaklag]), outname + '_peak.txt')
-    tide_io.writenpvecs(thestore, outname + '.txt')
-    if displayplots:
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.set_title(displaytitle)
-        plt.plot(thestore[0, :(-1 - endtrim)], thestore[1, :(-1 - endtrim)])
-        plt.show()
-
+    io.writenpvecs(np.array([centerofmass]), outname + '_centerofmass.txt')
+    io.writenpvecs(np.array([peaklag]), outname + '_peak.txt')
+    io.writenpvecs(thestore, outname + '.txt')
 
 def symmetrize(a, antisymmetric=False, zerodiagonal=False):
     """
@@ -539,19 +523,6 @@ def getfracvals(datamat, thefracs, numbins=200, displayplots=False, nozero=False
         maskmat = datamat
     (meanhist, bins) = np.histogram(maskmat, bins=numbins, range=(themin, themax))
     cummeanhist = np.cumsum(meanhist)
-    if displayplots:
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.set_title('cumulative mean sum of histogram')
-        plt.plot(bins[-numbins:], cummeanhist[-numbins:])
-        plt.show()
-    for thisfrac in thefracs:
-        target = cummeanhist[numbins - 1] * thisfrac
-        thevals.append(0.0)
-        for i in range(0, numbins):
-            if cummeanhist[i] >= target:
-                thevals[-1] = bins[i]
-                break
     return thevals
 
 
@@ -580,15 +551,6 @@ def getfracvalsfromfit_old(histfit, thefracs, numbins=2000, displayplots=False):
     cummeanhist = histfit[-1] + (1.0 - histfit[-1]) * johnsonsb.cdf(bins, histfit[0], histfit[1], histfit[2],
                                                                     histfit[3])
     thevals = []
-    if displayplots:
-        fig = plt.figure()
-        ax = fig.add_subplot(211)
-        ax.set_title('probability histogram')
-        plt.plot(bins[-numbins:], meanhist[-numbins:])
-        ax = fig.add_subplot(212)
-        ax.set_title('cumulative mean sum of histogram')
-        plt.plot(bins[-numbins:], cummeanhist[-numbins:])
-        plt.show()
     for thisfrac in thefracs:
         target = cummeanhist[numbins - 1] * thisfrac
         thevals.append(0.0)
@@ -615,17 +577,6 @@ def getfracvalsfromfit(histfit, thefracs, numbins=2000, displayplots=True):
     """
     # print('entering getfracvalsfromfit: histfit=',histfit, ' thefracs=', thefracs)
     thedist = johnsonsb(histfit[0], histfit[1], histfit[2], histfit[3])
-    # print('froze the distribution')
-    if displayplots:
-        themin = 0.001
-        themax = 0.999
-        bins = np.arange(themin, themax, (themax - themin) / numbins)
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.set_title('probability histogram')
-        plt.plot(bins, johnsonsb.ppf(thefracs, histfit[0], histfit[1], histfit[2], histfit[3]))
-        plt.show()
-    # thevals = johnsonsb.ppf(thefracs, histfit[0], histfit[1], histfit[2], histfit[3])
     thevals = thedist.ppf(thefracs)
     return thevals
 
