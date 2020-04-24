@@ -1,10 +1,6 @@
 numpy>=1.16
+pillow
 scipy
 pandas
-scikit-image
-scikit-learn
 nibabel
-matplotlib
-pyfftw
 pyqtgraph
-statsmodels

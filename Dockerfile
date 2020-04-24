@@ -77,10 +77,6 @@ RUN conda install -y python=3.7.4 \
                      pip=19.3.1 \
                      scipy=1.4.1 \
                      numpy=1.17.3 \
-                     matplotlib=3.1.2 \
-                     statsmodels=0.10.2 \
-                     scikit-image=0.16.2 \
-                     scikit-learn=0.22 \
                      pillow=7.0.0 \
                      nibabel=2.5.1 \
                      pandas=0.25.3 \
@@ -96,11 +92,6 @@ RUN df -h
 RUN useradd -m -s /bin/bash -G users PICAchooser
 WORKDIR /home/PICAchooser
 ENV HOME="/home/PICAchooser"
-
-
-# Precaching fonts, set 'Agg' as default backend for matplotlib
-RUN python -c "from matplotlib import font_manager" && \
-    sed -i 's/\(backend *: \).*$/\1Agg/g' $( python -c "import matplotlib; print(matplotlib.matplotlib_fname())" )
 
 
 # Installing PICAchooser
