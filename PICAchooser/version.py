@@ -36,22 +36,22 @@ on functional imaging data to find time lagged correlations between the
 voxelwise time series and other time series.
 To get started using these components in your own software, please go to the
 repository README_.
-.. _README: https://github.com/bbfrederick/PICAchooser/blob/master/README.md
+.. _README: https://github.com/bbfrederick/picachooser/blob/master/README.md
 License
 =======
-``PICAchooser`` is licensed under the terms of the Apache 2 license. See the file
+``picachooser`` is licensed under the terms of the Apache 2 license. See the file
 "LICENSE" for information on the history of this software, terms & conditions
 for usage, and a DISCLAIMER OF ALL WARRANTIES.
 All trademarks referenced herein are property of their respective holders.
 Copyright (c) 2016-2018, Blaise Frederick, McLean Hospital Brain Imaging Center
 """
 
-NAME = "PICAchooser"
+NAME = "picachooser"
 MAINTAINER = "Blaise Frederick"
 MAINTAINER_EMAIL = "blaise.frederick@gmail.com"
 DESCRIPTION = description
 LONG_DESCRIPTION = long_description
-URL = "http://github.com/bbfrederick/PICAchooser"
+URL = "http://github.com/bbfrederick/picachooser"
 DOWNLOAD_URL = ""
 LICENSE = "Apache"
 AUTHOR = "Blaise Frederick"
@@ -61,5 +61,5 @@ MAJOR = _version_major
 MINOR = _version_minor
 MICRO = _version_micro
 VERSION = __version__
-PACKAGE_DATA = {'PICAchooser': [pjoin('data', '*')]}
+PACKAGE_DATA = {'picachooser': [pjoin('data', '*')]}
 REQUIRES = ['numpy', 'scipy', 'pandas', 'pillow', 'nibabel', 'pyqtgraph']

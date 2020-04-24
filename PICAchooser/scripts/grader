@@ -39,7 +39,7 @@ import os
 import argparse
 import pandas as pd
 from scipy import fftpack
-import grader.LightboxItem as lb
+import picachooser.LightboxItem as lb
 
 
 hammingwindows = {}
@@ -458,9 +458,9 @@ def main():
 
     # make the main window
     if runmode == 'timecourse':
-        import grader.graderTemplate as uiTemplate
+        import picachooser.graderTemplate as uiTemplate
     elif runmode == 'aroma':
-        import grader.aromaviewTemplate as uiTemplate
+        import picachooser.aromaviewTemplate as uiTemplate
     else:
         print('illegal runmode')
         sys.exit()

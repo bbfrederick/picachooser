@@ -27,8 +27,8 @@ import scipy as sp
 
 from scipy.stats import johnsonsb, kurtosis, kurtosistest
 
-import PICAchooser.io as io
-import PICAchooser.fit as fit
+import picachooser.io as io
+import picachooser.fit as fit
 
 # ---------------------------------------- Global constants -------------------------------------------
 defaultbutterorder = 6

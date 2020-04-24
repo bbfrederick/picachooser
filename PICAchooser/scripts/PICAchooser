@@ -37,9 +37,9 @@ import sys
 import os
 import argparse
 from scipy import fftpack
-import PICAchooser.LightboxItem as lb
-import PICAchooser.io as io
-import PICAchooser.colormaps as cm
+import picachooser.LightboxItem as lb
+import picachooser.io as io
+import picachooser.colormaps as cm
 
 
 hammingwindows = {}
@@ -559,7 +559,7 @@ def main():
     whichcomponent = 0
 
     # make the main window
-    import PICAchooser.PICAchooserTemplate as uiTemplate
+    import picachooser.picachooserTemplate as uiTemplate
 
     app = QtGui.QApplication([])
     print("setting up output window")

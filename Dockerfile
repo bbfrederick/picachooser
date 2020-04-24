@@ -99,10 +99,10 @@ ENV HOME="/home/picachooser"
 
 
 # Installing PICAchooser
-COPY . /src/PICAchooser
-RUN cd /src/PICAchooser && \
+COPY . /src/picachooser
+RUN cd /src/picachooser && \
     python setup.py install && \
-    rm -rf /src/PICAchooser/build /src/PICAchooser/dist
+    rm -rf /src/picachooser/build /src/picachooser/dist
 
 
 ENV IS_DOCKER_8395080871=1
@@ -122,6 +122,6 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.description="PICAchooser - a lightweight GUI tool for sorting MELODIC ICA components" \
       org.label-schema.url="http://nirs-fmri.net" \
       org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="https://github.com/bbfrederick/PICAchooser" \
+      org.label-schema.vcs-url="https://github.com/bbfrederick/picachooser" \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0.0rc1"

@@ -41,9 +41,9 @@ except ImportError:
     PILexists = False
 
 
-import PICAchooser.io as io
-import PICAchooser.stats as stats
-import PICAchooser.colormaps as cm
+import picachooser.io as io
+import picachooser.stats as stats
+import picachooser.colormaps as cm
 
 
 def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):

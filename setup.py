@@ -27,23 +27,23 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-modules_list = ['PICAchooser/graderTemplate',
-                'PICAchooser/PICAchooserTemplate',
-                'PICAchooser/io',
-                'PICAchooser/fit',
-                'PICAchooser/stats',
-                'PICAchooser/colormaps',
-                'PICAchooser/LightboxItem']
+modules_list = ['picachooser/graderTemplate',
+                'picachooser/picachooserTemplate',
+                'picachooser/io',
+                'picachooser/fit',
+                'picachooser/stats',
+                'picachooser/colormaps',
+                'picachooser/LightboxItem']
 
-script_list = ['PICAchooser/scripts/PICAchooser_dispatcher',
-               'PICAchooser/scripts/grader',
-               'PICAchooser/scripts/PICAchooser']
+script_list = ['picachooser/scripts/picachooser_dispatcher',
+               'picachooser/scripts/grader',
+               'picachooser/scripts/PICAchooser']
 
 
 def update_gittag_py():
     if not path.isdir(".git"):
         print("This does not appear to be a Git repository.")
-        f = open("PICAchooser/_gittag.py", "w")
+        f = open("picachooser/_gittag.py", "w")
         f.write(GITTAG_PY % "UNKNOWN-UNKNOWN")
         f.close()
         return
@@ -52,19 +52,19 @@ def update_gittag_py():
                               "--tags", "--dirty", "--always"],
                              stdout=subprocess.PIPE)
     except EnvironmentError:
-        print("unable to run git, leaving PICAchooser/_gittag.py alone")
+        print("unable to run git, leaving picachooser/_gittag.py alone")
         return
     stdout = p.communicate()[0]
     if p.returncode != 0:
-        print("unable to run git, leaving PICAchooser/_gittag.py alone")
+        print("unable to run git, leaving picachooser/_gittag.py alone")
         return
-    # we use tags like "python-PICAchooser-0.5", so strip the prefix
+    # we use tags like "python-picachooser-0.5", so strip the prefix
     if sys.version_info[0] == 3:
         ver = str(stdout.strip(), "utf-8")
     else:
         ver = stdout.strip()
     print(ver)
-    f = open("PICAchooser/_gittag.py", "w")
+    f = open("picachooser/_gittag.py", "w")
     f.write(GITTAG_PY % ver)
     f.close()
 
@@ -73,7 +73,7 @@ update_gittag_py()
 
 
 setup(
-    name='PICAchooser',
+    name='picachooser',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -84,7 +84,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/bbfrederick/PICAchooser',
+    url='https://github.com/bbfrederick/picachooser',
 
     # Author details
     author="Blaise Frederick",
