@@ -1,9 +1,6 @@
 # Use Ubuntu 18.04 LTS
 FROM ubuntu:18.04
 
-# Pre-cache neurodebian key
-COPY ./dockerbuild/neurodebian.gpg /usr/local/etc/neurodebian.gpg
-
 # Prepare environment
 RUN df -h
 RUN apt-get update
@@ -22,7 +19,7 @@ RUN apt-get install -y --no-install-recommends \
                     libx11-xcb1 \
                     lsb-release \
                     git
-#RUN apt-get install --reinstall libxcb-xinerama0
+RUN apt-get install --reinstall libxcb-xinerama0
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #ENV FSL_DIR="/usr/share/fsl/5.0" \
@@ -66,12 +63,13 @@ ENV PATH="/usr/local/miniconda/bin:$PATH" \
     LC_ALL="C.UTF-8" \
     PYTHONNOUSERSITE=1
 
+RUN conda install conda-build
 
 # Installing precomputed python packages
 RUN df -h
 RUN conda config --add channels conda-forge
 RUN df -h
-RUN conda clean --all
+RUN conda build purge-all
 RUN df -h
 RUN conda install -y python=3.7.4 \
                      pip=19.3.1 \
@@ -89,9 +87,9 @@ RUN df -h
 
 
 # Create a shared $HOME directory
-RUN useradd -m -s /bin/bash -G users PICAchooser
-WORKDIR /home/PICAchooser
-ENV HOME="/home/PICAchooser"
+RUN useradd -m -s /bin/bash -G users picachooser
+WORKDIR /home/picachooser
+ENV HOME="/home/picachooser"
 
 
 # Installing PICAchooser
@@ -108,13 +106,13 @@ WORKDIR /tmp/
 ENTRYPOINT ["/usr/local/miniconda/bin/PICAchooser_dispatcher"]
 
 # set a non-root user
-USER PICAchooser
+USER picachooser
 
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
 LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.name="PICAchooser" \
+      org.label-schema.name="picachooser" \
       org.label-schema.description="PICAchooser - a lightweight GUI tool for sorting MELODIC ICA components" \
       org.label-schema.url="http://nirs-fmri.net" \
       org.label-schema.vcs-ref=$VCS_REF \
