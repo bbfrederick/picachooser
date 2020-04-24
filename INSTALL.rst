@@ -70,10 +70,7 @@ package directory and do a git pull first:
 
 Usage
 -----
-Run PICAchooser to look at a series of timecourses and assign them a rating:
+Run PICAchooser to look at a series of independent components and assign them a rating:
 ::
 
-    tidepool
-
-
-(then select the file rapidtide/data/examples/dst/dgsr_lagtimes.nii.gz to load the dataset):
+    PICAchooser FEATDIRECTORY --melodicdir MELODICDIRECTORY
