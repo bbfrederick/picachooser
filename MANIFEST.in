@@ -1,2 +1,2 @@
-recursive-include grader *.py
-recursive-include grader/scripts *
+recursive-include PICAchooser *.py
+recursive-include PICAchooser/scripts *
