@@ -10,24 +10,24 @@ Usage
 =====
 
 .. code:: bash
-    usage: PICAchooser FEATDIR [options]
+usage: PICAchooser FEATDIR [options]
 
-    A program to review (and alter) melodic component selections.
+A program to review (and alter) melodic component selections.
 
-    positional arguments:
-      featdir               The FEAT directory associated with this MELODIC run.
+positional arguments:
+  featdir               The FEAT directory associated with this MELODIC run.
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      --melodicdir MELODICDIR
-                            The location of the MELODIC directory to classified.
-      --aromadir AROMADIR   The location of the AROMA directory.
-      --fixmelodicdir FIXMELODICDIR
-                            The location of the MELODIC directory to be used for FIX.
-      --outputfile OUTPUTFILE
-                            The name of the new component file (if not specified, it will be put in the appropriate directory with a standard name).
-      --displaythresh DISPLAYTHRESH
-                            z threshold for the displayed ICA components. Default is 2.3.
+optional arguments:
+  -h, --help            show this help message and exit
+  --melodicdir MELODICDIR
+                        The location of the MELODIC directory to classified.
+  --aromadir AROMADIR   The location of the AROMA directory.
+  --fixmelodicdir FIXMELODICDIR
+                        The location of the MELODIC directory to be used for FIX.
+  --outputfile OUTPUTFILE
+                        The name of the new component file (if not specified, it will be put in the appropriate directory with a standard name).
+  --displaythresh DISPLAYTHRESH
+                        z threshold for the displayed ICA components. Default is 2.3.
 
 
 
