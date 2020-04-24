@@ -74,3 +74,118 @@ Run PICAchooser to look at a series of independent components and assign them a 
 ::
 
     PICAchooser FEATDIRECTORY --melodicdir MELODICDIRECTORY
+
+
+Docker installation
+===================
+As of 1.0.0rc2, there is now a Docker container with a full PICAchooser installation.  To use this, 
+
+first make sure you have docker installed and properly configured, then run the following:
+::
+
+    docker pull fredericklab/picachooser:VERSIONNUMBER
+
+
+This it will download the docker container from dockerhub.
+It's around 2GB, so it may take some time, but it caches the file locally, so you won't have to do this again
+unless the container updates.  To use a particular version, replace VERSIONNUMBER with the version of the
+with container you want (currently the newest version is 1.0.0rc2).
+
+If you like to live on the edge, just use:
+::
+
+    docker pull fredericklab/picachooser:latest
+
+
+This will use the most recent version on dockerhub.  
+
+Now that the file is downloaded, you can run any picachooser command in the Docker container.  For example, to run 
+PICAchooser itself, you would use the following command (you can do this all in one step - it will just integrate the
+first pull into the run time if the version you request hasn't already been downloaded).
+
+Docker runs completely in it's own selfcontained environment.  If you want to be able to interact with disks outside of
+container, you map the volume to a mount point in the container using the --volume=EXTERNALDIR:MOUNTPOINT[,ANOTHERDIR:ANOTHERMOUNTPOINT]
+option to docker.
+
+One complication of Docker - if you're running a program that displays anything (and we do), 
+you'll have to add a few extra arguments to the docker call.  Docker is a little weird about X forwarding - the easiest thing to 
+do is find the IP address of the machine you're running on (lets call it MYIPADDRESS), and do the following:
+
+::
+
+    xhost + 
+
+This disables X11 security - this is almost certainly not the best thing to do, but I don't have a better solution
+at this time, and it works.
+
+If you're on a Mac using Xquartz, prior to this you'll also have to do three more things.
+
+1) In Xquartz, go into the security preferences, and make sure "Allow connections from network hosts" is checked.
+2) Tell Xquartz to listen for TCP connections (this is not the default).  Go to a terminal window and type:
+
+::
+
+    defaults write org.macosforge.xquartz.X11 nolisten_tcp 0
+
+3) Log out and log back in again (you only need to do this once - it will stay that way until you change it.)
+
+
+Then you should be good to go, with the following command:
+::
+
+    docker run \
+        --network host\
+        --volume=INPUTDIRECTORY:/data_in,OUTPUTDIRECTORY:/data_out \
+        -it \
+        -e DISPLAY=MYIPADDRESS:0 \
+        -u picachooser \
+        fredericklab/picachooser:VERSIONNUMBER \
+            PICAchooser \
+                /data_in/FEATDIRECTORY \
+                --melodicdir /data_out/MELODICDIRECTORY
+
+You can replace the PICAchooser blah blah blah command with any program in the package (currently only "grader", which classifies
+timecourses) - after the fredericklab/picachooser:latest, 
+just specify the command and arguments as you usually would.
+
+
+Singularity installation
+========================
+
+Many times you can't use Docker, because of security concerns.  Singularity, from LBL, offers containerized computing
+that runs entirely in user space, so the amount of mischief you can get up to is significantly less.  Singularity
+containers can be created from Docker containers as follows (stealing from the fMRIprep documentation):
+::
+
+    singularity build /my_images/picachooser-VERSIONNUMBER.simg docker://fredericklab/picachooser:VERSIONNUMBER
+
+
+Running the container is similar to Docker.  The "-B" option is used to bind filesystems to mountpoints in the container. 
+
+    singularity run \
+        --cleanenv \
+        -B INPUTDIRECTORY:/data_in,OUTPUTDIRECTORY:/data_out \
+        picachooser-VERSIONNUMBER.simg \
+            PICAchooser \
+                /data_in/FEATDIRECTORY \
+                --melodicdir /data_out/MELODICDIRECTORY
+
+
+To run a GUI application, you need to disable x security on your host (see comment about this above):
+
+::
+
+    xhost + 
+
+then set the display variable to import to the container:
+::
+
+    setenv SINGULARITY_DISPLAY MYIPADDRESS:0   (if you are using csh)
+
+or
+
+::
+
+    export SINGULARITY_DISPLAY="MYIPADDRESS:0" (if you are using sh/bash)
+
+then just run the gui command with the command given above.
