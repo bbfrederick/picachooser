@@ -523,6 +523,13 @@ def getfracvals(datamat, thefracs, numbins=200, displayplots=False, nozero=False
         maskmat = datamat
     (meanhist, bins) = np.histogram(maskmat, bins=numbins, range=(themin, themax))
     cummeanhist = np.cumsum(meanhist)
+    for thisfrac in thefracs:
+        target = cummeanhist[numbins - 1] * thisfrac
+        thevals.append(0.0)
+        for i in range(0, numbins):
+            if cummeanhist[i] >= target:
+                thevals[-1] = bins[i]
+                break
     return thevals
 
 
