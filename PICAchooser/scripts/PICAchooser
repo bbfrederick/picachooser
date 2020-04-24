@@ -319,13 +319,15 @@ def updateTimecourse():
     win.setWindowTitle(windowtitle)
 
     timecourse_ax.plot(thiscomponent['timeaxis'], thiscomponent['timecourse'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=1), clear=True)
+                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=1), clear=True)
+    timecourse_ax.setTitle('Independent component ' + str(whichcomponent + 1),)
 
     spectrum_ax.plot(thiscomponent['freqaxis'], thiscomponent['spectrum'],
                      stepMode=False,
                      fillLevel=0,
                      pen=pg.mkPen(pencolor, width=1),
                      clear=True)
+    spectrum_ax.setTitle('Magnitude spectrum of timecourse ' + str(whichcomponent + 1))
 
     spectop = 1.25 * np.max(thiscomponent['spectrum'])
     spectrum_ax.setYRange(0.0, spectop, padding=0)
@@ -581,7 +583,7 @@ def main():
     print('about to set up the spectrum')
     global spectrum_ax
     spectrumwin = ui.spectrum_graphicsView
-    spectrum_ax = spectrumwin.addPlot(title='Power spectrum of timecourse', labels={'left': 'Power (a.u.)', 'bottom': 'Frequency (Hz)'})
+    spectrum_ax = spectrumwin.addPlot(title='Magnitude spectrum of timecourse', labels={'left': 'Power (a.u.)', 'bottom': 'Frequency (Hz)'})
 
     global transmot_ax, rotmot_ax
     # set up the translational motion window
