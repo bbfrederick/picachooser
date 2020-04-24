@@ -385,34 +385,39 @@ def main():
     mainwin = None
     verbose = False
 
-    parser = argparse.ArgumentParser(description='A program to review (and alter) melodic component selections.')
+    parser = argparse.ArgumentParser(prog='PICAchooser',
+                                     description='A program to review (and alter) melodic component selections.',
+                                     usage='%(prog)s featdir melodicdir runmode [options]')
+
+
+    # Required arguments
     parser.add_argument(
         'featdir',
         type=lambda x: is_valid_dir(parser, x),
         help='The FEAT directory associated with this MELODIC run.',
         default=None)
 
-    runtype = parser.add_mutually_exclusive_group()
-    runtype.add_argument(
-        '--melodicdir',
+    parser.add_argument(
+        'melodicdir',
         type=lambda x: is_valid_dir(parser, x),
-        help='The location of the MELODIC directory to classified.',
-        default=None)
-    runtype.add_argument(
-        '--aromadir',
-        type=lambda x: is_valid_dir(parser, x),
-        help='The location of the AROMA directory.',
-        default=None)
-    runtype.add_argument(
-        '--fixmelodicdir',
-        type=lambda x: is_valid_dir(parser, x),
-        help='The location of the MELODIC directory to be used for FIX.',
+        help='The .ica directory for this MELODIC run.',
         default=None)
 
     parser.add_argument(
+        'runmode',
+        action='store',
+        type=str,
+        help=('Analysis mode.  Valid choices are "melodic", "AROMA", and "FIX".  '
+              'In melodic mode, the default output file is named "badcomponents.txt" and will be written to MELODICDIR as comma separated integers. '
+              'In AROMA mode, the file "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by default the output will be written to "classified_motion_ICs_revised.txt" in the same directory.  '
+              'In FIX mode, the default output file is named "hand_labels_noise.txt" and will be written to MELODICDIR as comma separated integers with square brackets surrounding the line.'),
+        default=None)
+
+    # optional arguments
+    parser.add_argument(
         '--outputfile',
         type=str,
-        help='The name of the new component file (if not specified, it will be put in the appropriate directory with a stadard name).',
+        help='The name of the newly written bad component file (this overrides the default output file name).',
         default=None)
     parser.add_argument(
         '--displaythresh',
@@ -420,25 +425,16 @@ def main():
         help='z threshold for the displayed ICA components.  Default is 2.3.',
         default=2.3)
 
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except SystemExit:
+        parser.print_help()
+        raise
 
-    if args.aromadir is not None:
-        runmode = 'aroma'
-    elif args.melodicdir is not None:
-        runmode = 'melodic'
-    elif args.fixmelodicdir is not None:
-        runmode = 'fix'
-    else:
-        print('cannot determine run mode - exiting')
-        sys.exit()
+    runmode = args.runmode
 
     # there are 3 modes at the moment - melodic, aroma, and fix
-    # if the mode is melodic, load ICA and feat files, and create a remove file with the 1,2,3... format named $MELODICDIR/'badcomponents.txt'
-    # if the mode is aroma, load ICA feat, and existing remove files, and create a new remove file with the 1,2,3... format named $AROMADIR/classified_motion_ICs_revised.txt
-    # if the mode is fix, load ICA feat, and existing remove files, and create a new remove file with the [1,2,3...] format named $FEATDIR/hand_labels_noise.txt
-    initfileexists = False
     if runmode == 'melodic':
-        melodicdir = args.melodicdir
         Removefile = os.path.join(args.melodicdir, 'badcomponents.txt')
         if not os.path.isfile(Removefile):
             print('cannot find existing removed component file at', Removefile, '- will create new one')
@@ -456,8 +452,8 @@ def main():
             print('will create new removed component file at', outputfile)
             initfileexists = True
     elif runmode == 'aroma':
-        melodicdir = os.path.join(args.aromadir, 'melodic.ica')
-        Removefile = os.path.join(args.aromadir, 'classified_motion_ICs.txt')
+        aromadir = os.path.dirname(args.melodicdir)
+        Removefile = os.path.join(aromadir, 'classified_motion_ICs.txt')
         if not os.path.isfile(Removefile):
             print('cannot find removed component file at', Removefile)
             sys.exit()
@@ -467,8 +463,7 @@ def main():
             outputfile = args.outputfile
         initfileexists = True
     elif runmode == 'fix':
-        melodicdir = args.fixmelodicdir
-        Removefile = os.path.join(args.fixmelodicdir, 'hand_labels_noise.txt')
+        Removefile = os.path.join(args.melodicdir, 'hand_labels_noise.txt')
         if not os.path.isfile(Removefile):
             print('cannot find existing removed component file at', Removefile, '- will create new one')
             if args.outputfile is None:
@@ -488,7 +483,7 @@ def main():
         print('illegal runmode', runmode, '- exiting')
         sys.exit()
 
-    ICfile, ICmask, BGfile, Funcfile, TCfile, Motionfile = findICAfiles(args.featdir, melodicdir)
+    ICfile, ICmask, BGfile, Funcfile, TCfile, Motionfile = findICAfiles(args.featdir, args.melodicdir)
 
     if verbose:
         print(ICfile)
