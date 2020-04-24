@@ -1,6 +1,6 @@
 #!/bin/csh -f
 
-docker build . -t picachooser
+docker build . -t fredericklab/picachooser:1.0.0rc2
 
 docker run -it picachooser bash
 
