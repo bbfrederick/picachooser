@@ -30,11 +30,13 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 modules_list = ['PICAchooser/graderTemplate',
                 'PICAchooser/PICAchooserTemplate',
                 'PICAchooser/io',
+                'PICAchooser/fit',
                 'PICAchooser/stats',
                 'PICAchooser/colormaps',
                 'PICAchooser/LightboxItem']
 
-script_list = ['PICAchooser/scripts/grader',
+script_list = ['PICAchooser/scripts/PICAchooser_dispatcher',
+               'PICAchooser/scripts/grader',
                'PICAchooser/scripts/PICAchooser']
 
 
