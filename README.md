@@ -34,11 +34,14 @@ optional arguments:
                         z threshold for the displayed ICA components. Default is 2.3.
 ```
 
+You'll then get a window that looks like this:
+
+![PICAchooser screenshot](https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot.png)
 
 # Controls
 
 
-To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want.
+To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want. Components to be discarded are in red, ones to be kept are in green.
 
 To go to the next (or previous) component, press the right (or left) arrow.  You'll wrap around if you hit the end.
 
