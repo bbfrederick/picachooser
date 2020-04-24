@@ -1,14 +1,16 @@
 Required dependencies
 =====================
 
-Grader requires some external libraries to be installed first:
+PICAchooser requires some external libraries to be installed first:
 
 -  Python 3.x
 -  numpy>=1.16
 -  scipy
 -  pandas
+-  nibabel
 -  pyqt5
 -  pyqtgraph
+-  pillow
 
 
 Installing Python
@@ -18,7 +20,7 @@ The simplest way BY FAR to get this all done is to use Anaconda python
 from Continuum Analytics. It’s a free, curated scientific Python
 distribution that is easy to maintain and takes a lot of headaches out
 of maintaining a distribution. It also already comes with almost all of the
-dependancies for grader installed by default. You can get it here:
+dependancies for PICAchooser installed by default. You can get it here:
 https://www.continuum.io. You should download the most recent Python 3 version.
 
 After installing Anaconda python, install the remaining dependency
@@ -34,13 +36,13 @@ Then install the additional dependencies:
 
 ::
 
-   conda install pyqtgraph
+   conda install pyqtgraph nibabel pillow
 
 
 
 Done.
 
-Installing grader
+Installing PICAchooser
 --------------------
 
 Once you have installed the prerequisites, cd into the package
@@ -57,7 +59,7 @@ them from the command line then (after rehashing).
 Updating
 --------
 
-If you’ve previously installed grader and want to update, cd into the
+If you’ve previously installed PICAchooser and want to update, cd into the
 package directory and do a git pull first:
 
 ::
@@ -68,7 +70,7 @@ package directory and do a git pull first:
 
 Usage
 -----
-Run grader to look at a series of timecourses and assign them a rating:
+Run PICAchooser to look at a series of timecourses and assign them a rating:
 ::
 
     tidepool
