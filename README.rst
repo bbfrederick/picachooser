@@ -9,9 +9,8 @@ Basically, PICAchooser loads the results of a MELODIC ICA run and lets you step 
 Usage
 =====
 
-::
-    usage: PICAchooser [-h] [--melodicdir MELODICDIR | --aromadir AROMADIR | --fixmelodicdir FIXMELODICDIR] [--outputfile OUTPUTFILE] [--displaythresh DISPLAYTHRESH]
-                       featdir
+.. code:: bash
+    usage: PICAchooser FEATDIR [options]
 
     A program to review (and alter) melodic component selections.
 
@@ -26,7 +25,7 @@ Usage
       --fixmelodicdir FIXMELODICDIR
                             The location of the MELODIC directory to be used for FIX.
       --outputfile OUTPUTFILE
-                            The name of the new component file (if not specified, it will be put in the appropriate directory with a stadard name).
+                            The name of the new component file (if not specified, it will be put in the appropriate directory with a standard name).
       --displaythresh DISPLAYTHRESH
                             z threshold for the displayed ICA components. Default is 2.3.
 
