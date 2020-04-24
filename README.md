@@ -50,9 +50,8 @@ Press the escape key at any time to save the current version of the component li
 
 Options
 =======
-If you invoke PICAchooser with the --melodicdir MELODICDIR option, it just treats it as an ordinary melodic analysis for you to hand tag.  By default, it will write out a file called
+--existingfile lets you read in a bad component file from anywhere to use as a starting point in your classification.  This is the normal behavior in aroma mode, but you can do it in any mode with this flag.
 
-If you invoke PICAchooser with the --fixmelodicdir option, it makes a hand labelling file in the appropriate format with the appropriate name, if you’re making a training set.
+--outputdir lets you write the bad component file anywhere you want, rather than just the default location.
 
-And if you invoke with the --aromadir option, it displays what components AROMA flagged and lets you change the selections.
-
+--displaythresh sets the z-threshold for the component maps.
