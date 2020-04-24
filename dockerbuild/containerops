@@ -4,6 +4,8 @@ docker build . -t picachooser
 
 docker run -it picachooser bash
 
+docker push fredericklab/picachooser:1.0.0rc2
+
 # allow network connections in Xquartz Security settings
 xhost +
 xhost +si:localuser:picachooser
