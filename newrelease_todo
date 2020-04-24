@@ -1,11 +1,11 @@
 + Fix the version numbers in files:
 
-    vi setup.py grader/version.py VERSION INSTALL.rst
+    vi setup.py PICAchooser/version.py VERSION INSTALL.rst
 
     setup.py
         search for version=
 
-    grader/version.py
+    PICAchooser/version.py
         search for "_version_major =", "_version_minor =", and "_version_micro ="
 
     VERSION
@@ -21,12 +21,12 @@
 
 + Create a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.9.0 -m "v1.9.0"
+    git tag -a v1.0.0 -m "v1.0.0"
  
 
 + Push the tag to github:
 
-    git push origin v1.9.0
+    git push origin v1.0.0
 
 
 + Edit the release notes on github
