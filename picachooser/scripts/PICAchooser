@@ -37,6 +37,7 @@ import sys
 import os
 import argparse
 from scipy import fftpack
+from scipy.stats import pearsonr
 import picachooser.LightboxItem as lb
 import picachooser.io as io
 import picachooser.colormaps as cm
@@ -349,7 +350,13 @@ def updateMotion():
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
-    #transmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxtrans']))
+    xtranscorr, xtranscorrp = pearsonr(motion['xtrans'], alldata[namelist[whichcomponent]]['timecourse'])
+    ytranscorr, ytranscorrp = pearsonr(motion['ytrans'], alldata[namelist[whichcomponent]]['timecourse'])
+    ztranscorr, ztranscorrp = pearsonr(motion['ztrans'], alldata[namelist[whichcomponent]]['timecourse'])
+    transcorrs = '{0:.2f}({1:.2f}), {2:.2f}({3:.2f}), {4:.2f}({5:.2f})'.format(xtranscorr,xtranscorrp, \
+                                                                         ytranscorr, ytranscorrp, \
+                                                                         ztranscorr, ztranscorrp)
+    print('transcorrs for component', whichcomponent + 1, transcorrs)
 
     curve4 = rotmot_ax.plot()
     curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
@@ -360,7 +367,13 @@ def updateMotion():
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
-    #rotmot_ax.addLegend(offset=(0.75 * motion['maxtime'], 0.75 * motion['maxrot']))
+    xrotcorr, xrotcorrp = pearsonr(motion['xrot'], alldata[namelist[whichcomponent]]['timecourse'])
+    yrotcorr, yrotcorrp = pearsonr(motion['yrot'], alldata[namelist[whichcomponent]]['timecourse'])
+    zrotcorr, zrotcorrp = pearsonr(motion['zrot'], alldata[namelist[whichcomponent]]['timecourse'])
+    rotcorrs = '{0:.2f}({1:.2f}), {2:.2f}({3:.2f}), {4:.2f}({5:.2f})'.format(xrotcorr,xrotcorrp, \
+                                                                         yrotcorr, yrotcorrp, \
+                                                                         zrotcorr, zrotcorrp)
+    print('rotcorrs for component', whichcomponent + 1, rotcorrs)
 
 
 def updateLightbox():
