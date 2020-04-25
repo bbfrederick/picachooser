@@ -78,7 +78,7 @@ Run PICAchooser to look at a series of independent components and assign them a 
 
 Docker installation
 ===================
-As of 1.0.0rc3, there is now a Docker container with a full PICAchooser installation.  To use this, 
+As of 1.0.0rc4, there is now a Docker container with a full PICAchooser installation.  To use this, 
 
 first make sure you have docker installed and properly configured, then run the following:
 ::

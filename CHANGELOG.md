@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.0.0rc4 (4/25/20)
+* Changed help lines to match actual runmode names
+* Calculate and print correlation coefficients (and p values) between current component and all motion timecourses
+
 ## Version 1.0.0rc3 (4/24/20)
 * Changed option specification
 * Added configuration file to set colors
