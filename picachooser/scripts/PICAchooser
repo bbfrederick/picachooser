@@ -510,7 +510,7 @@ def main():
             print('will create new removed component file at', outputfile)
             initfileexists = True
     else:
-        print('illegal runmode', runmode, '- exiting')
+        print('Illegal runmode', runmode, '.  Legal runmodes are "melodic", "aroma", and "fix".  Exiting')
         sys.exit()
 
     ICfile, ICmask, BGfile, Funcfile, TCfile, Motionfile = findICAfiles(args.featdir, args.melodicdir)
