@@ -415,6 +415,11 @@ def main():
 
     # optional arguments
     parser.add_argument(
+        '--initfile',
+        type=str,
+        help='The name of an initial bad component file (this overrides the default input file for AROMA).',
+        default=None)
+    parser.add_argument(
         '--outputfile',
         type=str,
         help='The name of the newly written bad component file (this overrides the default output file name).',
@@ -435,7 +440,10 @@ def main():
 
     # there are 3 modes at the moment - melodic, aroma, and fix
     if runmode == 'melodic':
-        Removefile = os.path.join(args.melodicdir, 'badcomponents.txt')
+        if args.initfile is not None:
+            Removefile = args.initfile
+        else:
+            Removefile = os.path.join(args.melodicdir, 'badcomponents.txt')
         if not os.path.isfile(Removefile):
             print('cannot find existing removed component file at', Removefile, '- will create new one')
             if args.outputfile is None:
@@ -453,7 +461,10 @@ def main():
             initfileexists = True
     elif runmode == 'aroma':
         aromadir = os.path.dirname(args.melodicdir)
-        Removefile = os.path.join(aromadir, 'classified_motion_ICs.txt')
+        if args.initfile is not None:
+            Removefile = args.initfile
+        else:
+            Removefile = os.path.join(aromadir, 'classified_motion_ICs.txt')
         if not os.path.isfile(Removefile):
             print('cannot find removed component file at', Removefile)
             sys.exit()
@@ -463,7 +474,10 @@ def main():
             outputfile = args.outputfile
         initfileexists = True
     elif runmode == 'fix':
-        Removefile = os.path.join(args.melodicdir, 'hand_labels_noise.txt')
+        if args.initfile is not None:
+            Removefile = args.initfile
+        else:
+            Removefile = os.path.join(args.melodicdir, 'hand_labels_noise.txt')
         if not os.path.isfile(Removefile):
             print('cannot find existing removed component file at', Removefile, '- will create new one')
             if args.outputfile is None:
