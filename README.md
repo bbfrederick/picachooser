@@ -2,7 +2,7 @@
 
 A simple gui tool for scanning through MELODIC ICA runs and quickly making decisions about which components to retain.  This tool does one thing, but it does it quickly and easily using only keyboard input.
 
-Basically, PICAchooser loads the results of a MELODIC ICA run and lets you step through the components, look at them, and decide if you want to keep them or discard them.  After you load the dataset, you get a window showing the active IC component (both the timecourse and the spatial map), the power spectrum of the active IC component, and the motion timecourses for comparison.  By default, components are flagged to be kept (and the timecourses are in green).
+Basically, PICAchooser loads the results of a MELODIC ICA run and lets you step through the components, look at them, and decide if you want to keep them or discard them.  After you load the dataset, you get a window showing the active IC component (both the timecourse and the spatial map), the power spectrum of the active IC component, and the motion timecourses for comparison.  By default, components are flagged to be kept (and the timecourses are in green[^*]).
 
 
 # Usage
@@ -15,18 +15,19 @@ A program to review (and alter) melodic component selections.
 positional arguments:
   featdir               The FEAT directory associated with this MELODIC run.
   melodicdir            The .ica directory for this MELODIC run.
-  runmode               Analysis mode. Valid choices are "melodic", "AROMA", and "FIX". In
-                        melodic mode, the default output file is named "badcomponents.txt" and
-                        will be written to MELODICDIR as comma separated integers. In AROMA mode,
-                        the file "classified_motion_ICs.txt" must exist in the parent of
-                        MELODICDIR; by default the output will be written to
-                        "classified_motion_ICs_revised.txt" in the same directory. In FIX mode,
-                        the default output file is named "hand_labels_noise.txt" and will be
-                        written to MELODICDIR as comma separated integers with square brackets
-                        surrounding the line.
+  runmode               Analysis mode. Valid choices are "melodic", "AROMA", and "FIX". In melodic
+                        mode, the default output file is named "badcomponents.txt" and will be
+                        written to MELODICDIR as comma separated integers. In AROMA mode, the file
+                        "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by
+                        default the output will be written to "classified_motion_ICs_revised.txt"
+                        in the same directory. In FIX mode, the default output file is named
+                        "hand_labels_noise.txt" and will be written to MELODICDIR as comma
+                        separated integers with square brackets surrounding the line.
 
 optional arguments:
   -h, --help            show this help message and exit
+  --initfile INITFILE   The name of an initial bad component file (this overrides the default
+                        input file for AROMA).
   --outputfile OUTPUTFILE
                         The name of the newly written bad component file (this overrides the
                         default output file name).
@@ -41,7 +42,7 @@ You'll then get a window that looks like this:
 # Controls
 
 
-To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want. Components to be discarded are in red, ones to be kept are in green.
+To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want. Components to be discarded are in red, ones to be kept are in green[^*].
 
 To go to the next (or previous) component, press the right (or left) arrow.  You'll wrap around if you hit the end.
 
@@ -55,3 +56,5 @@ Options
 --outputdir lets you write the bad component file anywhere you want, rather than just the default location.
 
 --displaythresh sets the z-threshold for the component maps.
+
+[^*]: To override the default keepcolor and discardcolor, edit the file ${HOME}/.picachooser.
