@@ -24,12 +24,12 @@
 
 + Create a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.0.0rc2 -m "v1.0.0rc2"
+    git tag -a v1.0.0rc3 -m "v1.0.0rc3"
  
 
 + Push the tag to github:
 
-    git push origin v1.0.0rc2
+    git push origin v1.0.0rc3
 
 
 + Edit the release notes on github
