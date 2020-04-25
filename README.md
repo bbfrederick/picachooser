@@ -34,11 +34,14 @@ optional arguments:
                         z threshold for the displayed ICA components. Default is 2.3.
 ```
 
+You'll then get a window that looks like this:
+
+![PICAchooser screenshot](https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot.png)
 
 # Controls
 
 
-To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want.
+To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want. Components to be discarded are in red, ones to be kept are in green.
 
 To go to the next (or previous) component, press the right (or left) arrow.  You'll wrap around if you hit the end.
 
@@ -47,9 +50,8 @@ Press the escape key at any time to save the current version of the component li
 
 Options
 =======
-If you invoke PICAchooser with the --melodicdir MELODICDIR option, it just treats it as an ordinary melodic analysis for you to hand tag.  By default, it will write out a file called
+--initfile lets you read in a bad component file from anywhere to use as a starting point in your classification.  This is the normal behavior in aroma mode, but you can do it in any mode with this flag, and it will override the aroma classifications.
 
-If you invoke PICAchooser with the --fixmelodicdir option, it makes a hand labelling file in the appropriate format with the appropriate name, if you’re making a training set.
+--outputdir lets you write the bad component file anywhere you want, rather than just the default location.
 
-And if you invoke with the --aromadir option, it displays what components AROMA flagged and lets you change the selections.
-
+--displaythresh sets the z-threshold for the component maps.
