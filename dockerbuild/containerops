@@ -1,10 +1,11 @@
 #!/bin/csh -f
 
-docker build . -t fredericklab/picachooser:1.0.0rc2
+docker build . -t fredericklab/picachooser:1.0.0rc3
+
+docker push fredericklab/picachooser:1.0.0rc3
+docker pull fredericklab/picachooser:1.0.0rc3
 
 docker run -it picachooser bash
-
-docker push fredericklab/picachooser:1.0.0rc2
 
 # allow network connections in Xquartz Security settings
 xhost +
@@ -17,7 +18,8 @@ docker run \
     -it \
     -e DISPLAY=192.168.7.146:0 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -u picachooser picachooser \
+    -u picachooser fredericklab/picachooser:1.0.0rc3 \
     PICAchooser \
         /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat \
-        --fixmelodicdir /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica
+        /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
+        fix
