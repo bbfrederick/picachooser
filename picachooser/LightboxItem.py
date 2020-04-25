@@ -80,22 +80,18 @@ def newViewWindow(view, left, top, imgxsize, imgysize, enableMouse=False):
     theviewfgposwin = pg.ImageItem()
     theviewbox.addItem(theviewfgposwin)
     theviewfgposwin.setZValue(10)
-    #theviewfgposwin.translate(left, top)
 
     theviewfgnegwin = pg.ImageItem()
     theviewbox.addItem(theviewfgnegwin)
     theviewfgnegwin.setZValue(5)
-    #theviewfgnegwin.translate(left, top)
 
     theviewbgwin = pg.ImageItem()
     theviewbox.addItem(theviewbgwin)
     theviewbgwin.setZValue(0)
-    #theviewbgwin.translate(left, top)
 
     thelabel = pg.TextItem(anchor=(0.0,1.0))
     theviewbox.addItem(thelabel)
     thelabel.setZValue(20)
-    #thelabel.translate(0, -imgysize)
 
     return theviewfgposwin, theviewfgnegwin, theviewbgwin, thelabel, theviewbox
 
