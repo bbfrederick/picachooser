@@ -51,10 +51,10 @@ Press the escape key at any time to save the current version of the component li
 
 Options
 =======
---initfile lets you read in a bad component file from anywhere to use as a starting point in your classification.  This is the normal behavior in aroma mode, but you can do it in any mode with this flag, and it will override the aroma classifications.
+`--initfile` lets you read in a bad component file from anywhere to use as a starting point in your classification.  This is the normal behavior in aroma mode, but you can do it in any mode with this flag, and it will override the aroma classifications.
 
---outputdir lets you write the bad component file anywhere you want, rather than just the default location.
+`--outputdir` lets you write the bad component file anywhere you want, rather than just the default location.
 
---displaythresh sets the z-threshold for the component maps.
+`--displaythresh` sets the z-threshold for the component maps.
 
 [^*]: You can override the default keepcolor and discardcolor (and the colors for all the motion timecourses) by editing the file ${HOME}/.picachooser.json. This file is created is created with default values if it is not present.  You can use any valid python color specification string, e.g. "r", "ff0000", or "FF0000" could all be used for red.
