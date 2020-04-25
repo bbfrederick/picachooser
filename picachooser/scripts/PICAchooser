@@ -302,6 +302,7 @@ def keyPressed(evt):
 
 def updateTimecourse():
     global timecourse_ax, spectrum_ax, whichcomponent, alldata, namelist, win, numelements, verbose
+    global config
 
     if verbose:
         print('entering updateTimecourse')
@@ -312,9 +313,9 @@ def updateTimecourse():
     elif thiscomponent['grade'] == 0:
         pencolor = 'w'
     elif thiscomponent['grade'] > 0:
-        pencolor = 'g'
+        pencolor = config['keepcolor']
     else:
-        pencolor = 'r'
+        pencolor = config['discardcolor']
         windowtitle = windowtitle + ' - marked for removal'
     win.setWindowTitle(windowtitle)
 
@@ -364,16 +365,17 @@ def updateMotion():
 
 def updateLightbox():
     global mainwin, whichcomponent, verbose, alldata, namelist
+    global keepcolor, discardcolor
 
     if verbose:
         print('entering updateLightbox')
     thiscomponent = alldata[namelist[whichcomponent]]
     if thiscomponent['grade'] == 1:
         thelabel = 'Keeping IC {0}'.format(whichcomponent + 1)
-        thecolor = 'g'
+        thecolor = config['keepcolor']
     else:
         thelabel = 'Discarding IC {0}'.format(whichcomponent + 1)
-        thecolor = 'r'
+        thecolor = config['discardcolor']
     mainwin.setLabel(thelabel, thecolor)
     mainwin.setTpos(whichcomponent)
 
@@ -381,6 +383,7 @@ def main():
     global ui, win, mainwin
     global namelist, outputfile, alldata, motion, whichcomponent, numelements, runmode
     global mainwin, verbose
+    global config
 
     mainwin = None
     verbose = False
@@ -507,6 +510,17 @@ def main():
         print(TCfile)
         print(Motionfile)
         print(Removefile)
+
+    # set the colors
+    configfile = os.path.join(os.environ['HOME'], '.picachooser.json')
+    if not os.path.isfile(configfile):
+        config = {
+            'keepcolor': 'g',
+            'discardcolor': 'r'
+        }
+        io.writedicttojson(config, configfile)
+    else:
+        config = io.readdictfromjson(configfile)
 
     # set the sample rate
     tr, timepoints = io.fmritimeinfo(Funcfile)
