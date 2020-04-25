@@ -350,12 +350,12 @@ def updateMotion():
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
-    xtranscorr, xtranscorrp = pearsonr(motion['xtrans'], alldata[namelist[whichcomponent]]['timecourse'])
-    ytranscorr, ytranscorrp = pearsonr(motion['ytrans'], alldata[namelist[whichcomponent]]['timecourse'])
-    ztranscorr, ztranscorrp = pearsonr(motion['ztrans'], alldata[namelist[whichcomponent]]['timecourse'])
-    transcorrs = '{0:.2f}({1:.2f}), {2:.2f}({3:.2f}), {4:.2f}({5:.2f})'.format(xtranscorr,xtranscorrp, \
-                                                                         ytranscorr, ytranscorrp, \
-                                                                         ztranscorr, ztranscorrp)
+    transcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xtrans'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['xtrans'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['ytrans'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['ytrans'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['ztrans'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['ztrans'])
     print('transcorrs for component', whichcomponent + 1, transcorrs)
 
     curve4 = rotmot_ax.plot()
@@ -367,12 +367,12 @@ def updateMotion():
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
-    xrotcorr, xrotcorrp = pearsonr(motion['xrot'], alldata[namelist[whichcomponent]]['timecourse'])
-    yrotcorr, yrotcorrp = pearsonr(motion['yrot'], alldata[namelist[whichcomponent]]['timecourse'])
-    zrotcorr, zrotcorrp = pearsonr(motion['zrot'], alldata[namelist[whichcomponent]]['timecourse'])
-    rotcorrs = '{0:.2f}({1:.2f}), {2:.2f}({3:.2f}), {4:.2f}({5:.2f})'.format(xrotcorr,xrotcorrp, \
-                                                                         yrotcorr, yrotcorrp, \
-                                                                         zrotcorr, zrotcorrp)
+    rotcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xrot'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['xrot'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['yrot'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['yrot'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['zrot'],
+                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['zrot'])
     print('rotcorrs for component', whichcomponent + 1, rotcorrs)
 
 
@@ -583,6 +583,11 @@ def main():
         alldata[thefile] = {}
         invec = alltcs[idx, :]
         alldata[thefile]['timecourse'] = invec * 1.0
+        alldata[thefile]['motioncorrs'] = {}
+        alldata[thefile]['motioncorrps'] = {}
+        for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
+            alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
+                pearsonr(motion[component], alldata[thefile]['timecourse'])
         alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
         alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
             spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
