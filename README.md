@@ -50,7 +50,7 @@ Press the escape key at any time to save the current version of the component li
 
 Options
 =======
---existingfile lets you read in a bad component file from anywhere to use as a starting point in your classification.  This is the normal behavior in aroma mode, but you can do it in any mode with this flag.
+--initfile lets you read in a bad component file from anywhere to use as a starting point in your classification.  This is the normal behavior in aroma mode, but you can do it in any mode with this flag, and it will override the aroma classifications.
 
 --outputdir lets you write the bad component file anywhere you want, rather than just the default location.
 
