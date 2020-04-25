@@ -73,14 +73,13 @@ Usage
 Run PICAchooser to look at a series of independent components and assign them a rating:
 ::
 
-    PICAchooser FEATDIRECTORY --melodicdir MELODICDIRECTORY
+    PICAchooser FEATDIRECTORY MELODICDIRECTORY mode
 
 
 Docker installation
 ===================
-As of 1.0.0rc4, there is now a Docker container with a full PICAchooser installation.  To use this, 
-
-first make sure you have docker installed and properly configured, then run the following:
+There is a Docker container with a full PICAchooser installation.  To use this, first make
+sure you have docker installed and properly configured, then run the following:
 ::
 
     docker pull fredericklab/picachooser:VERSIONNUMBER
