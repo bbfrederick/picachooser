@@ -336,20 +336,20 @@ def updateTimecourse():
 
 
 def updateMotion():
-    global transmot_ax, rotmot_ax, whichcomponent, alldata, motion, namelist, win, numelements, verbose
+    global transmot_ax, rotmot_ax, whichcomponent, alldata, motion, namelist, win, numelements, verbose, config
 
     if verbose:
         print('entering updateMotion')
     thiscomponent = alldata[namelist[whichcomponent]]
     curve1 = transmot_ax.plot()
     curve1.setData(thiscomponent['timeaxis'], motion['xtrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen('FF8888', width=1), clear=True, name='xtrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=1), clear=True, name='xtrans')
     curve2 = transmot_ax.plot()
     curve2.setData(thiscomponent['timeaxis'], motion['ytrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen('88FF88', width=1), clear=True, name='ytrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=1), clear=True, name='ytrans')
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=1), clear=True, name='ztrans')
     transcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xtrans'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['xtrans'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrs']['ytrans'],
@@ -360,13 +360,13 @@ def updateMotion():
 
     curve4 = rotmot_ax.plot()
     curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen('FF8888', width=1), clear=True, name='xrot')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=1), clear=True, name='xrot')
     curve5 = rotmot_ax.plot()
     curve5.setData(thiscomponent['timeaxis'], motion['yrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen('88FF88', width=1), clear=True, name='yrot')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=1), clear=True, name='yrot')
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen('8888FF', width=1), clear=True, name='ztrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=1), clear=True, name='ztrans')
     rotcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xrot'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['xrot'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrs']['yrot'],
@@ -529,7 +529,10 @@ def main():
     if not os.path.isfile(configfile):
         config = {
             'keepcolor': 'g',
-            'discardcolor': 'r'
+            'discardcolor': 'r',
+            'motionxcolor': 'ff8888',
+            'motionycolor': '88ff88',
+            'motionzcolor': '8888ff'
         }
         io.writedicttojson(config, configfile)
     else:
