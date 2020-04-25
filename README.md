@@ -15,12 +15,12 @@ A program to review (and alter) melodic component selections.
 positional arguments:
   featdir               The FEAT directory associated with this MELODIC run.
   melodicdir            The .ica directory for this MELODIC run.
-  runmode               Analysis mode. Valid choices are "melodic", "AROMA", and "FIX". In melodic
+  runmode               Analysis mode. Valid choices are "melodic", "aroma", and "fix". In "melodic"
                         mode, the default output file is named "badcomponents.txt" and will be
-                        written to MELODICDIR as comma separated integers. In AROMA mode, the file
+                        written to MELODICDIR as comma separated integers. In "aroma" mode, the file
                         "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by
                         default the output will be written to "classified_motion_ICs_revised.txt"
-                        in the same directory. In FIX mode, the default output file is named
+                        in the same directory. In "fix" mode, the default output file is named
                         "hand_labels_noise.txt" and will be written to MELODICDIR as comma
                         separated integers with square brackets surrounding the line.
 
