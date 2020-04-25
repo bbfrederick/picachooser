@@ -410,10 +410,10 @@ def main():
         'runmode',
         action='store',
         type=str,
-        help=('Analysis mode.  Valid choices are "melodic", "AROMA", and "FIX".  '
+        help=('Analysis mode.  Valid choices are "melodic", "aroma", and "fix".  '
               'In melodic mode, the default output file is named "badcomponents.txt" and will be written to MELODICDIR as comma separated integers. '
-              'In AROMA mode, the file "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by default the output will be written to "classified_motion_ICs_revised.txt" in the same directory.  '
-              'In FIX mode, the default output file is named "hand_labels_noise.txt" and will be written to MELODICDIR as comma separated integers with square brackets surrounding the line.'),
+              'In aroma mode, the file "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by default the output will be written to "classified_motion_ICs_revised.txt" in the same directory.  '
+              'In fix mode, the default output file is named "hand_labels_noise.txt" and will be written to MELODICDIR as comma separated integers with square brackets surrounding the line.'),
         default=None)
 
     # optional arguments
