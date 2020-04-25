@@ -1,9 +1,9 @@
 #!/bin/csh -f
 
-docker build . -t fredericklab/picachooser:1.0.0rc3
+docker build . -t fredericklab/picachooser:1.0.0rc4
 
-docker push fredericklab/picachooser:1.0.0rc3
-docker pull fredericklab/picachooser:1.0.0rc3
+docker push fredericklab/picachooser:1.0.0rc4
+docker pull fredericklab/picachooser:1.0.0rc4
 
 docker run -it picachooser bash
 
@@ -18,7 +18,7 @@ docker run \
     -it \
     -e DISPLAY=192.168.7.146:0 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -u picachooser fredericklab/picachooser:1.0.0rc3 \
+    -u picachooser fredericklab/picachooser:1.0.0rc4 \
     PICAchooser \
         /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat \
         /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
