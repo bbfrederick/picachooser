@@ -41,7 +41,6 @@ You'll then get a window that looks like this:
 
 # Controls
 
-
 To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want. Components to be discarded are in red, ones to be kept are in green*.
 
 To go to the next (or previous) component, press the right (or left) arrow.  You'll wrap around if you hit the end.
@@ -63,20 +62,20 @@ Press the escape key at any time to save the current version of the component li
 # Support
 
 This code base is being developed and supported by a grant from the US
-NIH (`1R01 NS097512 <http://grantome.com/grant/NIH/R01-NS097512-02>`__).
+NIH [1R01 NS097512](http://grantome.com/grant/NIH/R01-NS097512-02).
 
-# Additional packages used========================
+# Additional packages used
 
-Rapidtide would not be possible without many additional open source packages.
+PICAchooser would not be possible without many additional open source packages.
 These include:
 
 ## pyqtgraph:
 
-1) Luke Campagnola. PyQtGraph: Scientific Graphics and GUI Library for Python,  \| http://www.pyqtgraph.org
+1) Luke Campagnola. [PyQtGraph: Scientific Graphics and GUI Library for Python](http://www.pyqtgraph.org)
 
 ## nibabel:
 
-1) https://github.com/nipy/nibabel \| https://10.5281/zenodo.591597
+1) [Nibabel: Python package to access a cacophony of neuro-imaging file formats](https://github.com/nipy/nibabel) \| https://10.5281/zenodo.591597
 
 ## numpy:
 
@@ -97,7 +96,6 @@ These include:
    and SciPy 1.0 Contributors. (2020) SciPy 1.0: Fundamental Algorithms for
    Scientific Computing in Python. Nature Methods, 17, 261–272 (2020) \|
    https://doi.org/10.1038/s41592-019-0686-2
-
 
 ## pandas:
 
