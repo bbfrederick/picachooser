@@ -93,7 +93,7 @@ For most datasets, you only need to specify the FEAT directory where the preproc
 \* You can override the default keepcolor and discardcolor (and the colors for all the motion timecourses) by editing the file ${HOME}/.picachooser.json. This file is created is created with default values if it is not present.  You can use any valid python color specification string, e.g. "r", "ff0000", or "FF0000" could all be used for red.
 
 
-# fmriprep
+# Reprocessing fmriprep AROMA analyses
 
 fmriprep reformats things to conform to BIDS standard naming conventions and formatting, so file locations, names, and formats are a little weird.  However, you can check components as long as you used an external work directory (you set the "-w" flag during analysis).
 
