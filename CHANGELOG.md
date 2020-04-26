@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.0.0rc5 (4/25/20)
+* All timecourse colors are now changeable by editing the ${HOME}/.picachooser.json file (the file is created with default values if it doesn't exist).
+* Numerous documentation fixes and updates
+
 ## Version 1.0.0rc4 (4/25/20)
 * Changed help lines to match actual runmode names
 * Calculate and print correlation coefficients (and p values) between current component and all motion timecourses

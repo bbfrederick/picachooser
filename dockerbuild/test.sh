@@ -1,24 +1,21 @@
-#!/bin/csh -f
+#!/bin/bash
 
-docker build . -t fredericklab/picachooser:1.0.0rc4
+MYIPADDRESS=`ifconfig en0 | grep 'inet ' | awk '{print $2}'`
 
-docker push fredericklab/picachooser:1.0.0rc4
-docker pull fredericklab/picachooser:1.0.0rc4
-
-docker run -it picachooser bash
+#docker run -it picachooser bash
 
 # allow network connections in Xquartz Security settings
 xhost +
-xhost +si:localuser:picachooser
+#xhost +si:localuser:picachooser
 
 # Allow your local user access via xhost: xhost +SI:localuser:picachooser and create a similar user with docker run option: --user=$(id -u):$(id -g)
 docker run \
     --network host\
     --volume=/Users/frederic:/Users/frederic \
     -it \
-    -e DISPLAY=192.168.7.146:0 \
+    -e DISPLAY=${MYIPADDRESS}:0 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -u picachooser fredericklab/picachooser:1.0.0rc4 \
+    -u picachooser fredericklab/picachooser:latest \
     PICAchooser \
         /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat \
         /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
