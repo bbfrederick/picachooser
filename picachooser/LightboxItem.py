@@ -183,7 +183,8 @@ class imagedataset:
         self.histy, self.histx = np.histogram(calcmaskeddata,
                                               bins=np.linspace(self.minval, self.maxval, 200))
         self.quartiles = [self.pct25, self.pct50, self.pct75]
-        print(self.name,':',self.minval, self.maxval, self.robustmin, self.robustmax, self.quartiles)
+        if self.verbose:
+            print(self.name,':',self.minval, self.maxval, self.robustmin, self.robustmax, self.quartiles)
 
     def setData(self, data, isaMask=False):
         if self.verbose:
@@ -204,7 +205,8 @@ class imagedataset:
                 self.funcmask = 1.0 + 0.0 * self.data[:, :, :, 0]
         else:
             self.funcmask = funcmask.copy()
-        print('setFuncMask - mask dims', self.funcmask.shape)
+        if self.verbose:
+            print('setFuncMask - mask dims', self.funcmask.shape)
         if maskdata:
             self.maskData()
 
@@ -221,7 +223,8 @@ class imagedataset:
             self.geommask = 1.0 + 0.0 * self.data
         else:
             self.geommask = geommask.copy()
-        print('setGeomMask - mask dims', self.geommask.shape)
+        if self.verbose:
+            print('setGeomMask - mask dims', self.geommask.shape)
         if maskdata:
             self.maskData()
 
@@ -231,12 +234,13 @@ class imagedataset:
             self.mask = self.funcmask * self.geommask
         else:
             self.mask = self.funcmask * self.geommask[:, :, :, None]
-        if self.mask is None:
-            print('self.mask is None')
-        if self.funcmask is None:
-            print('self.funcmask is None')
-        if self.geommask is None:
-            print('self.geommask is None')
+        if self.verbose:
+            if self.mask is None:
+                print('self.mask is None')
+            if self.funcmask is None:
+                print('self.funcmask is None')
+            if self.geommask is None:
+                print('self.geommask is None')
         self.maskeddata = self.data.copy()
         self.maskeddata[np.where(self.mask < 0.5)] = 0.0
         self.updateStats()
@@ -598,7 +602,8 @@ class LightboxItem(QtGui.QWidget):
 
 
     def handlekey(self, event):
-        print(event)
+        if self.verbose:
+            print(event)
         self.updateAllViews()
         self.updated.emit()
 
@@ -612,7 +617,8 @@ class LightboxItem(QtGui.QWidget):
 
 
     def handlerefresh(self, event):
-        print('refreshing viewbox range')
+        if self.verbose:
+            print('refreshing viewbox range')
         resetRange(self.thisviewbox, self.imgxsize, self.imgysize)
         self.updateAllViews
 
@@ -675,11 +681,11 @@ class LightboxItem(QtGui.QWidget):
 
 
     def saveDisp(self):
-        print('saving main window')
         mydialog = QtGui.QFileDialog()
         options = mydialog.Options()
         thedir = str(mydialog.getExistingDirectory(options=options, caption="Image output directory"))
-        print('thedir=', thedir)
+        if self.verbose:
+            print('thedir=', thedir)
         thename = self.fgmap.namebase + self.fgmap.name
         self.saveandcomposite(self.thisviewposwin, self.thisviewbgwin, thename, thedir, self.impixpervoxx, self.impixpervoxy)
         with open(os.path.join(thedir, thename + '_lims.txt'), 'w') as FILE:
