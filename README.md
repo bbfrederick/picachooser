@@ -41,7 +41,6 @@ You'll then get a window that looks like this:
 
 # Controls
 
-
 To toggle whether the current component should be kept or discarded, press the up or down arrow key.  You can change back and forth as much as you want. Components to be discarded are in red, ones to be kept are in green*.
 
 To go to the next (or previous) component, press the right (or left) arrow.  You'll wrap around if you hit the end.
@@ -63,7 +62,7 @@ Press the escape key at any time to save the current version of the component li
 # Support
 
 This code base is being developed and supported by a grant from the US
-NIH (`1R01 NS097512 <http://grantome.com/grant/NIH/R01-NS097512-02>`__).
+NIH [1R01 NS097512(http://grantome.com/grant/NIH/R01-NS097512-02).
 
 # Additional packages used
 
