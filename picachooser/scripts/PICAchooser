@@ -123,7 +123,7 @@ def findfrommelodicdir(melodicdir):
         print('cannot find independent component file at', icmask)
         sys.exit()
 
-    tcfile = os.path.join(melodicdir, 'melodic_Tmodes')
+    tcfile = os.path.join(melodicdir, 'melodic_mix')
     if not os.path.isfile(tcfile):
         print('cannot find AROMA timecourse file at', tcfile)
         sys.exit()
@@ -257,6 +257,7 @@ def decrementgrade(whichcomponent):
 
 def writegrades():
     global alldata, namelist, numelements, outputfile, runmode
+    global funcfile, mixfile, filteredfile
 
     badlist = []
     for i in range(len(namelist)):
@@ -267,6 +268,27 @@ def writegrades():
         outputstring = '[' + outputstring + ']'
     with open(outputfile, 'w') as thefile:
             thefile.write(outputstring + '\n')
+
+    # Non-aggressive denoising of the data using fsl_regfilt (partial regression), if requested
+    if filteredfile is not None:
+        print()
+        print()
+        if len(badlist) > 0:
+            fslDir = os.path.join(os.environ['FSLDIR'], 'bin')
+            if fslDir is None:
+                fslregfiltcmd = 'fsl_regfilt'
+            else:
+                fslregfiltcmd = os.path.join(fslDir, 'fsl_regfilt')
+            denoisingcmd = ' '.join([fslregfiltcmd,
+                                    '--in=' + funcfile,
+                                    '--design=' + mixfile,
+                                    '--filter="' + ','.join(badlist) + '"',
+                                    '--out=' + filteredfile])
+            print(denoisingcmd)
+        else:
+            print('There are no components flagged for removal, so there is nothing to do.')
+        print()
+        print()
 
 
 def windowResized(evt):
@@ -401,13 +423,14 @@ def main():
     global namelist, outputfile, alldata, motion, whichcomponent, numelements, runmode
     global mainwin, verbose
     global config
+    global funcfile, mixfile, filteredfile
 
     mainwin = None
     verbose = False
 
     parser = argparse.ArgumentParser(prog='PICAchooser',
                                      description='A program to review (and alter) melodic component selections.',
-                                     usage='%(prog)s featdir melodicdir runmode [options]')
+                                     usage='%(prog)s runmode [options]')
 
 
     # Required arguments
@@ -422,7 +445,7 @@ def main():
         default=None)
 
     # input file specification
-    hlfilespec = parser.add_argument_group('High level input file location specification')
+    hlfilespec = parser.add_argument_group('Standard input file location specification')
     hlfilespec.add_argument(
         '--featdir',
         dest='featdir',
@@ -437,7 +460,7 @@ def main():
         help='The .ica directory for this MELODIC run.',
         default=None)
 
-    llfilespec = parser.add_argument_group('Low level input file location specification')
+    llfilespec = parser.add_argument_group('Nonstandard input file location specification')
     llfilespec.add_argument(
         '--backgroundfile',
         dest='specBGfile',
@@ -448,7 +471,7 @@ def main():
 
     llfilespec.add_argument(
         '--funcfile',
-        dest='specFuncfile',
+        dest='specfuncfile',
         metavar='FUNCFILE',
         type=lambda x: is_valid_file(parser, x),
         help=('The functional file to be filtered (usually found in FEATDIR/filtered_func_data.nii.gz),'),
@@ -480,10 +503,10 @@ def main():
 
     llfilespec.add_argument(
         '--timecoursefile',
-        dest='specTCfile',
-        metavar='TCFILE',
+        dest='specmixfile',
+        metavar='MIXFILE',
         type=lambda x: is_valid_file(parser, x),
-        help=('The timecourses of the independant components (usually found in MELODICDIR/melodic_Tmodes),'),
+        help=('The timecourses of the independant components (usually found in MELODICDIR/melodic_mix),'),
         default=None)
 
     # optional arguments
@@ -496,7 +519,13 @@ def main():
     other.add_argument(
         '--outputfile',
         type=str,
-        help='The name of the newly written bad component file (this overrides the default output file name).',
+        help='Where to write the bad component file (this overrides the default output file name).',
+        default=None)
+    other.add_argument(
+        '--filteredfile',
+        type=str,
+        help=('The name of the filtered NIFTI file.  If this is set, then when the bad component file is written, '
+              'the command to generate the filtered file will be printed to the terminal window.'),
         default=None)
     other.add_argument(
         '--displaythresh',
@@ -514,7 +543,7 @@ def main():
 
     # make sure we can find the required input files
     if args.featdir is not None:
-        BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir)
+        BGfile, funcfile, Motionfile = findfromfeatdir(args.featdir)
 
     if args.specBGfile is not None:
         BGfile = args.specBGfile
@@ -522,9 +551,9 @@ def main():
         print('Cannot set background file.  Use either the --featdir or --backgroundfile option.')
         sys.exit()
 
-    if args.specFuncfile is not None:
-        Funcfile = args.specFuncfile
-    if Funcfile is None:
+    if args.specfuncfile is not None:
+        funcfile = args.specfuncfile
+    if funcfile is None:
         print('Cannot set functional file.  Use either the --featdir or --funcfile option.')
         sys.exit()
 
@@ -536,7 +565,7 @@ def main():
 
 
     if args.melodicdir is not None:
-        ICfile, ICmask, TCfile = findfrommelodicdir(args.melodicdir)
+        ICfile, ICmask, mixfile = findfrommelodicdir(args.melodicdir)
         removefiledir = args.melodicdir
 
     if args.specICfile is not None:
@@ -553,8 +582,8 @@ def main():
         sys.exit()
 
     if args.specICmask is not None:
-        TCfile = args.specTCfile
-    if TCfile is None:
+        mixfile = args.specmixfile
+    if mixfile is None:
         print('Cannot set timecourse file.  Use either the --melodicdir or --timecoursefile option.')
         sys.exit()
 
@@ -618,14 +647,17 @@ def main():
         print('Illegal runmode', runmode, '.  Legal runmodes are "melodic", "aroma", and "fix".  Exiting')
         sys.exit()
 
+    filteredfile = args.filteredfile
+
     if verbose:
         print(ICfile)
         print(ICmask)
         print(BGfile)
-        print(Funcfile)
-        print(TCfile)
+        print(funcfile)
+        print(mixfile)
         print(Motionfile)
         print(Removefile)
+        print(filteredfile)
 
     # set the colors
     configfile = os.path.join(os.environ['HOME'], '.picachooser.json')
@@ -642,13 +674,13 @@ def main():
         config = io.readdictfromjson(configfile)
 
     # set the sample rate
-    tr, timepoints = io.fmritimeinfo(Funcfile)
+    tr, timepoints = io.fmritimeinfo(funcfile)
     samplerate = 1.0 / tr
 
     # read in the timecourses and their current labels
     alldata = {}
     numelements = 0
-    alltcs = io.readvecs(TCfile)
+    alltcs = io.readvecs(mixfile)
     numelements = alltcs.shape[0]
     grades = np.ones(numelements, dtype=np.int)
     if initfileexists:
@@ -758,7 +790,7 @@ def main():
     transmot_ax = transmotwin.addPlot(title='Translation timecourses', labels={'left': 'Displacement (mm)', 'bottom': 'Time (s)'})
 
     # set up the translational motion window
-    print('about to set up the translational motion')
+    print('about to set up the rotational motion')
     rotmotwin = ui.rotation_graphicsView
     rotmot_ax = rotmotwin.addPlot(title='Rotation timecourses', labels = {'left': 'Rotation (radians)', 'bottom': 'Time (s)'})
 
