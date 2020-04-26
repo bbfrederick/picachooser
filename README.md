@@ -71,12 +71,11 @@ These include:
 
 ## pyqtgraph:
 
-1) Luke Campagnola. [PyQtGraph: Scientific Graphics and GUI Library for Python][http://www.pyqtgraph.org]
+1) Luke Campagnola. [PyQtGraph: Scientific Graphics and GUI Library for Python](http://www.pyqtgraph.org)
 
 ## nibabel:
 
-1) [Nibabel: Python package to access a cacophony of neuro-imaging file formats]
-(https://github.com/nipy/nibabel) \| https://10.5281/zenodo.591597
+1) [Nibabel: Python package to access a cacophony of neuro-imaging file formats](https://github.com/nipy/nibabel) \| https://10.5281/zenodo.591597
 
 ## numpy:
 
