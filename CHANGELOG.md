@@ -5,7 +5,7 @@
 * PICAchooser can now read motion out of fmriprep confounds files.
 * On bad component file save, print the command needed to refilter the dataset.
 
-## Version 1.0.0rc6 (4/26/20)
+## Version 1.0.0rc6 (4/25/20)
 * Updated the run options for docker and singularity to reflect the current interface
 
 ## Version 1.0.0rc5 (4/25/20)
