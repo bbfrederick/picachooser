@@ -73,7 +73,7 @@ Usage
 Run PICAchooser to look at a series of independent components and assign them a rating:
 ::
 
-    PICAchooser FEATDIRECTORY MELODICDIRECTORY mode
+    PICAchooser RUNMODE --featdir FEATDIRECTORY --melodicdir MELODICDIRECTORY
 
 
 Docker installation
@@ -140,9 +140,10 @@ Then you should be good to go, with the following command:
         -u picachooser \
         fredericklab/picachooser:VERSIONNUMBER \
             PICAchooser \
-                /data_in/FEATDIRECTORY \
-                /data_in/MELODICDIRECTORY \
-                RUNMODE [otheroptions]
+                RUNMODE \
+                --featdir /data_in/FEATDIRECTORY \
+                --melodicdir /data_in/MELODICDIRECTORY \
+                [otheroptions]
 
 You can replace the PICAchooser blah blah blah command with any other program in the package (currently only "grader", which classifies timecourses) - after the fredericklab/picachooser:latest, 
 just specify the command and arguments as you usually would.
@@ -166,9 +167,10 @@ Running the container is similar to Docker.  The "-B" option is used to bind fil
         -B INPUTDIRECTORY:/data_in,OUTPUTDIRECTORY:/data_out \
         picachooser-VERSIONNUMBER.simg \
             PICAchooser \
-                /data_in/FEATDIRECTORY \
-                /data_in/MELODICDIRECTORY \
-                RUNMODE [otheroptions]
+                RUNMODE \
+                --featdir /data_in/FEATDIRECTORY \
+                --melodicdir /data_in/MELODICDIRECTORY \
+                [otheroptions]
 
 To run a GUI application, you need to disable x security on your host (see comment about this above):
 
