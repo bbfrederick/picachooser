@@ -13,14 +13,14 @@ usage: PICAchooser runmode [options]
 A program to review (and alter) melodic component selections.
 
 positional arguments:
-  runmode               Analysis mode. Valid choices are "melodic", "aroma", and "fix". In melodic mode,
-                        the default output file is named "badcomponents.txt" and will be written to
-                        MELODICDIR as comma separated integers. In aroma mode, the file
+  runmode               Analysis mode. Valid choices are "melodic", "aroma", and "fix". In melodic
+                        mode, the default output file is named "badcomponents.txt" and will be written
+                        to MELODICDIR as comma separated integers. In aroma mode, the file
                         "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by default
                         the output will be written to "classified_motion_ICs_revised.txt" in the same
-                        directory. In fix mode, the default output file is named "hand_labels_noise.txt"
-                        and will be written to MELODICDIR as comma separated integers with square
-                        brackets surrounding the line.
+                        directory. In fix mode, the default output file is named
+                        "hand_labels_noise.txt" and will be written to MELODICDIR as comma separated
+                        integers with square brackets surrounding the line.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -38,7 +38,8 @@ Nonstandard input file location specification:
                         FEATDIR/filtered_func_data.nii.gz),
   --motionfile MOTIONFILE
                         The anatomic file on which to display the ICs (usually found in
-                        FEATDIR/mc/prefiltered_func_data_mcf.par
+                        FEATDIR/mc/prefiltered_func_data_mcf.par). If the file has a .tsv extension,
+                        assume it is an fmriprep confounds file.
   --ICfile ICFILE       The independent component file produced by MELODIC (usually found in
                         MELODICDIR/melodic_IC.nii.gz).
   --ICmask ICMASK       The independent component mask file produced by MELODIC (usually found in
@@ -54,9 +55,9 @@ Other arguments:
                         Where to write the bad component file (this overrides the default output file
                         name).
   --filteredfile FILTEREDFILE
-                        The name of the filtered NIFTI file. If this is set, then when the bad component
-                        file is written, the command to generate the filtered file will be printed to
-                        the terminal window.
+                        The name of the filtered NIFTI file. If this is set, then when the bad
+                        component file is written, the command to generate the filtered file will be
+                        printed to the terminal window.
   --displaythresh DISPLAYTHRESH
                         z threshold for the displayed ICA components. Default is 2.3.
 ```
