@@ -664,7 +664,7 @@ def main():
     # read in the motion timecourses
     print('reading motion timecourses...')
     filebase, extension = os.path.splitext(Motionfile)
-    if extension == 'par':
+    if extension == '.par':
         allmotion = io.readvecs(Motionfile)
         motion = {}
         motion['xtrans'] = allmotion[3, :] * 1.0
@@ -677,7 +677,7 @@ def main():
         motion['zrot'] = allmotion[2, :] * 1.0
         motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
         motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
-    elif extension == 'tsv':
+    elif extension == '.tsv':
         allmotion = io.readfmriprepconfounds(filebase)
         motion = {}
         motion['xtrans'] = allmotion['trans_x'] * 1.0
@@ -690,6 +690,10 @@ def main():
         motion['zrot'] = allmotion['rot_z'] * 1.0
         motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
         motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
+    else:
+        print('cannot read files with extension', extension)
+        sys.exit()
+
 
     namelist = []
     print('reading timecourses...')
