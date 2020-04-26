@@ -62,7 +62,7 @@ Press the escape key at any time to save the current version of the component li
 # Support
 
 This code base is being developed and supported by a grant from the US
-NIH [1R01 NS097512(http://grantome.com/grant/NIH/R01-NS097512-02).
+NIH [1R01 NS097512](http://grantome.com/grant/NIH/R01-NS097512-02).
 
 # Additional packages used
 
@@ -71,11 +71,12 @@ These include:
 
 ## pyqtgraph:
 
-1) Luke Campagnola. PyQtGraph: Scientific Graphics and GUI Library for Python,  \| http://www.pyqtgraph.org
+1) Luke Campagnola. [PyQtGraph: Scientific Graphics and GUI Library for Python][http://www.pyqtgraph.org]
 
 ## nibabel:
 
-1) https://github.com/nipy/nibabel \| https://10.5281/zenodo.591597
+1) [Nibabel: Python package to access a cacophony of neuro-imaging file formats]
+(https://github.com/nipy/nibabel) \| https://10.5281/zenodo.591597
 
 ## numpy:
 
