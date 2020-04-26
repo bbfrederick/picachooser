@@ -1,6 +1,6 @@
 + Fix the version numbers in files:
 
-    vi setup.py PICAchooser/version.py VERSION INSTALL.rst Dockerfile dockerbuild/containerops
+    vi setup.py PICAchooser/version.py VERSION INSTALL.rst Dockerfile dockerbuild/build.sh
 
     setup.py
         search for version=
@@ -17,7 +17,8 @@
     Dockerfile
         search for 'org.label-schema.schema-version='
 
-    dockerbuild/containerops
+    dockerbuild/build.sh
+        search for VERSION=
         
 
 
