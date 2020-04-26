@@ -93,17 +93,7 @@ def is_float(parser, arg):
 
     return arg
 
-def findICAfiles(featdir, melodicdir):
-    icfile = os.path.join(melodicdir, 'melodic_IC.nii.gz')
-    if not os.path.isfile(icfile):
-        print('cannot find independent component file at', icfile)
-        sys.exit()
-
-    icmask = os.path.join(melodicdir, 'mask.nii.gz')
-    if not os.path.isfile(icmask):
-        print('cannot find independent component file at', icmask)
-        sys.exit()
-
+def findfromfeatdir(featdir):
     bgfile = os.path.join(featdir, 'reg', 'example_func.nii.gz')
     if not os.path.isfile(bgfile):
         print('cannot find background image file at', bgfile)
@@ -114,17 +104,31 @@ def findICAfiles(featdir, melodicdir):
         print('cannot find functional data file at', funcfile)
         sys.exit()
 
-    tcfile = os.path.join(melodicdir, 'melodic_Tmodes')
-    if not os.path.isfile(tcfile):
-        print('cannot find AROMA timecourse file at', tcfile)
-        sys.exit()
-
     motionfile = os.path.join(featdir, 'mc', 'prefiltered_func_data_mcf.par')
     if not os.path.isfile(motionfile):
         print('cannot find motion parameter file at', motionfile)
         sys.exit()
 
-    return icfile, icmask, bgfile, funcfile, tcfile, motionfile
+    return bgfile, funcfile, motionfile
+
+
+def findfrommelodicdir(melodicdir):
+    icfile = os.path.join(melodicdir, 'melodic_IC.nii.gz')
+    if not os.path.isfile(icfile):
+        print('cannot find independent component file at', icfile)
+        sys.exit()
+
+    icmask = os.path.join(melodicdir, 'mask.nii.gz')
+    if not os.path.isfile(icmask):
+        print('cannot find independent component file at', icmask)
+        sys.exit()
+
+    tcfile = os.path.join(melodicdir, 'melodic_Tmodes')
+    if not os.path.isfile(tcfile):
+        print('cannot find AROMA timecourse file at', tcfile)
+        sys.exit()
+
+    return icfile, icmask, tcfile
 
 
 def hamming(length, debug=False):
@@ -408,18 +412,6 @@ def main():
 
     # Required arguments
     parser.add_argument(
-        'featdir',
-        type=lambda x: is_valid_dir(parser, x),
-        help='The FEAT directory associated with this MELODIC run.',
-        default=None)
-
-    parser.add_argument(
-        'melodicdir',
-        type=lambda x: is_valid_dir(parser, x),
-        help='The .ica directory for this MELODIC run.',
-        default=None)
-
-    parser.add_argument(
         'runmode',
         action='store',
         type=str,
@@ -429,18 +421,84 @@ def main():
               'In fix mode, the default output file is named "hand_labels_noise.txt" and will be written to MELODICDIR as comma separated integers with square brackets surrounding the line.'),
         default=None)
 
-    # optional arguments
-    parser.add_argument(
-        '--initfile',
-        type=str,
-        help='The name of an initial bad component file (this overrides the default input file for AROMA).',
+    # input file specification
+    hlfilespec = parser.add_argument_group('High level input file location specification')
+    hlfilespec.add_argument(
+        '--featdir',
+        dest='featdir',
+        type=lambda x: is_valid_dir(parser, x),
+        help='The FEAT directory associated with this MELODIC run.',
         default=None)
-    parser.add_argument(
+
+    hlfilespec.add_argument(
+        '--melodicdir',
+        dest='melodicdir',
+        type=lambda x: is_valid_dir(parser, x),
+        help='The .ica directory for this MELODIC run.',
+        default=None)
+
+    llfilespec = parser.add_argument_group('Low level input file location specification')
+    llfilespec.add_argument(
+        '--backgroundfile',
+        dest='specBGfile',
+        metavar='BGFILE',
+        type=lambda x: is_valid_file(parser, x),
+        help=('The anatomic file on which to display the ICs (usually found in FEATDIR/reg/example_func.nii.gz),'),
+        default=None)
+
+    llfilespec.add_argument(
+        '--funcfile',
+        dest='specFuncfile',
+        metavar='FUNCFILE',
+        type=lambda x: is_valid_file(parser, x),
+        help=('The functional file to be filtered (usually found in FEATDIR/filtered_func_data.nii.gz),'),
+        default=None)
+
+    llfilespec.add_argument(
+        '--motionfile',
+        dest='specMotionfile',
+        metavar='MOTIONFILE',
+        type=lambda x: is_valid_file(parser, x),
+        help=('The anatomic file on which to display the ICs (usually found in FEATDIR/mc/prefiltered_func_data_mcf.par'),
+        default=None)
+
+    llfilespec.add_argument(
+        '--ICfile',
+        dest='specICfile',
+        metavar='ICFILE',
+        type=lambda x: is_valid_file(parser, x),
+        help='The independent component file produced by MELODIC (usually found in MELODICDIR/melodic_IC.nii.gz).',
+        default=None)
+
+    llfilespec.add_argument(
+        '--ICmask',
+        dest='specICmask',
+        metavar='ICMASK',
+        type=lambda x: is_valid_file(parser, x),
+        help=('The independent component mask file produced by MELODIC (usually found in MELODICDIR/mask.nii.gz).'),
+        default=None)
+
+    llfilespec.add_argument(
+        '--timecoursefile',
+        dest='specTCfile',
+        metavar='TCFILE',
+        type=lambda x: is_valid_file(parser, x),
+        help=('The timecourses of the independant components (usually found in MELODICDIR/melodic_Tmodes),'),
+        default=None)
+
+    # optional arguments
+    other = parser.add_argument_group('Other arguments')
+    other.add_argument(
+        '--initfile',
+        type=lambda x: is_valid_file(parser, x),
+        help='The name of an initial bad component file (in aroma mode, this overrides the default input file for AROMA).',
+        default=None)
+    other.add_argument(
         '--outputfile',
         type=str,
         help='The name of the newly written bad component file (this overrides the default output file name).',
         default=None)
-    parser.add_argument(
+    other.add_argument(
         '--displaythresh',
         type=lambda x: is_float(parser, x),
         help='z threshold for the displayed ICA components.  Default is 2.3.',
@@ -454,12 +512,59 @@ def main():
 
     runmode = args.runmode
 
+    # make sure we can find the required input files
+    if args.featdir is not None:
+        BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir)
+
+    if args.specBGfile is not None:
+        BGfile = args.specBGfile
+    if BGfile is None:
+        print('Cannot set background file.  Use either the --featdir or --backgroundfile option.')
+        sys.exit()
+
+    if args.specFuncfile is not None:
+        Funcfile = args.specFuncfile
+    if Funcfile is None:
+        print('Cannot set functional file.  Use either the --featdir or --funcfile option.')
+        sys.exit()
+
+    if args.specMotionfile is not None:
+        Motionfile = args.specMotionfile
+    if Motionfile is None:
+        print('Cannot set motion timecourse file.  Use either the --featdir or --motionfile option.')
+        sys.exit()
+
+
+    if args.melodicdir is not None:
+        ICfile, ICmask, TCfile = findfrommelodicdir(args.melodicdir)
+        removefiledir = args.melodicdir
+
+    if args.specICfile is not None:
+        ICfile = args.specICfile
+        removefiledir = os.path.dirname(ICfile)
+    if ICfile is None:
+        print('Cannot set IC file.  Use either the --melodicdir or --ICfile option.')
+        sys.exit()
+
+    if args.specICmask is not None:
+        ICmask = args.specICmask
+    if ICmask is None:
+        print('Cannot set IC mask.  Use either the --melodicdir or --ICmask option.')
+        sys.exit()
+
+    if args.specICmask is not None:
+        TCfile = args.specTCfile
+    if TCfile is None:
+        print('Cannot set timecourse file.  Use either the --melodicdir or --timecoursefile option.')
+        sys.exit()
+
+
     # there are 3 modes at the moment - melodic, aroma, and fix
     if runmode == 'melodic':
         if args.initfile is not None:
             Removefile = args.initfile
         else:
-            Removefile = os.path.join(args.melodicdir, 'badcomponents.txt')
+            Removefile = os.path.join(removefiledir, 'badcomponents.txt')
         if not os.path.isfile(Removefile):
             print('cannot find existing removed component file at', Removefile, '- will create new one')
             if args.outputfile is None:
@@ -476,7 +581,7 @@ def main():
             print('will create new removed component file at', outputfile)
             initfileexists = True
     elif runmode == 'aroma':
-        aromadir = os.path.dirname(args.melodicdir)
+        aromadir = os.path.dirname(removefiledir)
         if args.initfile is not None:
             Removefile = args.initfile
         else:
@@ -493,7 +598,7 @@ def main():
         if args.initfile is not None:
             Removefile = args.initfile
         else:
-            Removefile = os.path.join(args.melodicdir, 'hand_labels_noise.txt')
+            Removefile = os.path.join(removefiledir, 'hand_labels_noise.txt')
         if not os.path.isfile(Removefile):
             print('cannot find existing removed component file at', Removefile, '- will create new one')
             if args.outputfile is None:
@@ -512,8 +617,6 @@ def main():
     else:
         print('Illegal runmode', runmode, '.  Legal runmodes are "melodic", "aroma", and "fix".  Exiting')
         sys.exit()
-
-    ICfile, ICmask, BGfile, Funcfile, TCfile, Motionfile = findICAfiles(args.featdir, args.melodicdir)
 
     if verbose:
         print(ICfile)
