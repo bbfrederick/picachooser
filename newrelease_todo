@@ -24,9 +24,9 @@
 
 + Edit CHANGELOG.md
 
-+ Sync everything to github.
-
 + Rebuild Docker container and push
+
++ Sync everything to github.
 
 + Create a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
