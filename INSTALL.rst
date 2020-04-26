@@ -141,10 +141,10 @@ Then you should be good to go, with the following command:
         fredericklab/picachooser:VERSIONNUMBER \
             PICAchooser \
                 /data_in/FEATDIRECTORY \
-                --melodicdir /data_out/MELODICDIRECTORY
+                /data_in/MELODICDIRECTORY \
+                RUNMODE [otheroptions]
 
-You can replace the PICAchooser blah blah blah command with any program in the package (currently only "grader", which classifies
-timecourses) - after the fredericklab/picachooser:latest, 
+You can replace the PICAchooser blah blah blah command with any other program in the package (currently only "grader", which classifies timecourses) - after the fredericklab/picachooser:latest, 
 just specify the command and arguments as you usually would.
 
 
@@ -167,8 +167,8 @@ Running the container is similar to Docker.  The "-B" option is used to bind fil
         picachooser-VERSIONNUMBER.simg \
             PICAchooser \
                 /data_in/FEATDIRECTORY \
-                --melodicdir /data_out/MELODICDIRECTORY
-
+                /data_in/MELODICDIRECTORY \
+                RUNMODE [otheroptions]
 
 To run a GUI application, you need to disable x security on your host (see comment about this above):
 
