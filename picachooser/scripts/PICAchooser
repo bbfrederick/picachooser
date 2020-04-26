@@ -663,18 +663,33 @@ def main():
 
     # read in the motion timecourses
     print('reading motion timecourses...')
-    allmotion = io.readvecs(Motionfile)
-    motion = {}
-    motion['xtrans'] = allmotion[3, :] * 1.0
-    motion['ytrans'] = allmotion[4, :] * 1.0
-    motion['ztrans'] = allmotion[5, :] * 1.0
-    motion['maxtrans'] = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
-    motion['mintrans'] = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
-    motion['xrot'] = allmotion[0, :] * 1.0
-    motion['yrot'] = allmotion[1, :] * 1.0
-    motion['zrot'] = allmotion[2, :] * 1.0
-    motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
-    motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
+    filebase, extension = os.path.splitext(Motionfile)
+    if extension == 'par':
+        allmotion = io.readvecs(Motionfile)
+        motion = {}
+        motion['xtrans'] = allmotion[3, :] * 1.0
+        motion['ytrans'] = allmotion[4, :] * 1.0
+        motion['ztrans'] = allmotion[5, :] * 1.0
+        motion['maxtrans'] = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
+        motion['mintrans'] = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
+        motion['xrot'] = allmotion[0, :] * 1.0
+        motion['yrot'] = allmotion[1, :] * 1.0
+        motion['zrot'] = allmotion[2, :] * 1.0
+        motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
+        motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
+    elif extension == 'tsv':
+        allmotion = io.readfmriprepconfounds(filebase)
+        motion = {}
+        motion['xtrans'] = allmotion['trans_x'] * 1.0
+        motion['ytrans'] = allmotion['trans_y'] * 1.0
+        motion['ztrans'] = allmotion['trans_z'] * 1.0
+        motion['maxtrans'] = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
+        motion['mintrans'] = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
+        motion['xrot'] = allmotion['rot_x'] * 1.0
+        motion['yrot'] = allmotion['rot_y'] * 1.0
+        motion['zrot'] = allmotion['rot_z'] * 1.0
+        motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
+        motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
 
     namelist = []
     print('reading timecourses...')
