@@ -108,7 +108,7 @@ The background file is also in this directory:
 
 `--backgroundfile ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic/mean.nii.gz`
 
-Everything else can be found in the functional output file for this:
+Everything else can be found in the functional output directory for this session:
 
 `FUNCDIR=${BIDSDIR}/derivatives/fmriprep/sub-015/ses-001/func`
 
