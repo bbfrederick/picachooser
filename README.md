@@ -99,23 +99,27 @@ fmriprep reformats things to conform to BIDS standard naming conventions and for
 A concrete example:  I have an analysis in BIDSDIR, and used the option "-w WORKDIR" when I ran fmriprep (with AROMA processing enabled).  Say I have a functional run, sub-015_ses-001_task-rest_run-1_bold.nii.gz that I want to redo the AROMA processing on.
 First off, I need to find my ICfile and IC mask file.  They don't get copied into the derivatives directory, as they are intermediate files, not analysis products.  It turns out the entire melodic directory does exist in the work directory.  In this particular case, if I set:
 
---melodicdir ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic
+`--melodicdir ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic`
 
 then PICAchooser can find the ICfile and ICmask.
 
 The background file is also in this directory:
---backgroundfile ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic/mean.nii.gz
+
+`--backgroundfile ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic/mean.nii.gz`
 
 Everything else can be found in the functional output file for this:
-FUNCDIR=${BIDSDIR}/derivatives/fmriprep/sub-015/ses-001/func
+
+`FUNCDIR=${BIDSDIR}/derivatives/fmriprep/sub-015/ses-001/func`
 
 By setting the following options:
---initfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_AROMAnoiseICs.csv
+
+`--initfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_AROMAnoiseICs.csv
 --funcfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz
---motionfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_desc-confounds_regressors.tsv
+--motionfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_desc-confounds_regressors.tsv`
 
 As a bonus, if you also set:
---filteredfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-AROMAnonaggr_bold.nii.gz
+
+`--filteredfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-AROMAnonaggr_bold.nii.gz`
 
 Then when you save your bad component file, you'll see the command necessary to refilter your data printed to the terminal window.  I haven't investigated far enough to know when the smoothing implied in the name of the exisiting filtered file comes from, so there may be some other steps to get to exactly the output you'd get from fmriprep...
 
