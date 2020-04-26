@@ -482,7 +482,8 @@ def main():
         dest='specMotionfile',
         metavar='MOTIONFILE',
         type=lambda x: is_valid_file(parser, x),
-        help=('The anatomic file on which to display the ICs (usually found in FEATDIR/mc/prefiltered_func_data_mcf.par'),
+        help=('The anatomic file on which to display the ICs (usually found in FEATDIR/mc/prefiltered_func_data_mcf.par). '
+              'If the file has a .tsv extension, assume it is an fmriprep confounds file.'),
         default=None)
 
     llfilespec.add_argument(
