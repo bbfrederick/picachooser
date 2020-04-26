@@ -65,9 +65,9 @@ Press the escape key at any time to save the current version of the component li
 This code base is being developed and supported by a grant from the US
 NIH (`1R01 NS097512 <http://grantome.com/grant/NIH/R01-NS097512-02>`__).
 
-# Additional packages used========================
+# Additional packages used
 
-Rapidtide would not be possible without many additional open source packages.
+PICAchooser would not be possible without many additional open source packages.
 These include:
 
 ## pyqtgraph:
@@ -97,7 +97,6 @@ These include:
    and SciPy 1.0 Contributors. (2020) SciPy 1.0: Fundamental Algorithms for
    Scientific Computing in Python. Nature Methods, 17, 261–272 (2020) \|
    https://doi.org/10.1038/s41592-019-0686-2
-
 
 ## pandas:
 
