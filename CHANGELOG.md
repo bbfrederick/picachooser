@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.0.0rc6 (4/25/20)
+* Updated the run options for docker and singularity to reflect the current interface
+
 ## Version 1.0.0rc5 (4/25/20)
 * All timecourse colors are now changeable by editing the ${HOME}/.picachooser.json file (the file is created with default values if it doesn't exist).
 * Numerous documentation fixes and updates

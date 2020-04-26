@@ -1,6 +1,6 @@
 + Fix the version numbers in files:
 
-    vi setup.py PICAchooser/version.py VERSION INSTALL.rst Dockerfile dockerbuild/build.sh
+    vi setup.py PICAchooser/version.py VERSION Dockerfile dockerbuild/build.sh newrelease_todo
 
     setup.py
         search for version=
@@ -19,6 +19,9 @@
 
     dockerbuild/build.sh
         search for VERSION=
+
+    newrelease_todo
+        search for ' v'
         
 
 
@@ -30,12 +33,12 @@
 
 + Create a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.0.0rc5 -m "v1.0.0rc5"
+    git tag -a v1.0.0rc6 -m "v1.0.0rc6"
  
 
 + Push the tag to github:
 
-    git push origin v1.0.0rc5
+    git push origin v1.0.0rc6
 
 
 + Edit the release notes on github
