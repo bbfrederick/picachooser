@@ -311,13 +311,13 @@ def keyPressed(evt):
         decrementgrade(whichcomponent)
     elif evt.key() == QtCore.Qt.Key_Left:
         whichcomponent = (whichcomponent - 1) % numelements
-        print('IC set to:', whichcomponent + 1)
+        print('\nIC set to:', whichcomponent + 1)
     elif evt.key() == QtCore.Qt.Key_Right:
         whichcomponent = (whichcomponent + 1) % numelements
-        print('IC set to:', whichcomponent + 1)
+        print('\nIC set to:', whichcomponent + 1)
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
-        print('done')
+        print('bad component file written')
     else:
         print(evt.key())
 
@@ -382,7 +382,7 @@ def updateMotion():
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['ytrans'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrs']['ztrans'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['ztrans'])
-    print('transcorrs for component', whichcomponent + 1, transcorrs)
+    print('\ttranscorrs for component', whichcomponent + 1, transcorrs)
 
     curve4 = rotmot_ax.plot()
     curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
@@ -399,7 +399,7 @@ def updateMotion():
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['yrot'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrs']['zrot'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['zrot'])
-    print('rotcorrs for component', whichcomponent + 1, rotcorrs)
+    print('\trotcorrs for component', whichcomponent + 1, rotcorrs)
 
 
 def updateLightbox():
