@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.0.0rc8 (4/27/20)
+* Added fixed (but configurable) "normal" limits to motion plots (thank you to Richard Dinga for the suggestion).
+
 ## Version 1.0.0rc7 (4/26/20)
 * Revamped input file specification to allow for maximum flexibility
 * PICAchooser can now read motion out of fmriprep confounds files.

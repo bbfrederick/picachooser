@@ -322,9 +322,7 @@ def keyPressed(evt):
         print(evt.key())
 
     updateTimecourse()
-    updateMotion()
-    if mainwin is not None:
-        updateLightbox()
+    updateLightbox()
 
 
 def updateTimecourse():
@@ -362,7 +360,8 @@ def updateTimecourse():
 
 
 def updateMotion():
-    global transmot_ax, rotmot_ax, whichcomponent, alldata, motion, namelist, win, numelements, verbose, config
+    global transmot_ax, rotmot_ax
+    global whichcomponent, alldata, motion, namelist, win, numelements, verbose, config
 
     if verbose:
         print('entering updateMotion')
@@ -376,6 +375,19 @@ def updateMotion():
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=1), clear=True, name='ztrans')
+    if config['motionplotstyle'] == 0:
+        transmot_ax.setYRange(config['transmotlimits'][0], config['transmotlimits'][1], padding=0)
+    else:
+        limitpen = pg.mkPen(config['motionlimitcolor'], width=1, style=QtCore.Qt.DotLine)
+        transtopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
+        transtopLine.setZValue(20)
+        transmot_ax.addItem(transtopLine)
+        transtopLine.setValue(config['transmotlimits'][1])
+        transbottomLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
+        transbottomLine.setZValue(20)
+        transmot_ax.addItem(transbottomLine)
+        transbottomLine.setValue(config['transmotlimits'][0])
+
     transcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xtrans'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['xtrans'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrs']['ytrans'],
@@ -393,6 +405,19 @@ def updateMotion():
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=1), clear=True, name='ztrans')
+    if config['motionplotstyle'] == 0:
+        rotmot_ax.setYRange(config['rotmotlimits'][0], config['rotmotlimits'][1], padding=0)
+    else:
+        limitpen = pg.mkPen(config['motionlimitcolor'], width=1, style=QtCore.Qt.DotLine)
+        rottopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
+        rottopLine.setZValue(20)
+        rotmot_ax.addItem(rottopLine)
+        rottopLine.setValue(config['rotmotlimits'][1])
+        rotbottomLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
+        rotbottomLine.setZValue(20)
+        rotmot_ax.addItem(rotbottomLine)
+        rotbottomLine.setValue(config['rotmotlimits'][0])
+
     rotcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xrot'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['xrot'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrs']['yrot'],
@@ -660,19 +685,36 @@ def main():
         print(Removefile)
         print(filteredfile)
 
-    # set the colors
-    configfile = os.path.join(os.environ['HOME'], '.picachooser.json')
-    if not os.path.isfile(configfile):
+    # set the configurable options
+    def initconfig():
+        print('initializing preferences')
         config = {
+            'prefsversion': 1,
             'keepcolor': 'g',
             'discardcolor': 'r',
             'motionxcolor': 'ff8888',
             'motionycolor': '88ff88',
-            'motionzcolor': '8888ff'
+            'motionzcolor': '8888ff',
+            'transmotlimits': (-2.5, 2.5),
+            'rotmotlimits': (-0.04, 0.04),
+            'motionlimitcolor': 'w',
+            'motionplotstyle': 1
         }
+        return config
+
+    configfile = os.path.join(os.environ['HOME'], '.picachooser.json')
+    if not os.path.isfile(configfile):
+        config = initconfig()
         io.writedicttojson(config, configfile)
     else:
         config = io.readdictfromjson(configfile)
+        try:
+            prefsversion = config['prefsversion']
+        except KeyError:
+            prefsversion = 0
+        if prefsversion < 1:
+            config = initconfig()
+            io.writedicttojson(config, configfile)
 
     # set the sample rate
     tr, timepoints = io.fmritimeinfo(funcfile)
@@ -790,7 +832,7 @@ def main():
     transmotwin = ui.translation_graphicsView
     transmot_ax = transmotwin.addPlot(title='Translation timecourses', labels={'left': 'Displacement (mm)', 'bottom': 'Time (s)'})
 
-    # set up the translational motion window
+    # set up the rotational motion window
     print('about to set up the rotational motion')
     rotmotwin = ui.rotation_graphicsView
     rotmot_ax = rotmotwin.addPlot(title='Rotation timecourses', labels = {'left': 'Rotation (radians)', 'bottom': 'Time (s)'})

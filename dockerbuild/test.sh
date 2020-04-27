@@ -17,6 +17,6 @@ docker run \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -u picachooser fredericklab/picachooser:latest \
     PICAchooser \
-        /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat \
-        /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
-        fix
+        fix \
+        --featdir /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat \
+        --melodicdir /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica 
