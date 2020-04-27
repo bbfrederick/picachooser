@@ -559,6 +559,36 @@ def main():
         help='z threshold for the displayed ICA components.  Default is 2.3.',
         default=2.3)
 
+    configuration = parser.add_argument_group('Configuration arguments')
+    configuration.add_argument(
+        '--keepcolor',
+        type=str,
+        help=('Set the color of timecourses to be kept (default is "g").'),
+        default=None)
+    configuration.add_argument(
+        '--discardcolor',
+        type=str,
+        help=('Set the color of timecourses to discard (default is "r").'),
+        default=None)
+    configuration.add_argument(
+        '--transmotlimits',
+        action='store',
+        nargs=2,
+        type=lambda x: is_float(parser, x),
+        metavar=('LOWERLIM', 'UPPERLIM'),
+        help=('Override the "normal" limits of translational motion from the values in the configuration '
+              'file to LOWERLIM-UPPERLIM mm.'),
+        default=(None, None))
+    configuration.add_argument(
+        '--rotmotlimits',
+        action='store',
+        nargs=2,
+        type=lambda x: is_float(parser, x),
+        metavar=('LOWERLIM', 'UPPERLIM'),
+        help=('Override the "normal" limits of rotations motion from the values in the configuration '
+              'file to LOWERLIM-UPPERLIM radians.'),
+        default=(None, None))
+
     try:
         args = parser.parse_args()
     except SystemExit:
@@ -715,6 +745,18 @@ def main():
         if prefsversion < 1:
             config = initconfig()
             io.writedicttojson(config, configfile)
+
+    if args.keepcolor is not None:
+        config['keepcolor'] = args.keepcolor
+
+    if args.discardcolor is not None:
+        config['discardcolor'] = args.discardcolor
+
+    if args.transmotlimits[0] is not None:
+        config['transmotlimits'] = (args.transmotlimits[0], args.transmotlimits[1])
+
+    if args.rotmotlimits[0] is not None:
+        config['rotmotlimits'] = (args.rotmotlimits[0], args.rotmotlimits[1])
 
     # set the sample rate
     tr, timepoints = io.fmritimeinfo(funcfile)

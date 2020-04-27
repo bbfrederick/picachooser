@@ -31,14 +31,10 @@
 
 + Sync everything to github.
 
-+ Create a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
++ Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.0.0rc8 -m "v1.0.0rc8"
- 
-
-+ Push the tag to github:
-
-    git push origin v1.0.0rc8
+    git tag -a v1.0.0rc9 -m "v1.0.0rc9"
+    git push origin v1.0.0rc9
 
 
 + Edit the release notes on github
