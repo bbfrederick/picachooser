@@ -345,13 +345,13 @@ def updateTimecourse():
     win.setWindowTitle(windowtitle)
 
     timecourse_ax.plot(thiscomponent['timeaxis'], thiscomponent['timecourse'],
-                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=1), clear=True)
+                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=config['componentwidth']), clear=True)
     timecourse_ax.setTitle('Independent component ' + str(whichcomponent + 1),)
 
     spectrum_ax.plot(thiscomponent['freqaxis'], thiscomponent['spectrum'],
                      stepMode=False,
                      fillLevel=0,
-                     pen=pg.mkPen(pencolor, width=1),
+                     pen=pg.mkPen(pencolor, width=config['componentwidth']),
                      clear=True)
     spectrum_ax.setTitle('Magnitude spectrum of timecourse ' + str(whichcomponent + 1))
 
@@ -368,17 +368,17 @@ def updateMotion():
     thiscomponent = alldata[namelist[whichcomponent]]
     curve1 = transmot_ax.plot()
     curve1.setData(thiscomponent['timeaxis'], motion['xtrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=1), clear=True, name='xtrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionwidth']), clear=True, name='xtrans')
     curve2 = transmot_ax.plot()
     curve2.setData(thiscomponent['timeaxis'], motion['ytrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=1), clear=True, name='ytrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionwidth']), clear=True, name='ytrans')
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=1), clear=True, name='ztrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionwidth']), clear=True, name='ztrans')
     if config['motionplotstyle'] == 0:
         transmot_ax.setYRange(config['transmotlimits'][0], config['transmotlimits'][1], padding=0)
     else:
-        limitpen = pg.mkPen(config['motionlimitcolor'], width=1, style=QtCore.Qt.DotLine)
+        limitpen = pg.mkPen(config['motionlimitcolor'], width=config['motionlimitwidth'], style=QtCore.Qt.DotLine)
         transtopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
         transtopLine.setZValue(20)
         transmot_ax.addItem(transtopLine)
@@ -398,17 +398,17 @@ def updateMotion():
 
     curve4 = rotmot_ax.plot()
     curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=1), clear=True, name='xrot')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionwidth']), clear=True, name='xrot')
     curve5 = rotmot_ax.plot()
     curve5.setData(thiscomponent['timeaxis'], motion['yrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=1), clear=True, name='yrot')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionwidth']), clear=True, name='yrot')
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=1), clear=True, name='ztrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionwidth']), clear=True, name='ztrans')
     if config['motionplotstyle'] == 0:
         rotmot_ax.setYRange(config['rotmotlimits'][0], config['rotmotlimits'][1], padding=0)
     else:
-        limitpen = pg.mkPen(config['motionlimitcolor'], width=1, style=QtCore.Qt.DotLine)
+        limitpen = pg.mkPen(config['motionlimitcolor'], width=config['motionlimitwidth'], style=QtCore.Qt.DotLine)
         rottopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
         rottopLine.setZValue(20)
         rotmot_ax.addItem(rottopLine)
@@ -719,15 +719,18 @@ def main():
     def initconfig():
         print('initializing preferences')
         config = {
-            'prefsversion': 1,
+            'prefsversion': 2,
+            'componentwidth': 2,
             'keepcolor': 'g',
             'discardcolor': 'r',
             'motionxcolor': 'ff8888',
             'motionycolor': '88ff88',
             'motionzcolor': '8888ff',
+            'motionwidth': 2,
             'transmotlimits': (-2.5, 2.5),
             'rotmotlimits': (-0.04, 0.04),
-            'motionlimitcolor': 'w',
+            'motionlimitcolor': 'cccccc',
+            'motionlimitwidth': 4,
             'motionplotstyle': 1
         }
         return config
@@ -742,7 +745,7 @@ def main():
             prefsversion = config['prefsversion']
         except KeyError:
             prefsversion = 0
-        if prefsversion < 1:
+        if prefsversion < 2:
             config = initconfig()
             io.writedicttojson(config, configfile)
 
