@@ -13,14 +13,17 @@ usage: PICAchooser runmode [options]
 A program to review (and alter) melodic component selections.
 
 positional arguments:
-  runmode               Analysis mode. Valid choices are "melodic", "aroma", and "fix". In melodic
-                        mode, the default output file is named "badcomponents.txt" and will be written
-                        to MELODICDIR as comma separated integers. In aroma mode, the file
-                        "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by default
-                        the output will be written to "classified_motion_ICs_revised.txt" in the same
-                        directory. In fix mode, the default output file is named
-                        "hand_labels_noise.txt" and will be written to MELODICDIR as comma separated
-                        integers with square brackets surrounding the line.
+  runmode               Analysis mode. Valid choices are "melodic", "aroma", and
+                        "fix". In melodic mode, the default output file is named
+                        "badcomponents.txt" and will be written to MELODICDIR as comma
+                        separated integers. In aroma mode, the file
+                        "classified_motion_ICs.txt" must exist in the parent of
+                        MELODICDIR; by default the output will be written to
+                        "classified_motion_ICs_revised.txt" in the same directory. In
+                        fix mode, the default output file is named
+                        "hand_labels_noise.txt" and will be written to MELODICDIR as
+                        comma separated integers with square brackets surrounding the
+                        line.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -32,35 +35,47 @@ Standard input file location specification:
 
 Nonstandard input file location specification:
   --backgroundfile BGFILE
-                        The anatomic file on which to display the ICs (usually found in
-                        FEATDIR/reg/example_func.nii.gz),
+                        The anatomic file on which to display the ICs (usually found
+                        in FEATDIR/reg/example_func.nii.gz),
   --funcfile FUNCFILE   The functional file to be filtered (usually found in
                         FEATDIR/filtered_func_data.nii.gz),
   --motionfile MOTIONFILE
-                        The anatomic file on which to display the ICs (usually found in
-                        FEATDIR/mc/prefiltered_func_data_mcf.par). If the file has a .tsv extension,
-                        assume it is an fmriprep confounds file.
-  --ICfile ICFILE       The independent component file produced by MELODIC (usually found in
-                        MELODICDIR/melodic_IC.nii.gz).
-  --ICmask ICMASK       The independent component mask file produced by MELODIC (usually found in
-                        MELODICDIR/mask.nii.gz).
+                        The anatomic file on which to display the ICs (usually found
+                        in FEATDIR/mc/prefiltered_func_data_mcf.par). If the file has
+                        a .tsv extension, assume it is an fmriprep confounds file.
+  --ICfile ICFILE       The independent component file produced by MELODIC (usually
+                        found in MELODICDIR/melodic_IC.nii.gz).
+  --ICmask ICMASK       The independent component mask file produced by MELODIC
+                        (usually found in MELODICDIR/mask.nii.gz).
   --timecoursefile MIXFILE
-                        The timecourses of the independant components (usually found in
-                        MELODICDIR/melodic_mix),
+                        The timecourses of the independant components (usually found
+                        in MELODICDIR/melodic_mix),
 
 Other arguments:
-  --initfile INITFILE   The name of an initial bad component file (in aroma mode, this overrides the
-                        default input file for AROMA).
+  --initfile INITFILE   The name of an initial bad component file (in aroma mode, this
+                        overrides the default input file for AROMA).
   --outputfile OUTPUTFILE
-                        Where to write the bad component file (this overrides the default output file
-                        name).
+                        Where to write the bad component file (this overrides the
+                        default output file name).
   --filteredfile FILTEREDFILE
-                        The name of the filtered NIFTI file. If this is set, then when the bad
-                        component file is written, the command to generate the filtered file will be
-                        printed to the terminal window.
+                        The name of the filtered NIFTI file. If this is set, then when
+                        the bad component file is written, the command to generate the
+                        filtered file will be printed to the terminal window.
   --displaythresh DISPLAYTHRESH
                         z threshold for the displayed ICA components. Default is 2.3.
-```
+
+Configuration arguments:
+  --keepcolor KEEPCOLOR
+                        Set the color of timecourses to be kept (default is "g").
+  --discardcolor DISCARDCOLOR
+                        Set the color of timecourses to discard (default is "r").
+  --transmotlimits LOWERLIM UPPERLIM
+                        Override the "normal" limits of translational motion from the
+                        values in the configuration file to LOWERLIM-UPPERLIM mm.
+  --rotmotlimits LOWERLIM UPPERLIM
+                        Override the "normal" limits of rotations motion from the
+                        values in the configuration file to LOWERLIM-UPPERLIM radians.
+  ```
 
 You'll then get a window that looks like this:
 
@@ -90,11 +105,13 @@ For most datasets, you only need to specify the FEAT directory where the preproc
 
 `--displaythresh` sets the z-threshold for the component maps.
 
-## Configuration file
 
-\* You can override the default keepcolor and discardcolor (and the colors for all the motion timecourses) by editing the file ${HOME}/.picachooser.json. This file is created is created with default values if it is not present.  You can use any valid python color specification string, e.g. "r", "ff0000", or "FF0000" could all be used for red.
 
-The motion plots have two dotted lines to indicate "normal" motion limits (by default +/-2.5 mm for translation and +/-0.04 radians for rotation).  You can change these values by editing the "transmotlimits" and "rotmotlimits" in the configuration file.  Setting "motionplotstyle" to 0 will remove the lines, and fix the y range of the plots to the limit values.  Set the limit line color using "motionlimitcolor".
+## \* Configuration changes
+
+You can use `--keepcolor`, `--discardcolor`, `--transmotlimits` and `--rotmotlimits` to alter display behavior for the current run (useful if you're using the docker container).  To change things semi-permanently, edit the file ${HOME}/.picachooser.json. This file is created with default values if it is not present.  You can use any valid python color specification string for color values, e.g. "r", "ff0000", or "FF0000" could all be used for red.
+
+The motion plots have two dotted lines to indicate "normal" motion limits (by default +/-2.5 mm for translation and +/-0.04 radians for rotation).  The locations of these lines are set by  "transmotlimits" and "rotmotlimits" in the configuration file.  Setting "motionplotstyle" to 0 will remove the lines, and fix the y range of the plots to the limit values.  Set the limit line color using "motionlimitcolor".
 
 
 # Reprocessing fmriprep AROMA analyses
