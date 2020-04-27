@@ -79,7 +79,7 @@ Configuration arguments:
 
 You'll then get a window that looks like this:
 
-![PICAchooser screenshot](https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot.png)
+![PICAchooser screenshot](https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2.png)
 
 # Controls
 
