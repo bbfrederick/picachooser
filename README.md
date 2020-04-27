@@ -80,7 +80,7 @@ Press the escape key at any time to save the current version of the component li
 For most datasets, you only need to specify the FEAT directory where the preprocessing was done, and the MELODIC directory where the ICA analysis was performed, and PICAchooser can find all the files it needs to let you do component selection.  In some cases, however (looking at you, fmriprep), the files you need to find can be scattered all over the place, with different names (and even different formats). In those cases, you can specify the name and location of every one of the files separately (anything you set with these options will override the default locations calculated from the FEATDIR and MELODICDIR).
 
 
-## Options
+## Other command line options
 
 `--initfile` lets you read in a bad component file from anywhere to use as a starting point in your classification.  It's the normal behavior in aroma mode (reading from MELODICDIR/../classified_motion_ICs.txt), but you can do it in any mode with this flag, and it will override the aroma classifications.
 
@@ -90,7 +90,11 @@ For most datasets, you only need to specify the FEAT directory where the preproc
 
 `--displaythresh` sets the z-threshold for the component maps.
 
+## Configuration file
+
 \* You can override the default keepcolor and discardcolor (and the colors for all the motion timecourses) by editing the file ${HOME}/.picachooser.json. This file is created is created with default values if it is not present.  You can use any valid python color specification string, e.g. "r", "ff0000", or "FF0000" could all be used for red.
+
+The motion plots have two dotted lines to indicate "normal" motion limits (by default +/-2.5 mm for translation and +/-0.04 radians for rotation).  You can change these values by editing the "transmotlimits" and "rotmotlimits" in the configuration file.  Setting "motionplotstyle" to 0 will remove the lines, and fix the y range of the plots to the limit values.  Set the limit line color using "motionlimitcolor".
 
 
 # Reprocessing fmriprep AROMA analyses
