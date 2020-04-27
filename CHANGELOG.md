@@ -1,7 +1,7 @@
 # History of changes
 
 ## Version 1.0.0rc9 (4/27/20)
-* keepcolor, discardcolor, transmotlimits and rotmot limits are now settable via command line arguments.  This means docker users can change configuration values.
+* keepcolor, discardcolor, transmotlimits and rotmotlimits are now settable via command line arguments.  This means docker users can change configuration values.
 * Increased some linewidths to make the display more readable, made the widths settable in the config file.
 
 ## Version 1.0.0rc8 (4/27/20)
