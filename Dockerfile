@@ -84,7 +84,7 @@ RUN conda install -y python=3.7.4 \
                      pillow=7.0.0 \
                      nibabel=2.5.1 \
                      pandas=0.25.3 \
-                     pyqtgraph=0.10.0; sync && \
+                     pyqtgraph=0.11.0rc0; sync && \
     chmod -R a+rX /usr/local/miniconda; sync && \
     chmod +x /usr/local/miniconda/bin/*; sync && \
     conda build purge-all; sync && \
