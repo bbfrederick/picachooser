@@ -804,27 +804,35 @@ def main():
             io.writedicttojson(config, configfile)
 
     if args.keepcolor is not None:
+        print('setting keepcolor to', args.keepcolor)
         config['keepcolor'] = args.keepcolor
 
     if args.discardcolor is not None:
+        print('setting dicardcolor to', args.discardcolor)
         config['discardcolor'] = args.discardcolor
 
     if args.transmotlimits[0] is not None:
+        print('setting transmotlimits to', (args.transmotlimits[0], args.transmotlimits[1]))
         config['transmotlimits'] = (args.transmotlimits[0], args.transmotlimits[1])
 
     if args.rotmotlimits[0] is not None:
+        print('setting rotmotlimits to', (args.rotmotlimits[0], args.rotmotlimits[1]))
         config['rotmotlimits'] = (args.rotmotlimits[0], args.rotmotlimits[1])
 
     if args.scalemotiontodata is not None:
+        print('will scale motion to data')
         config['scalemotiontodata'] = True
 
     if args.componentlinewidth is not None:
+        print('setting componentlinewidth to', args.componentlinewidth)
         config['componentlinewidth'] = args.componentlinewidth
 
     if args.motionlinewidth is not None:
+        print('setting motionlinewidth to', args.motionlinewidth)
         config['motionlinewidth'] = args.motionlinewidth
 
     if args.motionlimitlinewidth is not None:
+        print('setting motionlimitlinewidth to', args.motionlimitlinewidth)
         config['motionlimitlinewidth'] = args.motionlimitlinewidth
 
     # set the sample rate
