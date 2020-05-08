@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.0.0rc10 (5/7/20)
+* All plot linewidths are now settable from the command line.
+* Added the --scalemotiontodata option to autoscale motion plots (rather than setting the plot limits by the dashed guide lines.
+
 ## Version 1.0.0rc9 (4/27/20)
 * keepcolor, discardcolor, transmotlimits and rotmotlimits are now settable via command line arguments.  This means docker users can change configuration values.
 * Increased some linewidths to make the display more readable, made the widths settable in the config file.
