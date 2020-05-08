@@ -345,13 +345,13 @@ def updateTimecourse():
     win.setWindowTitle(windowtitle)
 
     timecourse_ax.plot(thiscomponent['timeaxis'], thiscomponent['timecourse'],
-                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=config['componentwidth']), clear=True)
+                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=config['componentlinewidth']), clear=True)
     timecourse_ax.setTitle('Independent component ' + str(whichcomponent + 1),)
 
     spectrum_ax.plot(thiscomponent['freqaxis'], thiscomponent['spectrum'],
                      stepMode=False,
                      fillLevel=0,
-                     pen=pg.mkPen(pencolor, width=config['componentwidth']),
+                     pen=pg.mkPen(pencolor, width=config['componentlinewidth']),
                      clear=True)
     spectrum_ax.setTitle('Magnitude spectrum of timecourse ' + str(whichcomponent + 1))
 
@@ -368,17 +368,17 @@ def updateMotion():
     thiscomponent = alldata[namelist[whichcomponent]]
     curve1 = transmot_ax.plot()
     curve1.setData(thiscomponent['timeaxis'], motion['xtrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionwidth']), clear=True, name='xtrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']), clear=True, name='xtrans')
     curve2 = transmot_ax.plot()
     curve2.setData(thiscomponent['timeaxis'], motion['ytrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionwidth']), clear=True, name='ytrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']), clear=True, name='ytrans')
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionwidth']), clear=True, name='ztrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']), clear=True, name='ztrans')
     if config['motionplotstyle'] == 0:
         transmot_ax.setYRange(config['transmotlimits'][0], config['transmotlimits'][1], padding=0)
     else:
-        limitpen = pg.mkPen(config['motionlimitcolor'], width=config['motionlimitwidth'], style=QtCore.Qt.DotLine)
+        limitpen = pg.mkPen(config['motionlimitcolor'], width=config['motionlimitlinewidth'], style=QtCore.Qt.DotLine)
         transtopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
         transtopLine.setZValue(20)
         transmot_ax.addItem(transtopLine)
@@ -387,6 +387,17 @@ def updateMotion():
         transbottomLine.setZValue(20)
         transmot_ax.addItem(transbottomLine)
         transbottomLine.setValue(config['transmotlimits'][0])
+
+        if config['scalemotiontodata']:
+            transmin = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
+            transmax = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
+        else:
+            transmin = config['transmotlimits'][0]
+            transmax = config['transmotlimits'][1]
+        transrange = transmax - transmin
+        transmin -= transrange * 0.1
+        transmax += transrange * 0.1
+        transmot_ax.setYRange(transmin, transmax, padding=0)
 
     transcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xtrans'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['xtrans'],
@@ -398,17 +409,17 @@ def updateMotion():
 
     curve4 = rotmot_ax.plot()
     curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionwidth']), clear=True, name='xrot')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']), clear=True, name='xrot')
     curve5 = rotmot_ax.plot()
     curve5.setData(thiscomponent['timeaxis'], motion['yrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionwidth']), clear=True, name='yrot')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']), clear=True, name='yrot')
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionwidth']), clear=True, name='ztrans')
+                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']), clear=True, name='ztrans')
     if config['motionplotstyle'] == 0:
         rotmot_ax.setYRange(config['rotmotlimits'][0], config['rotmotlimits'][1], padding=0)
     else:
-        limitpen = pg.mkPen(config['motionlimitcolor'], width=config['motionlimitwidth'], style=QtCore.Qt.DotLine)
+        limitpen = pg.mkPen(config['motionlimitcolor'], width=config['motionlimitlinewidth'], style=QtCore.Qt.DotLine)
         rottopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
         rottopLine.setZValue(20)
         rotmot_ax.addItem(rottopLine)
@@ -417,6 +428,18 @@ def updateMotion():
         rotbottomLine.setZValue(20)
         rotmot_ax.addItem(rotbottomLine)
         rotbottomLine.setValue(config['rotmotlimits'][0])
+
+        if config['scalemotiontodata']:
+            rotmin = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
+            rotmax = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
+        else:
+            rotmin = config['rotmotlimits'][0]
+            rotmax = config['rotmotlimits'][1]
+        rotrange = rotmax - rotmin
+        rotmin -= rotrange * 0.1
+        rotmax += rotrange * 0.1
+        rotmot_ax.setYRange(rotmin, rotmax, padding=0)
+
 
     rotcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xrot'],
                                                                          alldata[namelist[whichcomponent]]['motioncorrps']['xrot'],
@@ -588,6 +611,36 @@ def main():
         help=('Override the "normal" limits of rotations motion from the values in the configuration '
               'file to LOWERLIM-UPPERLIM radians.'),
         default=(None, None))
+    configuration.add_argument(
+        '--scalemotiontodata',
+        action='store_true',
+        help=('Scale motion plots to the motion timecourse values rather than to the limit lines.'),
+        default=None)
+    configuration.add_argument(
+        '--componentlinewidth',
+        action='store',
+        type=lambda x: is_float(parser, x),
+        metavar=('LINEWIDTH'),
+        help=('Override the component line width (in pixels) in the configuration '
+              'file with LINEWIDTH.'),
+        default=None)
+    configuration.add_argument(
+        '--motionlinewidth',
+        action='store',
+        type=lambda x: is_float(parser, x),
+        metavar=('LINEWIDTH'),
+        help=('Override the motion timecourse line widths (in pixels) in the configuration '
+              'file with LINEWIDTH.'),
+        default=None)
+    configuration.add_argument(
+        '--motionlimitlinewidth',
+        action='store',
+        type=lambda x: is_float(parser, x),
+        metavar=('LINEWIDTH'),
+        help=('Override the line widths of the motion limit lines (in pixels) in the configuration '
+              'file with LINEWIDTH.'),
+        default=None)
+
 
     try:
         args = parser.parse_args()
@@ -719,33 +772,34 @@ def main():
     def initconfig():
         print('initializing preferences')
         config = {
-            'prefsversion': 2,
-            'componentwidth': 2,
+            'prefsversion': 3,
+            'componentlinewidth': 2,
             'keepcolor': 'g',
             'discardcolor': 'r',
             'motionxcolor': 'ff8888',
             'motionycolor': '88ff88',
             'motionzcolor': '8888ff',
-            'motionwidth': 2,
+            'motionlinewidth': 2,
             'transmotlimits': (-2.5, 2.5),
             'rotmotlimits': (-0.04, 0.04),
             'motionlimitcolor': 'cccccc',
-            'motionlimitwidth': 4,
-            'motionplotstyle': 1
+            'motionlimitlinewidth': 4,
+            'motionplotstyle': 1,
+            'scalemotiontodata': False
         }
         return config
 
     configfile = os.path.join(os.environ['HOME'], '.picachooser.json')
     if not os.path.isfile(configfile):
         config = initconfig()
-        io.writedicttojson(config, configfile)
+        io.writedicttojson(config, configfile, sort_keys=False)
     else:
         config = io.readdictfromjson(configfile)
         try:
             prefsversion = config['prefsversion']
         except KeyError:
             prefsversion = 0
-        if prefsversion < 2:
+        if prefsversion < 3:
             config = initconfig()
             io.writedicttojson(config, configfile)
 
@@ -760,6 +814,18 @@ def main():
 
     if args.rotmotlimits[0] is not None:
         config['rotmotlimits'] = (args.rotmotlimits[0], args.rotmotlimits[1])
+
+    if args.scalemotiontodata is not None:
+        config['scalemotiontodata'] = True
+
+    if args.componentlinewidth is not None:
+        config['componentlinewidth'] = args.componentlinewidth
+
+    if args.motionlinewidth is not None:
+        config['motionlinewidth'] = args.motionlinewidth
+
+    if args.motionlimitlinewidth is not None:
+        config['motionlimitlinewidth'] = args.motionlimitlinewidth
 
     # set the sample rate
     tr, timepoints = io.fmritimeinfo(funcfile)
