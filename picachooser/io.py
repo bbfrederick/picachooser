@@ -627,7 +627,7 @@ def readbidssidecar(inputfilename):
         return {}
 
 
-def writedicttojson(thedict, thefilename):
+def writedicttojson(thedict, thefilename, sort_keys=False):
     r"""Write key value pairs to a json file
 
     Parameters
@@ -649,7 +649,7 @@ def writedicttojson(thedict, thefilename):
         else:
             thisdict[key] = thedict[key]
     with open(thefilename, 'wb') as fp:
-        fp.write(json.dumps(thisdict, sort_keys=True, indent=4, separators=(',', ':')).encode("utf-8"))
+        fp.write(json.dumps(thisdict, sort_keys=sort_keys, indent=4, separators=(',', ':')).encode("utf-8"))
 
 
 def readdictfromjson(inputfilename):
