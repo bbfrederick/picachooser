@@ -29,6 +29,9 @@
 
 + Rebuild Docker container and push
 
+    dockerbuild/build.sh
+    dockerbuild/test.sh
+
 + Sync everything to github.
 
 + Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
