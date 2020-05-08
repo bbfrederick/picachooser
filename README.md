@@ -75,6 +75,17 @@ Configuration arguments:
   --rotmotlimits LOWERLIM UPPERLIM
                         Override the "normal" limits of rotations motion from the
                         values in the configuration file to LOWERLIM-UPPERLIM radians.
+  --scalemotiontodata   Scale motion plots to the motion timecourse values rather than
+                        to the limit lines.
+  --componentlinewidth LINEWIDTH
+                        Override the component line width (in pixels) in the
+                        configuration file with LINEWIDTH.
+  --motionlinewidth LINEWIDTH
+                        Override the motion timecourse line widths (in pixels) in the
+                        configuration file with LINEWIDTH.
+  --motionlimitlinewidth LINEWIDTH
+                        Override the line widths of the motion limit lines (in pixels)
+                        in the configuration file with LINEWIDTH.
   ```
 
 You'll then get a window that looks like this:
