@@ -52,7 +52,7 @@ def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
     theviewbox = pg.ViewBox(enableMouse=False)
     theviewbox.setRange(QtCore.QRectF(0, 0, cb_xdim, cb_ydim),
                         xRange=(0, cb_xdim - 1), yRange=(0, cb_ydim - 1), padding=0.0,
-                        disableAutoRange=True)
+                        disableAutoRange=False)
     theviewbox.setAspectLocked()
 
     thecolorbarwin = pg.ImageItem()
@@ -66,16 +66,12 @@ def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
     thecolorbarwin.setImage(colorbarvals, levels=[0.0, 1.0])
     return thecolorbarwin, theviewbox
 
-def resetRange(theviewbox, imgxsize, imgysize):
-    theviewbox.setRange(QtCore.QRectF(0, 0, imgxsize, imgysize), padding=0., disableAutoRange=False)
 
-
-def newViewWindow(view, left, top, imgxsize, imgysize, enableMouse=False):
-    #theviewbox = view.addViewBox(enableMouse=enableMouse, enableMenu=False, lockAspect=1.0)
-    theviewbox = view.addViewBox(enableMouse=False, enableMenu=False)
-    theviewbox.setAspectLocked()
+def newViewWindow(view, imgxsize, imgysize, enableMouse=False):
+    theviewbox = view.addViewBox(enableMouse=enableMouse, enableMenu=False)
     theviewbox.setRange(QtCore.QRectF(0, 0, imgxsize, imgysize), padding=0.0, disableAutoRange=False)
     theviewbox.setBackgroundColor([50, 50, 50])
+    theviewbox.setAspectLocked()
 
     theviewfgposwin = pg.ImageItem()
     theviewbox.addItem(theviewfgposwin)
@@ -378,6 +374,8 @@ class LightboxItem(QtGui.QWidget):
         else:
             self.endslice = endslice
         self.slicestep = slicestep
+        self.slicelist = range(self.startslice, self.endslice, self.slicestep)
+        self.numslices = len(self.slicelist)
         self.imgxsize = imgxsize
         self.imgysize = imgysize
         self.xfov = self.xdim * self.xsize
@@ -392,18 +390,19 @@ class LightboxItem(QtGui.QWidget):
         self.offsetx = self.imgxsize * (0.5 - self.xfov / (2.0 * self.maxfov))
         self.offsety = self.imgysize * (0.5 - self.yfov / (2.0 * self.maxfov))
         self.thresh = 2.3
+        self.windowaspect = 0.0
+        self.getWinDims()
         self.tiledbackground = None
         self.tiledmasks = {}
         self.tiledforegrounds = {}
 
         if self.verbose:
-            print('OrthoImageItem intialization:')
+            print('LightboxItem intialization:')
             print('    Dimensions:', self.xdim, self.ydim, self.zdim)
             print('    Voxel sizes:', self.xsize, self.ysize)
             print('    FOVs:', self.xfov, self.yfov)
             print('    Maxfov, imgxsize, imgysize:', self.maxfov, self.imgxsize, self.imgysize)
-            print('    Scale factors:', self.impixpervoxx, self.impixpervoxy, self.impixpervoxz)
-            print('    Offsets:', self.offsetx, self.offsety, self.offsetz)
+            print('    Scale factors:', self.xscale, self.yscale)
         self.buttonisdown = False
 
         self.thisview.setBackground(None)
@@ -413,9 +412,10 @@ class LightboxItem(QtGui.QWidget):
 
         self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thislabel, self.thisviewbox = \
             newViewWindow(self.thisview,
-                          0, 0,
-                          self.imgxsize, self.imgysize,
+                          self.numperrow * self.xdim, self.numpercol * self.ydim,
                           enableMouse=self.enableMouse)
+        self.resetWinProps()
+
         if self.enableMouse:
             #self.thisviewbox.keyPressEvent = self.handlekey
             self.thisviewbox.mousePressEvent = self.handleclick
@@ -463,37 +463,82 @@ class LightboxItem(QtGui.QWidget):
             thepos = 0
         return int(np.round(thepos))
 
-    def optmatrix(self, numslices, xsize, ysize, targetaspectratio, verbose=False):
+
+    def optmatrix(self, xsizeinmm, ysizeinmm, targetaspectratio, verbose=True):
         # first find all the combinations of x and y that will minimally hold all the images
-        xvals = np.arange(2, int(numslices // 2), 1, dtype=np.int)
-        yvals = xvals * 0
-        for i in range(len(yvals)):
-            yvals[i] = int(np.ceil(numslices / xvals[i]))
+        numrows = np.arange(2, int(self.numslices // 2), 1, dtype=np.int)
+        numcols = numrows * 0
+        for i in range(len(numcols)):
+            numcols[i] = int(np.ceil(self.numslices / numrows[i]))
 
         # now calculate the aspect ratios of all of these combinations
-        theaspectratios = (xsize * xvals) / (ysize * yvals)
+        theaspectratios = (xsizeinmm * numcols) / (ysizeinmm * numrows)
         theindex = np.argmin(np.fabs(theaspectratios - targetaspectratio))
         if verbose:
-            for i in range(len(yvals)):
+            for i in range(len(numcols)):
                 if i == theindex:
-                    print('x, y, aspect, target:', xvals[i], yvals[i], theaspectratios[i], targetaspectratio, '***')
+                    print('columns, rows, positions, numslices, aspect, target:',
+                          numcols[i], numrows[i],
+                          numcols[i] * numrows[i],
+                          theaspectratios[i], targetaspectratio, '***')
                 else:
-                    print('x, y, aspect, target:', xvals[i], yvals[i], theaspectratios[i], targetaspectratio)
-        return xvals[theindex], yvals[theindex]
+                    print('columns, rows, positions, aspect, target:',
+                          numcols[i], numrows[i],
+                          numcols[i] * numrows[i],
+                          theaspectratios[i], targetaspectratio)
+        print('optmatrix: xsizeinmm, ysizeinmm, thisaspectratio, targetapectratio, numcols, numrows:',
+              xsizeinmm, ysizeinmm,
+              theaspectratios[theindex], targetaspectratio,
+              numcols[theindex], numrows[theindex])
+        return numcols[theindex], numrows[theindex]
+
+
+    def getWinDims(self):
+        self.winwidth = self.thisview.frameGeometry().width()
+        self.winheight = self.thisview.frameGeometry().height()
+        newaspect = self.winwidth / self.winheight
+        if newaspect != self.windowaspect:
+            self.aspectchanged = True
+            self.numperrow, self.numpercol = self.optmatrix(self.xdim * self.xsize, self.ydim * self.ysize, newaspect)
+            self.xmm = self.numperrow * self.xsize * self.xdim
+            self.ymm = self.numpercol * self.ysize * self.ydim
+            self.xscale = self.xmm / self.winwidth
+            self.yscale = self.ymm / self.winheight
+            #self.xscale = self.xsize
+            #self.yscale = self.ysize
+        else:
+            self.aspectchanged = False
+        self.windowaspect = newaspect
+        print('current lightbox dimensions, aspect ratio, changed:',
+              self.winwidth,
+              self.winheight,
+              self.windowaspect,
+              self.aspectchanged)
+
+
+    def resetWinProps(self):
+        self.tiledbackground = None
+        self.tiledmasks = {}
+        self.tiledforegrounds = {}
+        self.thisviewbox.setRange(QtCore.QRectF(0, 0,
+                                                self.numperrow * self.xdim, self.numpercol * self.ydim),
+                                  padding=0.0)
+        self.thisviewbox.setAspectLocked(lock=True, ratio=self.xscale/self.yscale)
+        self.aspectchanged = False
+
 
     def tileSlices(self, inputimage):
-        slicelist = range(self.startslice, self.endslice, self.slicestep)
-        numslices = len(slicelist)
-        theaspect = (self.xdim * 14.0) / (self.ydim * 9.0)
-        numinx, numiny = self.optmatrix(numslices, self.xdim, self.ydim, theaspect)
-        tiledimage = np.zeros((numinx * self.xdim, numiny * self.ydim))
-        for whichslice in range(np.min([numslices, numinx * numiny])):
-            xpos = (numinx - (whichslice % numinx) - 1) * self.xdim
-            ypos = (int(whichslice // numinx)) * self.ydim
-            tiledimage[xpos:xpos + self.xdim, ypos:ypos + self.ydim] = inputimage[:, :, slicelist[whichslice]]
+        tiledimage = np.zeros((self.numperrow * self.xdim, self.numpercol * self.ydim))
+        for whichslice in range(np.min([self.numslices, self.numperrow * self.numpercol])):
+            xpos = (self.numperrow - (whichslice % self.numperrow) - 1) * self.xdim
+            ypos = (int(whichslice // self.numperrow)) * self.ydim
+            tiledimage[xpos:xpos + self.xdim, ypos:ypos + self.ydim] = inputimage[:, :, self.slicelist[whichslice]]
         return tiledimage
 
     def updateAllViews(self):
+        self.getWinDims()
+        if self.aspectchanged:
+            self.resetWinProps()
         try:
             thisviewdata = self.tiledforegrounds[str(self.tpos)]
             if self.verbose:
@@ -504,7 +549,7 @@ class LightboxItem(QtGui.QWidget):
             self.tiledforegrounds[str(self.tpos)] = self.tileSlices(self.fgmap.maskeddata[:, :, :, self.tpos])
             thisviewdata = self.tiledforegrounds[str(self.tpos)]
 
-        if self.fgmap.mask is None:
+        '''if self.fgmap.mask is None:
             if self.verbose:
                 print('fyi - the mask is none - using fake mask')
             thisviewmask = self.tiledforegrounds[str(self.tpos)] * 0.0 + 1.0
@@ -517,7 +562,7 @@ class LightboxItem(QtGui.QWidget):
                 if self.verbose:
                     print('tiling mask image')
                 self.tiledmasks[str(self.tpos)] = self.tileSlices(self.fgmap.mask[:, :, :, self.tpos])
-                thisviewmask = self.tiledmasks[str(self.tpos)]
+                thisviewmask = self.tiledmasks[str(self.tpos)]'''
 
         if self.bgmap is None:
             thisviewbg = None
@@ -619,7 +664,8 @@ class LightboxItem(QtGui.QWidget):
     def handlerefresh(self, event):
         if self.verbose:
             print('refreshing viewbox range')
-        resetRange(self.thisviewbox, self.imgxsize, self.imgysize)
+        self.getWinDims()
+        self.resetWinProps()
         self.updateAllViews
 
 
