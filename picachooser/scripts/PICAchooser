@@ -456,6 +456,7 @@ def updateLightbox():
 
     if verbose:
         print('entering updateLightbox')
+
     thiscomponent = alldata[namelist[whichcomponent]]
     if thiscomponent['grade'] == 1:
         thelabel = 'Keeping IC {0}'.format(whichcomponent + 1)
@@ -904,9 +905,15 @@ def main():
         alldata[thefile]['timecourse'] = invec * 1.0
         alldata[thefile]['motioncorrs'] = {}
         alldata[thefile]['motioncorrps'] = {}
+        motionlen = len(motion['xtrans'])
+        tclen = len(alldata[thefile]['timecourse'])
         for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
-            alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
-                pearsonr(motion[component], alldata[thefile]['timecourse'])
+            if motionlen > tclen:
+                alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
+                    pearsonr(motion[component][-tclen:], alldata[thefile]['timecourse'])
+            else:
+                alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
+                    pearsonr(motion[component], alldata[thefile]['timecourse'])
         alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
         alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
             spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
@@ -962,7 +969,7 @@ def main():
     fgimage = lb.imagedataset('IC', ICfile, 'IC', lut_state=cm.redyellow_state, geommask=geommaskimage.data)
     fgimage.setFuncMaskByThresh(threshval=args.displaythresh)
     bgimage = lb.imagedataset('BG', BGfile, 'background', lut_state=cm.gray_state)
-    mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage)
+    mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=True)
 
     # initialize everything
     updateTimecourse()
