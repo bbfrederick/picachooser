@@ -913,8 +913,12 @@ def main():
         for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
             alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
                 pearsonr(motion[component][alldata['componentstartpoint']:], alldata[thefile]['timecourse'])
-        alldata[thefile]['timeaxis'] = np.linspace(1.0 * tclen, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
-        alldata[thefile]['mottimeaxis'] = np.linspace(0.0, 1.0 * (motionlen - 1), num=motionlen, endpoint=True) / thesamplerate
+        alldata[thefile]['timeaxis'] = np.linspace(1.0 * alldata['componentstartpoint'], 1.0 * (len(invec) - 1),
+                                                   num=len(invec),
+                                                   endpoint=True) / thesamplerate
+        alldata[thefile]['mottimeaxis'] = np.linspace(0.0, 1.0 * (motionlen - 1),
+                                                      num=motionlen,
+                                                      endpoint=True) / thesamplerate
         alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
             spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
         alldata[thefile]['grade'] = thegrade
