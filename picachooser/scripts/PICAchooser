@@ -367,13 +367,13 @@ def updateMotion():
         print('entering updateMotion')
     thiscomponent = alldata[namelist[whichcomponent]]
     curve1 = transmot_ax.plot()
-    curve1.setData(thiscomponent['timeaxis'], motion['xtrans'],
+    curve1.setData(thiscomponent['mottimeaxis'], motion['xtrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']), clear=True, name='xtrans')
     curve2 = transmot_ax.plot()
-    curve2.setData(thiscomponent['timeaxis'], motion['ytrans'],
+    curve2.setData(thiscomponent['mottimeaxis'], motion['ytrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']), clear=True, name='ytrans')
     curve3 = transmot_ax.plot()
-    curve3.setData(thiscomponent['timeaxis'], motion['ztrans'],
+    curve3.setData(thiscomponent['mottimeaxis'], motion['ztrans'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']), clear=True, name='ztrans')
     if config['motionplotstyle'] == 0:
         transmot_ax.setYRange(config['transmotlimits'][0], config['transmotlimits'][1], padding=0)
@@ -408,13 +408,13 @@ def updateMotion():
     print('\ttranscorrs for component', whichcomponent + 1, transcorrs)
 
     curve4 = rotmot_ax.plot()
-    curve4.setData(thiscomponent['timeaxis'], motion['xrot'],
+    curve4.setData(thiscomponent['mottimeaxis'], motion['xrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']), clear=True, name='xrot')
     curve5 = rotmot_ax.plot()
-    curve5.setData(thiscomponent['timeaxis'], motion['yrot'],
+    curve5.setData(thiscomponent['mottimeaxis'], motion['yrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']), clear=True, name='yrot')
     curve6 = rotmot_ax.plot()
-    curve6.setData(thiscomponent['timeaxis'], motion['zrot'],
+    curve6.setData(thiscomponent['mottimeaxis'], motion['zrot'],
                       stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']), clear=True, name='ztrans')
     if config['motionplotstyle'] == 0:
         rotmot_ax.setYRange(config['rotmotlimits'][0], config['rotmotlimits'][1], padding=0)
@@ -888,6 +888,7 @@ def main():
     else:
         print('cannot read files with extension', extension)
         sys.exit()
+    motionlen = motion['xtrans'].shape[0]
 
 
     namelist = []
@@ -905,14 +906,14 @@ def main():
         alldata[thefile]['timecourse'] = invec * 1.0
         alldata[thefile]['motioncorrs'] = {}
         alldata[thefile]['motioncorrps'] = {}
-        motionlen = motion['xtrans'].shape[0]
         tclen = alldata[thefile]['timecourse'].shape[0]
         print('motionlen, tclen:', motionlen, tclen)
         alldata['componentstartpoint'] = motionlen - tclen
         for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
             alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
                 pearsonr(motion[component][alldata['componentstartpoint']:], alldata[thefile]['timecourse'])
-        alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
+        alldata[thefile]['timeaxis'] = np.linspace(1.0 * tclen, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
+        alldata[thefile]['mottimeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
         alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
             spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
         alldata[thefile]['grade'] = thegrade
