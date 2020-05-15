@@ -905,8 +905,9 @@ def main():
         alldata[thefile]['timecourse'] = invec * 1.0
         alldata[thefile]['motioncorrs'] = {}
         alldata[thefile]['motioncorrps'] = {}
-        motionlen = len(motion['xtrans'])
-        tclen = len(alldata[thefile]['timecourse'])
+        motionlen = motion['xtrans'].shape[0]
+        tclen = alldata[thefile]['timecourse'].shape[0]
+        print('motionlen, tclen:', motionlen, tclen)
         for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
             if motionlen > tclen:
                 alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
