@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.0.0rc11 (5/15/20)
+* Properly handle the case of the timecourses being shorter than the motion plots (happens when fMRIprep discards (but doesn't really discard) initial timepoints).
+* Window resizing works somewhat better (but it's not perfect yet).
+
 ## Version 1.0.0rc10 (5/7/20)
 * All plot linewidths are now settable from the command line.
 * Added the --scalemotiontodata option to autoscale motion plots (rather than setting the plot limits by the dashed guide lines.)

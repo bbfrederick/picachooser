@@ -36,8 +36,8 @@
 
 + Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.0.0rc10 -m "v1.0.0rc10"
-    git push origin v1.0.0rc10
+    git tag -a v1.0.0rc11 -m "v1.0.0rc11"
+    git push origin v1.0.0rc11
 
 
 + Edit the release notes on github
