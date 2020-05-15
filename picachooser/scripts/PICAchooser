@@ -908,13 +908,10 @@ def main():
         motionlen = motion['xtrans'].shape[0]
         tclen = alldata[thefile]['timecourse'].shape[0]
         print('motionlen, tclen:', motionlen, tclen)
+        alldata['componentstartpoint'] = motionlen - tclen
         for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
-            if motionlen > tclen:
-                alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
-                    pearsonr(motion[component][-tclen:], alldata[thefile]['timecourse'])
-            else:
-                alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
-                    pearsonr(motion[component], alldata[thefile]['timecourse'])
+            alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
+                pearsonr(motion[component][alldata['componentstartpoint']:], alldata[thefile]['timecourse'])
         alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
         alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
             spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
