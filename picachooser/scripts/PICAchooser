@@ -909,7 +909,6 @@ def main():
         alldata[thefile]['motioncorrs'] = {}
         alldata[thefile]['motioncorrps'] = {}
         tclen = alldata[thefile]['timecourse'].shape[0]
-        print('motionlen, tclen:', motionlen, tclen)
         alldata['componentstartpoint'] = motionlen - tclen
         for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
             alldata[thefile]['motioncorrs'][component],  alldata[thefile]['motioncorrps'][component] = \
