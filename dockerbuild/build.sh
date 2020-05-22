@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION='1.0.0rc11'
+VERSION='1.0.0rc12'
 
 docker build . -t fredericklab/picachooser:${VERSION}
 docker build . -t fredericklab/picachooser:latest

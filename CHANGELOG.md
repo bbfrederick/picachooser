@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.0.0rc12 (5/21/20)
+* The explained variance and total variance of the component are now displayed in the title bar of the window.
+
 ## Version 1.0.0rc11 (5/15/20)
 * Properly handle the case of the timecourses being shorter than the motion plots (happens when fMRIprep discards (but doesn't really discard) initial timepoints).
 * Window resizing works somewhat better (but it's not perfect yet).
