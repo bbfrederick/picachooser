@@ -317,6 +317,24 @@ def keyPressed(evt):
     elif evt.key() == QtCore.Qt.Key_Right:
         whichcomponent = (whichcomponent + 1) % numelements
         print('\nIC set to:', whichcomponent + 1)
+    elif evt.key() == QtCore.Qt.Key_A:
+        mainwin.setorient('ax')
+        mainwin.getWinProps()
+        mainwin.resetWinProps()
+        print('\nSetting orientation to axial')
+    elif evt.key() == QtCore.Qt.Key_C:
+        mainwin.setorient('cor')
+        mainwin.getWinProps()
+        mainwin.resetWinProps()
+        print('\nSetting orientation to coronal')
+    elif evt.key() == QtCore.Qt.Key_S:
+        mainwin.setorient('sag')
+        mainwin.getWinProps()
+        mainwin.resetWinProps()
+        print('\nSetting orientation to sagittal')
+    elif evt.key() == QtCore.Qt.Key_D:
+        print('\nDumping main window information')
+        mainwin.printWinProps()
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
         print('bad component file written')
