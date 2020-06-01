@@ -381,20 +381,18 @@ class LightboxItem(QtGui.QWidget):
         self.orientation = orientation
         self.forcerecalc = False
 
-        self.startslice = startslice
-        if endslice == -1:
-            self.endslice = self.zdim
-        else:
-            self.endslice = np.min([endslice, self.zdim])
-        self.slicestep = slicestep
-        self.slicelist = range(self.startslice, self.endslice, self.slicestep)
-        self.numslices = len(self.slicelist)
         self.thresh = 2.3
         self.windowaspectpix = 0.0
         self.winwidth = winwidth
         self.winheight = winheight
 
         self.setorient(self.orientation)
+        '''self.startslice = startslice
+        if endslice == -1:
+            self.endslice = self.zdim
+        else:
+            self.endslice = np.min([endslice, self.zdim])
+        self.slicestep = slicestep'''
 
         if self.verbose:
             print('LightboxItem intialization:')
@@ -434,6 +432,7 @@ class LightboxItem(QtGui.QWidget):
             self.vdim = self.ydim
             self.vfov = self.yfov
             self.vsize = self.ysize
+            self.slicedim = self.zdim
         elif self.orientation == 'cor':
             self.hdim = self.xdim
             self.hfov = self.xfov
@@ -441,6 +440,7 @@ class LightboxItem(QtGui.QWidget):
             self.vdim = self.zdim
             self.vfov = self.zfov
             self.vsize = self.zsize
+            self.slicedim = self.ydim
         elif self.orientation == 'sag':
             self.hdim = self.ydim
             self.hfov = self.yfov
@@ -448,8 +448,15 @@ class LightboxItem(QtGui.QWidget):
             self.vdim = self.zdim
             self.vfov = self.zfov
             self.vsize = self.zsize
+            self.slicedim = self.xdim
         else:
             print('illegal orientation')
+
+        self.startslice = 0
+        self.slicestep = 1
+        self.endslice = self.slicedim
+        self.slicelist = range(self.startslice, self.endslice, self.slicestep)
+        self.numslices = len(self.slicelist)
 
         self.maxfov = np.max([self.hfov, self.vfov])
         self.forcerecalc = True
