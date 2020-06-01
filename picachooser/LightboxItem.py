@@ -67,9 +67,9 @@ def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
     return thecolorbarwin, theviewbox
 
 
-def newViewWindow(view, imgxsize, imgysize, enableMouse=False):
+def newViewWindow(view, winwidth, winheight, enableMouse=False):
     theviewbox = view.addViewBox(enableMouse=enableMouse, enableMenu=False)
-    theviewbox.setRange(QtCore.QRectF(0, 0, imgxsize, imgysize), padding=0.0, disableAutoRange=False)
+    theviewbox.setRange(QtCore.QRectF(0, 0, winwidth, winheight), padding=0.0, disableAutoRange=False)
     theviewbox.setBackgroundColor([50, 50, 50])
     theviewbox.setAspectLocked()
 
@@ -349,10 +349,12 @@ class imagedataset:
 class LightboxItem(QtGui.QWidget):
     updated = QtCore.pyqtSignal()
 
-    def __init__(self, fgmap, thisview, startslice=0, endslice=-1, slicestep=1,
+    def __init__(self, fgmap, thisview,
+                 orientation='ax',
+                 startslice=0, endslice=-1, slicestep=1,
                  enableMouse=False,
                  button=None,
-                 imgxsize=64, imgysize=64,
+                 winwidth=64, winheight=64,
                  bgmap=None,
                  verbose=False):
         QtGui.QWidget.__init__(self)
@@ -368,41 +370,38 @@ class LightboxItem(QtGui.QWidget):
         self.tdim = self.fgmap.tdim     # this is the number of voxels along this axis
         self.xsize = self.fgmap.xsize   # this is the mapping between voxel and physical space
         self.ysize = self.fgmap.ysize   # this is the mapping between voxel and physical space
-        self.startslice = startslice
-        if endslice == -1:
-            self.endslice = self.zdim
-        else:
-            self.endslice = endslice
-        self.slicestep = slicestep
-        self.slicelist = range(self.startslice, self.endslice, self.slicestep)
-        self.numslices = len(self.slicelist)
-        self.imgxsize = imgxsize
-        self.imgysize = imgysize
+        self.zsize = self.fgmap.zsize   # this is the mapping between voxel and physical space
         self.xfov = self.xdim * self.xsize
         self.yfov = self.ydim * self.ysize
+        self.zfov = self.zdim * self.zsize
         self.xpos = int(self.xdim // 2)
         self.ypos = int(self.ydim // 2)
         self.zpos = int(self.zdim // 2)
         self.tpos = int(0)
-        self.maxfov = np.max([self.xfov, self.yfov])
-        self.impixpervoxx = self.imgxsize * (self.xfov / self.maxfov) / self.xdim
-        self.impixpervoxy = self.imgysize * (self.yfov / self.maxfov) / self.ydim
-        self.offsetx = self.imgxsize * (0.5 - self.xfov / (2.0 * self.maxfov))
-        self.offsety = self.imgysize * (0.5 - self.yfov / (2.0 * self.maxfov))
+        self.orientation = orientation
+
+        self.startslice = startslice
+        if endslice == -1:
+            self.endslice = self.zdim
+        else:
+            self.endslice = np.min([endslice, self.zdim])
+        self.slicestep = slicestep
+        self.slicelist = range(self.startslice, self.endslice, self.slicestep)
+        self.numslices = len(self.slicelist)
         self.thresh = 2.3
-        self.windowaspect = 0.0
-        self.getWinDims()
-        self.tiledbackground = None
-        self.tiledmasks = {}
-        self.tiledforegrounds = {}
+        self.windowaspectpix = 0.0
+        self.winwidth = winwidth
+        self.winheight = winheight
+
+        self.setorient(self.orientation)
 
         if self.verbose:
             print('LightboxItem intialization:')
             print('    Dimensions:', self.xdim, self.ydim, self.zdim)
             print('    Voxel sizes:', self.xsize, self.ysize)
             print('    FOVs:', self.xfov, self.yfov)
-            print('    Maxfov, imgxsize, imgysize:', self.maxfov, self.imgxsize, self.imgysize)
-            print('    Scale factors:', self.xscale, self.yscale)
+            print('    Maxfov, winwidth, winheight:', self.maxfov, self.winwidth, self.winheight)
+            print('    Scale factors:', self.hscale, self.vscale)
         self.buttonisdown = False
 
         self.thisview.setBackground(None)
@@ -412,7 +411,7 @@ class LightboxItem(QtGui.QWidget):
 
         self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thislabel, self.thisviewbox = \
             newViewWindow(self.thisview,
-                          self.numperrow * self.xdim, self.numpercol * self.ydim,
+                          self.numperrow * self.hdim, self.numpercol * self.vdim,
                           enableMouse=self.enableMouse)
         self.resetWinProps()
 
@@ -425,46 +424,84 @@ class LightboxItem(QtGui.QWidget):
         self.enableView()
         self.updateAllViews()
 
-    def xvox2pix(self, xpos):
-        return int(np.round(self.offsetx + self.impixpervoxx * xpos))
+    def setorient(self, orientation):
+        self.orientation = orientation
+        if self.orientation == 'ax':
+            self.hdim = self.xdim
+            self.hfov = self.xfov
+            self.hsize = self.xsize
+            self.vdim = self.ydim
+            self.vfov = self.yfov
+            self.vsize = self.ysize
+        elif self.orientation == 'cor':
+            self.hdim = self.xdim
+            self.hfov = self.xfov
+            self.hsize = self.xsize
+            self.vdim = self.zdim
+            self.vfov = self.zfov
+            self.vsize = self.zsize
+        elif self.orientation == 'sag':
+            self.hdim = self.ydim
+            self.hfov = self.yfov
+            self.hsize = self.ysize
+            self.vdim = self.zdim
+            self.vfov = self.zfov
+            self.vsize = self.zsize
+        else:
+            print('illegal orientation')
+
+        self.maxfov = np.max([self.hfov, self.vfov])
+        self.impixpervoxh = self.winwidth * (self.hfov / self.maxfov) / self.hdim
+        self.impixpervoxv = self.winheight * (self.vfov / self.maxfov) / self.vdim
+        self.offseth = self.winwidth * (0.5 - self.hfov / (2.0 * self.maxfov))
+        self.offsetv = self.winheight * (0.5 - self.vfov / (2.0 * self.maxfov))
+
+        self.getWinProps()
+        self.tiledbackground = None
+        self.tiledmasks = {}
+        self.tiledforegrounds = {}
 
 
-    def yvox2pix(self, ypos):
-        return int(np.round(self.offsety + self.impixpervoxy * ypos))
+    def hvox2pix(self, hpos):
+        return int(np.round(self.offseth + self.impixpervoxh * hpos))
 
 
-    def zvox2pix(self, zpos):
-        return int(np.round(self.offsetz + self.impixpervoxz * zpos))
+    def vvox2pix(self, vpos):
+        return int(np.round(self.offsetv + self.impixpervoxv * vpos))
 
 
-    def xpix2vox(self, xpix):
-        thepos = (xpix - self.offsetx) / self.impixpervoxx
-        if thepos > self.xdim - 1:
-            thepos = self.xdim - 1
+    '''def zvox2pix(self, zpos):
+        return int(np.round(self.offsetz + self.impixpervoxz * zpos))'''
+
+
+    def hpix2vox(self, hpix):
+        thepos = (xpix - self.offseth) / self.impixpervoxh
+        if thepos > self.hdim - 1:
+            thepos = self.hdim - 1
         if thepos < 0:
             thepos = 0
         return int(np.round(thepos))
 
 
-    def ypix2vox(self, ypix):
-        thepos = (ypix - self.offsety) / self.impixpervoxy
-        if thepos > self.ydim - 1:
-            thepos = self.ydim - 1
+    def vpix2vox(self, vpix):
+        thepos = (vpix - self.offsetv) / self.impixpervoxv
+        if thepos > self.vdim - 1:
+            thepos = self.vdim - 1
         if thepos < 0:
             thepos = 0
         return int(np.round(thepos))
 
 
-    def zpix2vox(self, zpix):
+    '''def zpix2vox(self, zpix):
         thepos = (zpix - self.offsetz) / self.impixpervoxz
         if thepos > self.zdim - 1:
             thepos = self.zdim - 1
         if thepos < 0:
             thepos = 0
-        return int(np.round(thepos))
+        return int(np.round(thepos))'''
 
 
-    def optmatrix(self, xsizeinmm, ysizeinmm, targetaspectratio, verbose=True):
+    def optmatrix(self, horizontalmm, verticalmm, targetaspectratio, verbose=True):
         # first find all the combinations of x and y that will minimally hold all the images
         numrows = np.arange(2, int(self.numslices // 2), 1, dtype=np.int)
         numcols = numrows * 0
@@ -472,7 +509,7 @@ class LightboxItem(QtGui.QWidget):
             numcols[i] = int(np.ceil(self.numslices / numrows[i]))
 
         # now calculate the aspect ratios of all of these combinations
-        theaspectratios = (xsizeinmm * numcols) / (ysizeinmm * numrows)
+        theaspectratios = (horizontalmm * numcols) / (verticalmm * numrows)
         theindex = np.argmin(np.fabs(theaspectratios - targetaspectratio))
         if verbose:
             for i in range(len(numcols)):
@@ -486,57 +523,90 @@ class LightboxItem(QtGui.QWidget):
                           numcols[i], numrows[i],
                           numcols[i] * numrows[i],
                           theaspectratios[i], targetaspectratio)
-        print('optmatrix: xsizeinmm, ysizeinmm, thisaspectratio, targetapectratio, numcols, numrows:',
-              xsizeinmm, ysizeinmm,
+        print('optmatrix: horizontalmm, verticalmm, thisaspectratio, targetapectratio, numcols, numrows:',
+              horizontalmm, verticalmm,
               theaspectratios[theindex], targetaspectratio,
               numcols[theindex], numrows[theindex])
         return numcols[theindex], numrows[theindex]
 
 
-    def getWinDims(self):
+    def getWinProps(self):
         self.winwidth = self.thisview.frameGeometry().width()
         self.winheight = self.thisview.frameGeometry().height()
-        newaspect = self.winwidth / self.winheight
-        if newaspect != self.windowaspect:
+        newaspectpix = (1.0 * self.winwidth) / self.winheight
+        #newaspectpix = self.vsize / self.hsize # aspect is x scale over y scale - I think scale is pix/mm, so invert
+        if newaspectpix != self.windowaspectpix:
             self.aspectchanged = True
-            self.numperrow, self.numpercol = self.optmatrix(self.xdim * self.xsize, self.ydim * self.ysize, newaspect)
-            self.xmm = self.numperrow * self.xsize * self.xdim
-            self.ymm = self.numpercol * self.ysize * self.ydim
-            self.xscale = self.xmm / self.winwidth
-            self.yscale = self.ymm / self.winheight
-            #self.xscale = self.xsize
-            #self.yscale = self.ysize
+            self.numperrow, self.numpercol = self.optmatrix(self.hdim * self.hsize, self.vdim * self.vsize, newaspectpix)
+            self.hmm = self.numperrow * self.hsize * self.hdim
+            self.vmm = self.numpercol * self.vsize * self.vdim
+            self.hscale = self.hmm / self.winwidth
+            self.vscale = self.hmm / self.winheight
         else:
             self.aspectchanged = False
-        self.windowaspect = newaspect
+        self.windowaspectpix = newaspectpix
         print('current lightbox dimensions, aspect ratio, changed:',
               self.winwidth,
               self.winheight,
-              self.windowaspect,
+              self.windowaspectpix,
               self.aspectchanged)
+
+
+    def printWinProps(self):
+        print('\nLightbox window properties:')
+        print('\tOrientation:', self.orientation)
+        print('\thdim, vdim:', self.hdim, self.vdim)
+        print('\thsize, vsize:', self.hsize, self.vsize)
+        print('\thfov, vfov:', self.hfov, self.vfov)
+
+        print('\tnumperrow, numpercol:', self.numperrow, self.numpercol)
+        print('\twinwidth, winheight, windowaspectpix, aspectchanged:',
+              self.winwidth, self.winheight, self.windowaspectpix, self.aspectchanged)
+        print('\thmm, vmm:', self.hmm, self.vmm)
+        print('\thscale, vscale:', self.hscale, self.vscale)
 
 
     def resetWinProps(self):
         self.tiledbackground = None
         self.tiledmasks = {}
         self.tiledforegrounds = {}
-        self.thisviewbox.setRange(QtCore.QRectF(0, 0,
-                                                self.numperrow * self.xdim, self.numpercol * self.ydim),
+        hfactor = self.numperrow * self.hdim / self.winwidth
+        vfactor = self.numpercol * self.vdim / self.winheight
+        if hfactor > vfactor:
+            self.thisviewbox.setRange(QtCore.QRectF(0, 0,
+                                                    self.numperrow * self.hdim,
+                                                    (hfactor / vfactor) * self.numpercol * self.vdim),
                                   padding=0.0)
-        self.thisviewbox.setAspectLocked(lock=True, ratio=self.xscale/self.yscale)
-        self.aspectchanged = False
+        else:
+            self.thisviewbox.setRange(QtCore.QRectF(0, 0,
+                                                    (vfactor / hfactor) * self.numperrow * self.hdim,
+                                                    self.numpercol * self.vdim),
+                                  padding=0.0)
+        #self.thisviewbox.setRange(QtCore.QRectF(0, 0, 1.0 / self.hscale, 1.0 / self.vscale))
+        #self.thisviewbox.setAspectLocked(lock=False, ratio=self.hscale/self.vscale)
+        self.thisviewbox.setAspectLocked(lock=False, ratio=(self.vsize / self.hsize))
+
+        self.aspectchanged = True
 
 
     def tileSlices(self, inputimage):
-        tiledimage = np.zeros((self.numperrow * self.xdim, self.numpercol * self.ydim))
+        tiledimage = np.zeros((self.numperrow * self.hdim, self.numpercol * self.vdim))
         for whichslice in range(np.min([self.numslices, self.numperrow * self.numpercol])):
-            xpos = (self.numperrow - (whichslice % self.numperrow) - 1) * self.xdim
-            ypos = (int(whichslice // self.numperrow)) * self.ydim
-            tiledimage[xpos:xpos + self.xdim, ypos:ypos + self.ydim] = inputimage[:, :, self.slicelist[whichslice]]
+            hpos = (self.numperrow - (whichslice % self.numperrow) - 1) * self.hdim
+            vpos = (int(whichslice // self.numperrow)) * self.vdim
+            if self.orientation == 'ax':
+                tiledimage[hpos:hpos + self.hdim, vpos:vpos + self.vdim] = inputimage[:, :, self.slicelist[whichslice]]
+            elif self.orientation == 'cor':
+                tiledimage[hpos:hpos + self.hdim, vpos:vpos + self.vdim] = inputimage[:, self.slicelist[whichslice], :]
+            elif self.orientation == 'sag':
+                tiledimage[hpos:hpos + self.hdim, vpos:vpos + self.vdim] = inputimage[self.slicelist[whichslice], :, :]
+            else:
+                print('illegal orientation in tileSlices')
+
         return tiledimage
 
     def updateAllViews(self):
-        self.getWinDims()
+        self.getWinProps()
         if self.aspectchanged:
             self.resetWinProps()
         try:
@@ -548,21 +618,6 @@ class LightboxItem(QtGui.QWidget):
                 print('tiling foreground image')
             self.tiledforegrounds[str(self.tpos)] = self.tileSlices(self.fgmap.maskeddata[:, :, :, self.tpos])
             thisviewdata = self.tiledforegrounds[str(self.tpos)]
-
-        '''if self.fgmap.mask is None:
-            if self.verbose:
-                print('fyi - the mask is none - using fake mask')
-            thisviewmask = self.tiledforegrounds[str(self.tpos)] * 0.0 + 1.0
-        else:
-            try:
-                thisviewmask = self.tiledmasks[str(self.tpos)]
-                if self.verbose:
-                    print('using precached tiled mask image')
-            except KeyError:
-                if self.verbose:
-                    print('tiling mask image')
-                self.tiledmasks[str(self.tpos)] = self.tileSlices(self.fgmap.mask[:, :, :, self.tpos])
-                thisviewmask = self.tiledmasks[str(self.tpos)]'''
 
         if self.bgmap is None:
             thisviewbg = None
@@ -625,8 +680,8 @@ class LightboxItem(QtGui.QWidget):
 
 
     def updateCursors(self):
-        xpix = self.xvox2pix(self.xpos)
-        ypix = self.yvox2pix(self.ypos)
+        xpix = self.hvox2pix(self.xpos)
+        ypix = self.vvox2pix(self.ypos)
         zpix = self.zvox2pix(self.zpos)
         self.thisviewvLine.setValue(xpix)
         self.thisviewhLine.setValue(ypix)
@@ -641,7 +696,7 @@ class LightboxItem(QtGui.QWidget):
     def handlemousemove(self, event):
         if self.buttonisdown:
             self.xpos = self.xpix2vox(event.pos().x() - 1)
-            self.ypos = self.ypix2vox(self.imgysize - event.pos().y() + 1)
+            self.ypos = self.ypix2vox(self.winheight - event.pos().y() + 1)
             self.updateAllViews()
             self.updated.emit()
 
@@ -655,7 +710,7 @@ class LightboxItem(QtGui.QWidget):
 
     def handleclick(self, event):
         self.xpos = self.xpix2vox(event.pos().x() - 1)
-        self.ypos = self.ypix2vox(self.imgysize - event.pos().y() + 1)
+        self.ypos = self.ypix2vox(self.winheight - event.pos().y() + 1)
         self.buttonisdown = True
         self.updateAllViews()
         self.updated.emit()
@@ -664,7 +719,7 @@ class LightboxItem(QtGui.QWidget):
     def handlerefresh(self, event):
         if self.verbose:
             print('refreshing viewbox range')
-        self.getWinDims()
+        self.getWinProps()
         self.resetWinProps()
         self.updateAllViews
 
@@ -733,7 +788,7 @@ class LightboxItem(QtGui.QWidget):
         if self.verbose:
             print('thedir=', thedir)
         thename = self.fgmap.namebase + self.fgmap.name
-        self.saveandcomposite(self.thisviewposwin, self.thisviewbgwin, thename, thedir, self.impixpervoxx, self.impixpervoxy)
+        self.saveandcomposite(self.thisviewposwin, self.thisviewbgwin, thename, thedir, self.impixpervoxh, self.impixpervoxv)
         with open(os.path.join(thedir, thename + '_lims.txt'), 'w') as FILE:
             FILE.writelines(str(self.fgmap.dispmin) + '\t' + str(self.fgmap.dispmax))
             # img_colorbar.save(thedir + self.map.name + '_colorbar.png')
