@@ -98,6 +98,8 @@ To toggle whether the current component should be kept or discarded, press the u
 
 To go to the next (or previous) component, press the right (or left) arrow.  You'll wrap around if you hit the end.
 
+To switch the lightbox view between axial, coronal, and sagittal views, press the 'a', 'c', or 's' key respectively.
+
 Press the escape key at any time to save the current version of the component list.  The component list is saved automatically when you quit.
 
 

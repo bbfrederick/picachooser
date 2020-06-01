@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.0.0rc13 (6/1/20)
+* You can now switch to viewing slices in axial, coronal, or sagittal orientation by pressing the a, c, or s key.
+* Fixed the aspect ratio of the images in the display window.
+
 ## Version 1.0.0rc12 (5/21/20)
 * The explained variance and total variance of the component are now displayed in the title bar of the window.
 

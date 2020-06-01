@@ -1,4 +1,5 @@
 To do list
 ----------
 
-1. (package) Get some user input as to what they want.
+1. Fix centering of image in main window
+2. Keep the aspect ratio of text in the main window square
