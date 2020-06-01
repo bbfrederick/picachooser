@@ -379,6 +379,7 @@ class LightboxItem(QtGui.QWidget):
         self.zpos = int(self.zdim // 2)
         self.tpos = int(0)
         self.orientation = orientation
+        self.forcerecalc = False
 
         self.startslice = startslice
         if endslice == -1:
@@ -400,8 +401,8 @@ class LightboxItem(QtGui.QWidget):
             print('    Dimensions:', self.xdim, self.ydim, self.zdim)
             print('    Voxel sizes:', self.xsize, self.ysize)
             print('    FOVs:', self.xfov, self.yfov)
-            print('    Maxfov, winwidth, winheight:', self.maxfov, self.winwidth, self.winheight)
-            print('    Scale factors:', self.hscale, self.vscale)
+            print('    maxfov, winwidth, winheight:', self.maxfov, self.winwidth, self.winheight)
+            print('    scale factors:', self.hscale, self.vscale)
         self.buttonisdown = False
 
         self.thisview.setBackground(None)
@@ -451,10 +452,7 @@ class LightboxItem(QtGui.QWidget):
             print('illegal orientation')
 
         self.maxfov = np.max([self.hfov, self.vfov])
-        self.impixpervoxh = self.winwidth * (self.hfov / self.maxfov) / self.hdim
-        self.impixpervoxv = self.winheight * (self.vfov / self.maxfov) / self.vdim
-        self.offseth = self.winwidth * (0.5 - self.hfov / (2.0 * self.maxfov))
-        self.offsetv = self.winheight * (0.5 - self.vfov / (2.0 * self.maxfov))
+        self.forcerecalc = True
 
         self.getWinProps()
         self.tiledbackground = None
@@ -533,15 +531,20 @@ class LightboxItem(QtGui.QWidget):
     def getWinProps(self):
         self.winwidth = self.thisview.frameGeometry().width()
         self.winheight = self.thisview.frameGeometry().height()
+        self.impixpervoxh = self.winwidth * (self.hfov / self.maxfov) / self.hdim
+        self.impixpervoxv = self.winheight * (self.vfov / self.maxfov) / self.vdim
+        self.offseth = self.winwidth * (0.5 - self.hfov / (2.0 * self.maxfov))
+        self.offsetv = self.winheight * (0.5 - self.vfov / (2.0 * self.maxfov))
+
         newaspectpix = (1.0 * self.winwidth) / self.winheight
-        #newaspectpix = self.vsize / self.hsize # aspect is x scale over y scale - I think scale is pix/mm, so invert
-        if newaspectpix != self.windowaspectpix:
+        if (newaspectpix != self.windowaspectpix) or self.forcerecalc:
             self.aspectchanged = True
             self.numperrow, self.numpercol = self.optmatrix(self.hdim * self.hsize, self.vdim * self.vsize, newaspectpix)
             self.hmm = self.numperrow * self.hsize * self.hdim
             self.vmm = self.numpercol * self.vsize * self.vdim
             self.hscale = self.hmm / self.winwidth
             self.vscale = self.hmm / self.winheight
+            self.forcerecalc = False
         else:
             self.aspectchanged = False
         self.windowaspectpix = newaspectpix
@@ -582,10 +585,7 @@ class LightboxItem(QtGui.QWidget):
                                                     (vfactor / hfactor) * self.numperrow * self.hdim,
                                                     self.numpercol * self.vdim),
                                   padding=0.0)
-        #self.thisviewbox.setRange(QtCore.QRectF(0, 0, 1.0 / self.hscale, 1.0 / self.vscale))
-        #self.thisviewbox.setAspectLocked(lock=False, ratio=self.hscale/self.vscale)
         self.thisviewbox.setAspectLocked(lock=False, ratio=(self.vsize / self.hsize))
-
         self.aspectchanged = True
 
 
