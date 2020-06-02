@@ -489,6 +489,8 @@ def updateLightbox():
         thecolor = config['discardcolor']
     mainwin.setLabel(thelabel, thecolor)
     mainwin.setTpos(whichcomponent)
+    mainwin.getWinProps()
+    mainwin.resetWinProps()
 
 def main():
     global ui, win, mainwin

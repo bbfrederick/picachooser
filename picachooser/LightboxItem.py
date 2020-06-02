@@ -69,6 +69,7 @@ def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
 
 def newViewWindow(view, winwidth, winheight, enableMouse=False):
     theviewbox = view.addViewBox(enableMouse=enableMouse, enableMenu=False)
+    theviewbox.autoRange(padding=0.02)
     theviewbox.setRange(QtCore.QRectF(0, 0, winwidth, winheight), padding=0.0, disableAutoRange=False)
     theviewbox.setBackgroundColor([50, 50, 50])
     theviewbox.setAspectLocked()
@@ -351,7 +352,6 @@ class LightboxItem(QtGui.QWidget):
 
     def __init__(self, fgmap, thisview,
                  orientation='ax',
-                 startslice=0, endslice=-1, slicestep=1,
                  enableMouse=False,
                  button=None,
                  winwidth=64, winheight=64,
@@ -386,13 +386,10 @@ class LightboxItem(QtGui.QWidget):
         self.winwidth = winwidth
         self.winheight = winheight
 
+        self.numperrow = 1
+        self.numpercol = 1
+
         self.setorient(self.orientation)
-        '''self.startslice = startslice
-        if endslice == -1:
-            self.endslice = self.zdim
-        else:
-            self.endslice = np.min([endslice, self.zdim])
-        self.slicestep = slicestep'''
 
         if self.verbose:
             print('LightboxItem intialization:')
@@ -404,7 +401,7 @@ class LightboxItem(QtGui.QWidget):
         self.buttonisdown = False
 
         self.thisview.setBackground(None)
-        self.thisview.setRange(padding=0.0)
+        self.thisview.setRange(padding=0.02)
         self.thisview.ci.layout.setContentsMargins(0, 0, 0, 0)
         self.thisview.ci.layout.setSpacing(5)
 
@@ -542,15 +539,18 @@ class LightboxItem(QtGui.QWidget):
         self.impixpervoxv = self.winheight * (self.vfov / self.maxfov) / self.vdim
         self.offseth = self.winwidth * (0.5 - self.hfov / (2.0 * self.maxfov))
         self.offsetv = self.winheight * (0.5 - self.vfov / (2.0 * self.maxfov))
+        self.offseth = self.winwidth * (0.5 - self.hfov / (2.0 * self.maxfov))
 
         newaspectpix = (1.0 * self.winwidth) / self.winheight
         if (newaspectpix != self.windowaspectpix) or self.forcerecalc:
             self.aspectchanged = True
             self.numperrow, self.numpercol = self.optmatrix(self.hdim * self.hsize, self.vdim * self.vsize, newaspectpix)
-            self.hmm = self.numperrow * self.hsize * self.hdim
-            self.vmm = self.numpercol * self.vsize * self.vdim
-            self.hscale = self.hmm / self.winwidth
-            self.vscale = self.hmm / self.winheight
+            self.imwidthpix = self.numperrow * self.hdim
+            self.imheightpix = self.numpercol * self.vdim
+            self.imwidthmm = self.imwidthpix * self.hsize
+            self.imheightmm = self.imheightpix * self.vsize
+            self.hscale = self.imwidthmm / self.winwidth
+            self.vscale = self.imheightmm / self.winheight
             self.forcerecalc = False
         else:
             self.aspectchanged = False
@@ -572,7 +572,8 @@ class LightboxItem(QtGui.QWidget):
         print('\tnumperrow, numpercol:', self.numperrow, self.numpercol)
         print('\twinwidth, winheight, windowaspectpix, aspectchanged:',
               self.winwidth, self.winheight, self.windowaspectpix, self.aspectchanged)
-        print('\thmm, vmm:', self.hmm, self.vmm)
+        print('\timwidthpix, imheightpix:', self.imwidthpix, self.imheightpix)
+        print('\timwidthmm, imheightmm:', self.imwidthmm, self.imheightmm)
         print('\thscale, vscale:', self.hscale, self.vscale)
 
 
@@ -580,19 +581,26 @@ class LightboxItem(QtGui.QWidget):
         self.tiledbackground = None
         self.tiledmasks = {}
         self.tiledforegrounds = {}
-        hfactor = self.numperrow * self.hdim / self.winwidth
-        vfactor = self.numpercol * self.vdim / self.winheight
-        if hfactor > vfactor:
-            self.thisviewbox.setRange(QtCore.QRectF(0, 0,
+        if self.hscale > self.vscale:
+            print('image needs vertical padding')
+            voffset = self.imheightpix * (1.0 - self.hscale / self.vscale) / 2.0
+            print('voffset is:', voffset)
+            self.thisviewbox.setRange(QtCore.QRectF(0,
+                                                    voffset,
                                                     self.numperrow * self.hdim,
-                                                    (hfactor / vfactor) * self.numpercol * self.vdim),
+                                                    (self.hscale / self.vscale) * self.numpercol * self.vdim),
                                   padding=0.0)
         else:
-            self.thisviewbox.setRange(QtCore.QRectF(0, 0,
-                                                    (vfactor / hfactor) * self.numperrow * self.hdim,
+            print('image needs horizontal padding')
+            hoffset = self.imwidthpix * (1.0 - self.vscale / self.hscale) / 2.0
+            print('hoffset is:', hoffset)
+            self.thisviewbox.setRange(QtCore.QRectF(hoffset,
+                                                    0,
+                                                    (self.vscale / self.hscale) * self.numperrow * self.hdim,
                                                     self.numpercol * self.vdim),
                                   padding=0.0)
         self.thisviewbox.setAspectLocked(lock=False, ratio=(self.vsize / self.hsize))
+        #self.thisviewbox.setAspectLocked(lock=False, ratio=(self.imheightmm / self.imwidthmm))
         self.aspectchanged = True
 
 
