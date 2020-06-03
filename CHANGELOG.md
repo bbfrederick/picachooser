@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.0.0 (6/3/20)
+* Motion correlation parameters are now properly output to the terminal when switching components.
+* Turned down default verbosity.
+
 ## Version 1.0.0rc13 (6/1/20)
 * You can now switch to viewing slices in axial, coronal, or sagittal orientation by pressing the a, c, or s key.
 * Fixed the aspect ratio and padding of the images in the display window.
