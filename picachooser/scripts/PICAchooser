@@ -42,7 +42,6 @@ import picachooser.LightboxItem as lb
 import picachooser.io as io
 import picachooser.colormaps as cm
 
-
 hammingwindows = {}
 
 
@@ -92,6 +91,7 @@ def is_float(parser, arg):
             parser.error('Value {0} is not a float or "auto"'.format(arg))
 
     return arg
+
 
 def findfromfeatdir(featdir):
     bgfile = os.path.join(featdir, 'reg', 'example_func.nii.gz')
@@ -269,7 +269,7 @@ def writegrades():
     if runmode == 'fix':
         outputstring = '[' + outputstring + ']'
     with open(outputfile, 'w') as thefile:
-            thefile.write(outputstring + '\n')
+        thefile.write(outputstring + '\n')
 
     # Non-aggressive denoising of the data using fsl_regfilt (partial regression), if requested
     if filteredfile is not None:
@@ -282,10 +282,10 @@ def writegrades():
             else:
                 fslregfiltcmd = os.path.join(fslDir, 'fsl_regfilt')
             denoisingcmd = ' '.join([fslregfiltcmd,
-                                    '--in=' + funcfile,
-                                    '--design=' + mixfile,
-                                    '--filter="' + ','.join(badlist) + '"',
-                                    '--out=' + filteredfile])
+                                     '--in=' + funcfile,
+                                     '--design=' + mixfile,
+                                     '--filter="' + ','.join(badlist) + '"',
+                                     '--out=' + filteredfile])
             print(denoisingcmd)
         else:
             print('There are no components flagged for removal, so there is nothing to do.')
@@ -294,9 +294,10 @@ def writegrades():
 
 
 def windowResized(evt):
-    global mainwin
+    global mainwin, verbose
 
-    print('handling window resize')
+    if verbose:
+        print('handling window resize')
     if mainwin is not None:
         updateLightbox()
 
@@ -313,24 +314,24 @@ def keyPressed(evt):
         decrementgrade(whichcomponent)
     elif evt.key() == QtCore.Qt.Key_Left:
         whichcomponent = (whichcomponent - 1) % numelements
-        print('\nIC set to:', whichcomponent + 1)
+        print('IC set to:', whichcomponent + 1)
     elif evt.key() == QtCore.Qt.Key_Right:
         whichcomponent = (whichcomponent + 1) % numelements
-        print('\nIC set to:', whichcomponent + 1)
+        print('IC set to:', whichcomponent + 1)
     elif evt.key() == QtCore.Qt.Key_A:
         mainwin.setorient('ax')
         mainwin.resetWinProps()
-        print('\nSetting orientation to axial')
+        print('Setting orientation to axial')
     elif evt.key() == QtCore.Qt.Key_C:
         mainwin.setorient('cor')
         mainwin.resetWinProps()
-        print('\nSetting orientation to coronal')
+        print('Setting orientation to coronal')
     elif evt.key() == QtCore.Qt.Key_S:
         mainwin.setorient('sag')
         mainwin.resetWinProps()
-        print('\nSetting orientation to sagittal')
+        print('Setting orientation to sagittal')
     elif evt.key() == QtCore.Qt.Key_D:
-        print('\nDumping main window information')
+        print('Dumping main window information')
         mainwin.printWinProps()
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
@@ -339,6 +340,7 @@ def keyPressed(evt):
         print(evt.key())
 
     updateTimecourse()
+    updateMotion()
     updateLightbox()
 
 
@@ -351,9 +353,11 @@ def updateTimecourse():
     thiscomponent = alldata[namelist[whichcomponent]]
     windowtitle = \
         'PICAchooser - Component {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.'.format(whichcomponent + 1,
-                                                                                          numelements,
-                                                                                          thiscomponent['explainedvar'],
-                                                                                          thiscomponent['totalvar'])
+                                                                                                  numelements,
+                                                                                                  thiscomponent[
+                                                                                                      'explainedvar'],
+                                                                                                  thiscomponent[
+                                                                                                      'totalvar'])
     if thiscomponent['grade'] is None:
         pencolor = 'w'
     elif thiscomponent['grade'] == 0:
@@ -366,8 +370,9 @@ def updateTimecourse():
     win.setWindowTitle(windowtitle)
 
     timecourse_ax.plot(thiscomponent['timeaxis'], thiscomponent['timecourse'],
-                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=config['componentlinewidth']), clear=True)
-    timecourse_ax.setTitle('Independent component ' + str(whichcomponent + 1),)
+                       stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=config['componentlinewidth']),
+                       clear=True)
+    timecourse_ax.setTitle('Independent component ' + str(whichcomponent + 1), )
 
     spectrum_ax.plot(thiscomponent['freqaxis'], thiscomponent['spectrum'],
                      stepMode=False,
@@ -389,18 +394,26 @@ def updateMotion():
     thiscomponent = alldata[namelist[whichcomponent]]
     curve1 = transmot_ax.plot()
     curve1.setData(thiscomponent['mottimeaxis'], motion['xtrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']), clear=True, name='xtrans')
+                   stepMode=False, fillLevel=0,
+                   pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']),
+                   clear=True, name='xtrans')
     curve2 = transmot_ax.plot()
     curve2.setData(thiscomponent['mottimeaxis'], motion['ytrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']), clear=True, name='ytrans')
+                   stepMode=False, fillLevel=0,
+                   pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']),
+                   clear=True, name='ytrans')
     curve3 = transmot_ax.plot()
     curve3.setData(thiscomponent['mottimeaxis'], motion['ztrans'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']), clear=True, name='ztrans')
+                   stepMode=False, fillLevel=0,
+                   pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']),
+                   clear=True, name='ztrans')
     transmot_ax.setXRange(thiscomponent['timeaxis'][0], thiscomponent['timeaxis'][-1])
     if config['motionplotstyle'] == 0:
         transmot_ax.setYRange(config['transmotlimits'][0], config['transmotlimits'][1], padding=0)
     else:
-        limitpen = pg.mkPen(config['motionlimitcolor'], width=config['motionlimitlinewidth'], style=QtCore.Qt.DotLine)
+        limitpen = pg.mkPen(config['motionlimitcolor'],
+                            width=config['motionlimitlinewidth'],
+                            style=QtCore.Qt.DotLine)
         transtopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
         transtopLine.setZValue(20)
         transmot_ax.addItem(transtopLine)
@@ -421,23 +434,27 @@ def updateMotion():
         transmax += transrange * 0.1
         transmot_ax.setYRange(transmin, transmax, padding=0)
 
-    transcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xtrans'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['xtrans'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['ytrans'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['ytrans'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['ztrans'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['ztrans'])
+    transcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(
+        alldata[namelist[whichcomponent]]['motioncorrs']['xtrans'],
+        alldata[namelist[whichcomponent]]['motioncorrps']['xtrans'],
+        alldata[namelist[whichcomponent]]['motioncorrs']['ytrans'],
+        alldata[namelist[whichcomponent]]['motioncorrps']['ytrans'],
+        alldata[namelist[whichcomponent]]['motioncorrs']['ztrans'],
+        alldata[namelist[whichcomponent]]['motioncorrps']['ztrans'])
     print('\ttranscorrs for component', whichcomponent + 1, transcorrs)
 
     curve4 = rotmot_ax.plot()
     curve4.setData(thiscomponent['mottimeaxis'], motion['xrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']), clear=True, name='xrot')
+                   stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionxcolor'], width=config['motionlinewidth']),
+                   clear=True, name='xrot')
     curve5 = rotmot_ax.plot()
     curve5.setData(thiscomponent['mottimeaxis'], motion['yrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']), clear=True, name='yrot')
+                   stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionycolor'], width=config['motionlinewidth']),
+                   clear=True, name='yrot')
     curve6 = rotmot_ax.plot()
     curve6.setData(thiscomponent['mottimeaxis'], motion['zrot'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']), clear=True, name='ztrans')
+                   stepMode=False, fillLevel=0, pen=pg.mkPen(config['motionzcolor'], width=config['motionlinewidth']),
+                   clear=True, name='ztrans')
     rotmot_ax.setXRange(thiscomponent['timeaxis'][0], thiscomponent['timeaxis'][-1])
     if config['motionplotstyle'] == 0:
         rotmot_ax.setYRange(config['rotmotlimits'][0], config['rotmotlimits'][1], padding=0)
@@ -463,13 +480,13 @@ def updateMotion():
         rotmax += rotrange * 0.1
         rotmot_ax.setYRange(rotmin, rotmax, padding=0)
 
-
-    rotcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(alldata[namelist[whichcomponent]]['motioncorrs']['xrot'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['xrot'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['yrot'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['yrot'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrs']['zrot'],
-                                                                         alldata[namelist[whichcomponent]]['motioncorrps']['zrot'])
+    rotcorrs = '{:.2f}({:.2f}), {:.2f}({:.2f}), {:.2f}({:.2f})'.format(
+        alldata[namelist[whichcomponent]]['motioncorrs']['xrot'],
+        alldata[namelist[whichcomponent]]['motioncorrps']['xrot'],
+        alldata[namelist[whichcomponent]]['motioncorrs']['yrot'],
+        alldata[namelist[whichcomponent]]['motioncorrps']['yrot'],
+        alldata[namelist[whichcomponent]]['motioncorrs']['zrot'],
+        alldata[namelist[whichcomponent]]['motioncorrps']['zrot'])
     print('\trotcorrs for component', whichcomponent + 1, rotcorrs)
 
 
@@ -492,6 +509,7 @@ def updateLightbox():
     mainwin.getWinProps()
     mainwin.resetWinProps()
 
+
 def main():
     global ui, win, mainwin
     global namelist, outputfile, alldata, motion, whichcomponent, numelements, runmode
@@ -505,7 +523,6 @@ def main():
     parser = argparse.ArgumentParser(prog='PICAchooser',
                                      description='A program to review (and alter) melodic component selections.',
                                      usage='%(prog)s runmode [options]')
-
 
     # Required arguments
     parser.add_argument(
@@ -556,8 +573,9 @@ def main():
         dest='specMotionfile',
         metavar='MOTIONFILE',
         type=lambda x: is_valid_file(parser, x),
-        help=('The anatomic file on which to display the ICs (usually found in FEATDIR/mc/prefiltered_func_data_mcf.par). '
-              'If the file has a .tsv extension, assume it is an fmriprep confounds file.'),
+        help=(
+            'The anatomic file on which to display the ICs (usually found in FEATDIR/mc/prefiltered_func_data_mcf.par). '
+            'If the file has a .tsv extension, assume it is an fmriprep confounds file.'),
         default=None)
 
     llfilespec.add_argument(
@@ -667,6 +685,14 @@ def main():
               'file with LINEWIDTH.'),
         default=None)
 
+    debugging = parser.add_argument_group('Debugging arguments')
+    debugging.add_argument(
+        '--verbose',
+        action='store_true',
+        help=('Output exhaustive amounts of information about the internal workings of PICAchooser. '
+              'You almost certainly don\'t want this.'),
+        default=False)
+    
 
     try:
         args = parser.parse_args()
@@ -675,6 +701,7 @@ def main():
         raise
 
     runmode = args.runmode
+    verbose = args.verbose
 
     # make sure we can find the required input files
     if args.featdir is not None:
@@ -698,7 +725,6 @@ def main():
         print('Cannot set motion timecourse file.  Use either the --featdir or --motionfile option.')
         sys.exit()
 
-
     if args.melodicdir is not None:
         ICfile, ICmask, mixfile, melodicICstatsfile = findfrommelodicdir(args.melodicdir)
         removefiledir = args.melodicdir
@@ -721,7 +747,6 @@ def main():
     if mixfile is None:
         print('Cannot set timecourse file.  Use either the --melodicdir or --timecoursefile option.')
         sys.exit()
-
 
     # there are 3 modes at the moment - melodic, aroma, and fix
     if runmode == 'melodic':
@@ -875,7 +900,7 @@ def main():
     if initfileexists:
         print('reading initfile...')
         with open(Removefile, 'r') as thefile:
-            inline = thefile.readline().replace('[','').replace(']','')
+            inline = thefile.readline().replace('[', '').replace(']', '')
         inlist = inline.split(',')
         for component in inlist:
             grades[int(component) - 1] = -1
@@ -937,16 +962,16 @@ def main():
         tclen = alldata[theIC]['timecourse'].shape[0]
         alldata['componentstartpoint'] = motionlen - tclen
         for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
-            alldata[theIC]['motioncorrs'][component],  alldata[theIC]['motioncorrps'][component] = \
+            alldata[theIC]['motioncorrs'][component], alldata[theIC]['motioncorrps'][component] = \
                 pearsonr(motion[component][alldata['componentstartpoint']:], alldata[theIC]['timecourse'])
         alldata[theIC]['totalvar'] = melodicICstats[1, idx]
         alldata[theIC]['explainedvar'] = melodicICstats[0, idx]
         alldata[theIC]['timeaxis'] = np.linspace(1.0 * alldata['componentstartpoint'], 1.0 * (len(invec) - 1),
-                                                   num=len(invec),
-                                                   endpoint=True) / thesamplerate
+                                                 num=len(invec),
+                                                 endpoint=True) / thesamplerate
         alldata[theIC]['mottimeaxis'] = np.linspace(0.0, 1.0 * (motionlen - 1),
-                                                      num=motionlen,
-                                                      endpoint=True) / thesamplerate
+                                                    num=motionlen,
+                                                    endpoint=True) / thesamplerate
         alldata[theIC]['freqaxis'], alldata[theIC]['spectrum'] = \
             spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
         alldata[theIC]['grade'] = thegrade
@@ -962,7 +987,7 @@ def main():
 
     app = QtGui.QApplication([])
     print("setting up output window")
-    #win = QtGui.QMainWindow()
+    # win = QtGui.QMainWindow()
     win = KeyPressWindow()
     win.sigKeyPress.connect(keyPressed)
     win.sigResize.connect(windowResized)
@@ -976,32 +1001,35 @@ def main():
     print('about to set up the timecourse')
     global timecourse_ax
     timecoursewin = ui.timecourse_graphicsView
-    timecourse_ax = timecoursewin.addPlot(title='Independent component', labels={'left': 'Intensity (a.u.)', 'bottom': 'Time (s)'})
+    timecourse_ax = timecoursewin.addPlot(title='Independent component',
+                                          labels={'left': 'Intensity (a.u.)', 'bottom': 'Time (s)'})
 
     # set up the regressor spectrum window
     print('about to set up the spectrum')
     global spectrum_ax
     spectrumwin = ui.spectrum_graphicsView
-    spectrum_ax = spectrumwin.addPlot(title='Magnitude spectrum of timecourse', labels={'left': 'Power (a.u.)', 'bottom': 'Frequency (Hz)'})
+    spectrum_ax = spectrumwin.addPlot(title='Magnitude spectrum of timecourse',
+                                      labels={'left': 'Power (a.u.)', 'bottom': 'Frequency (Hz)'})
 
     global transmot_ax, rotmot_ax
     # set up the translational motion window
     print('about to set up the translational motion')
     transmotwin = ui.translation_graphicsView
-    transmot_ax = transmotwin.addPlot(title='Translation timecourses', labels={'left': 'Displacement (mm)', 'bottom': 'Time (s)'})
+    transmot_ax = transmotwin.addPlot(title='Translation timecourses',
+                                      labels={'left': 'Displacement (mm)', 'bottom': 'Time (s)'})
 
     # set up the rotational motion window
     print('about to set up the rotational motion')
     rotmotwin = ui.rotation_graphicsView
-    rotmot_ax = rotmotwin.addPlot(title='Rotation timecourses', labels = {'left': 'Rotation (radians)', 'bottom': 'Time (s)'})
-
+    rotmot_ax = rotmotwin.addPlot(title='Rotation timecourses',
+                                  labels={'left': 'Rotation (radians)', 'bottom': 'Time (s)'})
 
     print('setting up image window')
     geommaskimage = lb.imagedataset('ICmask', ICmask, 'ICmask', lut_state=cm.mask_state)
     fgimage = lb.imagedataset('IC', ICfile, 'IC', lut_state=cm.redyellow_state, geommask=geommaskimage.data)
     fgimage.setFuncMaskByThresh(threshval=args.displaythresh)
     bgimage = lb.imagedataset('BG', BGfile, 'background', lut_state=cm.gray_state)
-    mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=True)
+    mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
 
     # initialize everything
     updateTimecourse()

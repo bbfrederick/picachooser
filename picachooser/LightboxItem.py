@@ -503,7 +503,7 @@ class LightboxItem(QtGui.QWidget):
         return int(np.round(thepos))'''
 
 
-    def optmatrix(self, horizontalmm, verticalmm, targetaspectratio, verbose=True):
+    def optmatrix(self, horizontalmm, verticalmm, targetaspectratio, verbose=False):
         # first find all the combinations of x and y that will minimally hold all the images
         numrows = np.arange(2, int(self.numslices // 2), 1, dtype=np.int)
         numcols = numrows * 0
@@ -525,10 +525,11 @@ class LightboxItem(QtGui.QWidget):
                           numcols[i], numrows[i],
                           numcols[i] * numrows[i],
                           theaspectratios[i], targetaspectratio)
-        print('optmatrix: horizontalmm, verticalmm, thisaspectratio, targetapectratio, numcols, numrows:',
-              horizontalmm, verticalmm,
-              theaspectratios[theindex], targetaspectratio,
-              numcols[theindex], numrows[theindex])
+        if verbose:
+            print('optmatrix: horizontalmm, verticalmm, thisaspectratio, targetapectratio, numcols, numrows:',
+                  horizontalmm, verticalmm,
+                  theaspectratios[theindex], targetaspectratio,
+                  numcols[theindex], numrows[theindex])
         return numcols[theindex], numrows[theindex]
 
 
@@ -555,11 +556,12 @@ class LightboxItem(QtGui.QWidget):
         else:
             self.aspectchanged = False
         self.windowaspectpix = newaspectpix
-        print('current lightbox dimensions, aspect ratio, changed:',
-              self.winwidth,
-              self.winheight,
-              self.windowaspectpix,
-              self.aspectchanged)
+        if self.verbose:
+            print('current lightbox dimensions, aspect ratio, changed:',
+                  self.winwidth,
+                  self.winheight,
+                  self.windowaspectpix,
+                  self.aspectchanged)
 
 
     def printWinProps(self):
@@ -582,18 +584,20 @@ class LightboxItem(QtGui.QWidget):
         self.tiledmasks = {}
         self.tiledforegrounds = {}
         if self.hscale > self.vscale:
-            print('image needs vertical padding')
             voffset = self.imheightpix * (1.0 - self.hscale / self.vscale) / 2.0
-            print('voffset is:', voffset)
+            if self.verbose:
+                print('image needs vertical padding')
+                print('voffset is:', voffset)
             self.thisviewbox.setRange(QtCore.QRectF(0,
                                                     voffset,
                                                     self.numperrow * self.hdim,
                                                     (self.hscale / self.vscale) * self.numpercol * self.vdim),
                                   padding=0.0)
         else:
-            print('image needs horizontal padding')
             hoffset = self.imwidthpix * (1.0 - self.vscale / self.hscale) / 2.0
-            print('hoffset is:', hoffset)
+            if self.verbose:
+                print('image needs horizontal padding')
+                print('hoffset is:', hoffset)
             self.thisviewbox.setRange(QtCore.QRectF(hoffset,
                                                     0,
                                                     (self.vscale / self.hscale) * self.numperrow * self.hdim,
