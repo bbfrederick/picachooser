@@ -902,7 +902,9 @@ def main():
         with open(Removefile, 'r') as thefile:
             inline = thefile.readline().replace('[', '').replace(']', '')
         inlist = inline.split(',')
+        print(inlist)
         for component in inlist:
+            print(component)
             grades[int(component) - 1] = -1
     else:
         grades = None
