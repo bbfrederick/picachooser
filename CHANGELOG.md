@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.0.1 (6/30/20)
+* Just bumping the version number to generate an initial Zenodo DOI.
+
 ## Version 1.0.0 (6/3/20)
 * Motion correlation parameters are now properly output to the terminal when switching components.
 * Turned down default verbosity.
