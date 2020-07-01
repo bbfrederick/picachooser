@@ -7,7 +7,7 @@ Basically, PICAchooser loads the results of a MELODIC ICA run and lets you step 
 
 ## Usage
 
-``` bash
+```
 usage: PICAchooser runmode [options]
 PICAchooser: error: the following arguments are required: runmode
 usage: PICAchooser runmode [options]
