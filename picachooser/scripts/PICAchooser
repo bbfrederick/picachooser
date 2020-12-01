@@ -44,6 +44,9 @@ import picachooser.colormaps as cm
 
 hammingwindows = {}
 
+# fix for Big Sur on macOS
+os.environ['QT_MAC_WANTS_LAYER'] = '1'
+
 
 def is_valid_dir(parser, arg):
     """

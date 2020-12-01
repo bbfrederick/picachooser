@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.0.2 (11/24/20)
+* Added line to help QT compatibility with macOS 11 (Big Sur).
+
 ## Version 1.0.1 (6/30/20)
 * Just bumping the version number to generate an initial Zenodo DOI.
 
