@@ -711,8 +711,10 @@ def main():
     if args.featdir is not None:
         BGfile, funcfile, Motionfile = findfromfeatdir(args.featdir)
 
-    if args.specBGfile is None and runmode == 'groupmelodic':
+    if runmode == 'groupmelodic':
         BGfile = os.path.join(args.melodicdir, "mean.nii.gz")
+        funcfile = None
+        Motionfile = None
 
     if args.specBGfile is not None:
         BGfile = args.specBGfile
@@ -722,13 +724,13 @@ def main():
 
     if args.specfuncfile is not None:
         funcfile = args.specfuncfile
-    if funcfile is None:
+    if funcfile is None and runmode != 'groupmelodic':
         print('Cannot set functional file.  Use either the --featdir or --funcfile option.')
         sys.exit()
 
     if args.specMotionfile is not None:
         Motionfile = args.specMotionfile
-    if Motionfile is None:
+    if Motionfile is None and runmode != 'groupmelodic':
         print('Cannot set motion timecourse file.  Use either the --featdir or --motionfile option.')
         sys.exit()
 
