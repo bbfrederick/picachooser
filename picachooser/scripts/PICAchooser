@@ -534,6 +534,7 @@ def main():
         type=str,
         help=('Analysis mode.  Valid choices are "melodic", "aroma", and "fix".  '
               'In melodic mode, the default output file is named "badcomponents.txt" and will be written to MELODICDIR as comma separated integers. '
+              'In groupmelodic mode, the default output file is named "goodcomponents.txt" (you are more interested in which components are interesting) and will be written to MELODICDIR as comma separated integers. '
               'In aroma mode, the file "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by default the output will be written to "classified_motion_ICs_revised.txt" in the same directory.  '
               'In fix mode, the default output file is named "hand_labels_noise.txt" and will be written to MELODICDIR as comma separated integers with square brackets surrounding the line.'),
         default=None)
@@ -710,6 +711,9 @@ def main():
     if args.featdir is not None:
         BGfile, funcfile, Motionfile = findfromfeatdir(args.featdir)
 
+    if args.specBGfile is None and runmode == 'groupmelodic':
+        BGfile = os.path.join(args.melodicdir, "mean.nii.gz")
+
     if args.specBGfile is not None:
         BGfile = args.specBGfile
     if BGfile is None:
@@ -751,7 +755,7 @@ def main():
         print('Cannot set timecourse file.  Use either the --melodicdir or --timecoursefile option.')
         sys.exit()
 
-    # there are 3 modes at the moment - melodic, aroma, and fix
+    # there are 4 modes at the moment - groupmelodic, melodic, aroma, and fix
     if runmode == 'melodic':
         if args.initfile is not None:
             Removefile = args.initfile
@@ -771,6 +775,26 @@ def main():
             else:
                 outputfile = args.outputfile
             print('will create new removed component file at', outputfile)
+            initfileexists = True
+    elif runmode == 'groupmelodic':
+        if args.initfile is not None:
+            Removefile = args.initfile
+        else:
+            Removefile = os.path.join(removefiledir, 'goodcomponents.txt')
+        if not os.path.isfile(Removefile):
+            print('cannot find existing good component file at', Removefile, '- will create new one')
+            if args.outputfile is None:
+                outputfile = Removefile.replace('.txt', '_revised.txt')
+            else:
+                outputfile = args.outputfile
+            initfileexists = False
+        else:
+            print('will create new good component file at', Removefile)
+            if args.outputfile is None:
+                outputfile = Removefile
+            else:
+                outputfile = args.outputfile
+            print('will create new good component file at', outputfile)
             initfileexists = True
     elif runmode == 'aroma':
         aromadir = os.path.dirname(removefiledir)
@@ -807,7 +831,7 @@ def main():
             print('will create new removed component file at', outputfile)
             initfileexists = True
     else:
-        print('Illegal runmode', runmode, '.  Legal runmodes are "melodic", "aroma", and "fix".  Exiting')
+        print('Illegal runmode', runmode, '.  Legal runmodes are "melodic", "groupmelodic", "aroma", and "fix".  Exiting')
         sys.exit()
 
     filteredfile = args.filteredfile
