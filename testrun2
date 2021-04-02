@@ -1,7 +1,11 @@
+#PICAchooser \
+#    groupmelodic \
+#    --backgroundfile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/mean.nii.gz \
+#    --ICfile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/melodic_IC.nii.gz \
+#    --ICmask /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/mask.nii.gz \
+#    --timecoursefile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/melodic_mix \
+#    --ICstatsfile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/melodic_ICstats
+
 PICAchooser \
     groupmelodic \
-    --backgroundfile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/mean.nii.gz \
-    --ICfile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/melodic_IC.nii.gz \
-    --ICmask /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/mask.nii.gz \
-    --timecoursefile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/melodic_mix \
-    --ICstatsfile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/melodic_ICstats
+    --melodicdir /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode

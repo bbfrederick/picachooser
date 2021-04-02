@@ -124,7 +124,7 @@ def findfromfeatdir(featdir, initBGfile, initFuncfile, initMotionfile):
     return bgfile, Funcfile, motionfile
 
 
-def findfrommelodicdir(melodicdir, initICfile, initICmask, initTCfile):
+"""def findfrommelodicdir(melodicdir, initICfile, initICmask, initTCfile):
     if initICfile is None:
         icfile = os.path.join(melodicdir, 'melodic_IC.nii.gz')
     else:
@@ -151,12 +151,12 @@ def findfrommelodicdir(melodicdir, initICfile, initICmask, initTCfile):
 
     melodicICstatsfile = os.path.join(melodicdir, 'melodic_ICstats')
 
-    return icfile, icmask, tcfile, melodicICstatsfile
+    return icfile, icmask, tcfile, melodicICstatsfile"""
 
 
-def findfromgroupmelodicdir(melodicdir, initBGfile, initICfile, initICmask, initTCfile, initmelodicICstatsfile):
+def findfrommelodicdir(melodicdir, initBGfile, initICfile, initICmask, initTCfile, initmelodicICstatsfile):
     if initBGfile is None:
-        bgfile = os.path.join(melodicdir, 'groupmelodic.ica', "mean.nii.gz")
+        bgfile = os.path.join(melodicdir, "mean.nii.gz")
     else:
         bgfile = initBGfile
     if not os.path.isfile(bgfile):
@@ -164,7 +164,7 @@ def findfromgroupmelodicdir(melodicdir, initBGfile, initICfile, initICmask, init
         sys.exit()
 
     if initICfile is None:
-        icfile = os.path.join(melodicdir, 'groupmelodic.ica', 'melodic_IC.nii.gz')
+        icfile = os.path.join(melodicdir, 'melodic_IC.nii.gz')
     else:
         icfile = initICfile
     if not os.path.isfile(icfile):
@@ -180,7 +180,7 @@ def findfromgroupmelodicdir(melodicdir, initBGfile, initICfile, initICmask, init
         sys.exit()
 
     if initTCfile is None:
-        tcfile = os.path.join(melodicdir, 'groupmelodic.ica', 'melodic_mix')
+        tcfile = os.path.join(melodicdir, 'melodic_mix')
     else:
         tcfile = initTCfile
     if not os.path.isfile(tcfile):
@@ -188,7 +188,7 @@ def findfromgroupmelodicdir(melodicdir, initBGfile, initICfile, initICmask, init
         sys.exit()
 
     if initmelodicICstatsfile is None:
-        melodicICstatsfile = os.path.join(melodicdir, 'groupmelodic.ica', 'melodic_ICstats')
+        melodicICstatsfile = os.path.join(melodicdir, 'melodic_ICstats')
     else:
         melodicICstatsfile = initmelodicICstatsfile
     if not os.path.isfile(melodicICstatsfile):
@@ -797,12 +797,12 @@ def main():
         BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir, BGfile, Funcfile, Motionfile)
 
     if args.melodicdir is not None:
+        BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile = findfrommelodicdir(args.melodicdir, BGfile, ICfile,
+                                                                                      ICmask, Mixfile,
+                                                                                      melodicICstatsfile)
         if runmode == "groupmelodic":
-            BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile = findfromgroupmelodicdir(args.melodicdir, BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile)
             Funcfile = None
             Motionfile = None
-        else:
-            ICfile, ICmask, Mixfile, melodicICstatsfile = findfrommelodicdir(args.melodicdir, ICfile, ICmask, Mixfile)
         removefiledir = args.melodicdir
 
 
