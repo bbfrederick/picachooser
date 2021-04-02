@@ -96,44 +96,106 @@ def is_float(parser, arg):
     return arg
 
 
-def findfromfeatdir(featdir):
-    bgfile = os.path.join(featdir, 'reg', 'example_func.nii.gz')
+def findfromfeatdir(featdir, initBGfile, initFuncfile, initMotionfile):
+    if initBGfile is None:
+        bgfile = os.path.join(featdir, 'reg', 'example_func.nii.gz')
+    else:
+        bgfile = initBGfile
     if not os.path.isfile(bgfile):
         print('cannot find background image file at', bgfile)
         sys.exit()
 
-    funcfile = os.path.join(featdir, 'filtered_func_data.nii.gz')
-    if not os.path.isfile(funcfile):
-        print('cannot find functional data file at', funcfile)
+    if initFuncfile is None:
+        Funcfile = os.path.join(featdir, 'filtered_func_data.nii.gz')
+    else:
+        Funcfile = initFuncfile
+    if not os.path.isfile(Funcfile):
+        print('cannot find functional data file at', Funcfile)
         sys.exit()
 
-    motionfile = os.path.join(featdir, 'mc', 'prefiltered_func_data_mcf.par')
+    if initMotionfile is None:
+        motionfile = os.path.join(featdir, 'mc', 'prefiltered_func_data_mcf.par')
+    else:
+        motionfile = initMotionfile
     if not os.path.isfile(motionfile):
         print('cannot find motion parameter file at', motionfile)
         sys.exit()
 
-    return bgfile, funcfile, motionfile
+    return bgfile, Funcfile, motionfile
 
 
-def findfrommelodicdir(melodicdir):
-    icfile = os.path.join(melodicdir, 'melodic_IC.nii.gz')
+def findfrommelodicdir(melodicdir, initICfile, initICmask, initTCfile):
+    if initICfile is None:
+        icfile = os.path.join(melodicdir, 'melodic_IC.nii.gz')
+    else:
+        icfile = initICfile
     if not os.path.isfile(icfile):
         print('cannot find independent component file at', icfile)
         sys.exit()
 
-    icmask = os.path.join(melodicdir, 'mask.nii.gz')
+    if initICmask is None:
+        icmask = os.path.join(melodicdir, 'mask.nii.gz')
+    else:
+        icmask = initICmask
     if not os.path.isfile(icmask):
         print('cannot find independent component file at', icmask)
         sys.exit()
 
-    tcfile = os.path.join(melodicdir, 'melodic_mix')
+    if initTCfile is None:
+        tcfile = os.path.join(melodicdir, 'melodic_mix')
+    else:
+        tcfile = initTCfile
     if not os.path.isfile(tcfile):
-        print('cannot find AROMA timecourse file at', tcfile)
+        print('cannot find component timecourse file at', tcfile)
         sys.exit()
 
     melodicICstatsfile = os.path.join(melodicdir, 'melodic_ICstats')
 
     return icfile, icmask, tcfile, melodicICstatsfile
+
+
+def findfromgroupmelodicdir(melodicdir, initBGfile, initICfile, initICmask, initTCfile, initmelodicICstatsfile):
+    if initBGfile is None:
+        bgfile = os.path.join(melodicdir, 'groupmelodic.ica', "mean.nii.gz")
+    else:
+        bgfile = initBGfile
+    if not os.path.isfile(bgfile):
+        print('cannot find background file at', bgfile)
+        sys.exit()
+
+    if initICfile is None:
+        icfile = os.path.join(melodicdir, 'groupmelodic.ica', 'melodic_IC.nii.gz')
+    else:
+        icfile = initICfile
+    if not os.path.isfile(icfile):
+        print('cannot find independent component file at', icfile)
+        sys.exit()
+
+    if initICmask is None:
+        icmask = os.path.join(melodicdir, 'mask.nii.gz')
+    else:
+        icmask = initICmask
+    if not os.path.isfile(icmask):
+        print('cannot find independent component file at', icmask)
+        sys.exit()
+
+    if initTCfile is None:
+        tcfile = os.path.join(melodicdir, 'groupmelodic.ica', 'melodic_mix')
+    else:
+        tcfile = initTCfile
+    if not os.path.isfile(tcfile):
+        print('cannot find component timecourse file at', tcfile)
+        sys.exit()
+
+    if initmelodicICstatsfile is None:
+        melodicICstatsfile = os.path.join(melodicdir, 'groupmelodic.ica', 'melodic_ICstats')
+    else:
+        melodicICstatsfile = initmelodicICstatsfile
+    if not os.path.isfile(melodicICstatsfile):
+        print('cannot find component stats file at', tcfile)
+        sys.exit()
+
+    return bgfile, icfile, icmask, tcfile, melodicICstatsfile
 
 
 def hamming(length, debug=False):
@@ -262,7 +324,7 @@ def decrementgrade(whichcomponent):
 
 def writegrades():
     global alldata, namelist, numelements, outputfile, runmode
-    global funcfile, mixfile, filteredfile
+    global Funcfile, Mixfile, filteredfile
 
     badlist = []
     for i in range(len(namelist)):
@@ -285,8 +347,8 @@ def writegrades():
             else:
                 fslregfiltcmd = os.path.join(fslDir, 'fsl_regfilt')
             denoisingcmd = ' '.join([fslregfiltcmd,
-                                     '--in=' + funcfile,
-                                     '--design=' + mixfile,
+                                     '--in=' + Funcfile,
+                                     '--design=' + Mixfile,
                                      '--filter="' + ','.join(badlist) + '"',
                                      '--out=' + filteredfile])
             print(denoisingcmd)
@@ -306,7 +368,7 @@ def windowResized(evt):
 
 
 def keyPressed(evt):
-    global whichcomponent, numelements, mainwin, verbose
+    global whichcomponent, numelements, mainwin, verbose, domotion
 
     if verbose:
         print('processing keypress event')
@@ -343,7 +405,8 @@ def keyPressed(evt):
         print(evt.key())
 
     updateTimecourse()
-    updateMotion()
+    if domotion:
+        updateMotion()
     updateLightbox()
 
 
@@ -518,10 +581,12 @@ def main():
     global namelist, outputfile, alldata, motion, whichcomponent, numelements, runmode
     global mainwin, verbose
     global config
-    global funcfile, mixfile, filteredfile
+    global Funcfile, Mixfile, filteredfile
+    global domotion
 
     mainwin = None
     verbose = False
+    domotion = True
 
     parser = argparse.ArgumentParser(prog='PICAchooser',
                                      description='A program to review (and alter) melodic component selections.',
@@ -569,7 +634,7 @@ def main():
 
     llfilespec.add_argument(
         '--funcfile',
-        dest='specfuncfile',
+        dest='specFuncfile',
         metavar='FUNCFILE',
         type=lambda x: is_valid_file(parser, x),
         help=('The functional file to be filtered (usually found in FEATDIR/filtered_func_data.nii.gz),'),
@@ -603,10 +668,18 @@ def main():
 
     llfilespec.add_argument(
         '--timecoursefile',
-        dest='specmixfile',
+        dest='specMixfile',
         metavar='MIXFILE',
         type=lambda x: is_valid_file(parser, x),
         help=('The timecourses of the independant components (usually found in MELODICDIR/melodic_mix),'),
+        default=None)
+
+    llfilespec.add_argument(
+        '--ICstatsfile',
+        dest='melodicICstatsfile',
+        metavar='STATSFILE',
+        type=lambda x: is_valid_file(parser, x),
+        help=('The melodic stats file (usually found in MELODICDIR/melodic_ICstats),'),
         default=None)
 
     # optional arguments
@@ -711,52 +784,50 @@ def main():
     verbose = args.verbose
 
     # make sure we can find the required input files
+    # first see if there are specific overrides
+    BGfile = args.specBGfile
+    Funcfile = args.specFuncfile
+    Motionfile = args.specMotionfile
+    ICfile = args.specICfile
+    Mixfile = args.specMixfile
+    ICmask = args.specICmask
+    melodicICstatsfile = args.melodicICstatsfile
+
     if args.featdir is not None:
-        BGfile, funcfile, Motionfile = findfromfeatdir(args.featdir)
+        BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir, BGfile, Funcfile, Motionfile)
 
-    if runmode == 'groupmelodic':
-        BGfile = os.path.join(args.melodicdir, "mean.nii.gz")
-        funcfile = None
-        Motionfile = None
+    if args.melodicdir is not None:
+        if runmode == "groupmelodic":
+            BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile = findfromgroupmelodicdir(args.melodicdir, BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile)
+            Funcfile = None
+            Motionfile = None
+        else:
+            ICfile, ICmask, Mixfile, melodicICstatsfile = findfrommelodicdir(args.melodicdir, ICfile, ICmask, Mixfile)
+        removefiledir = args.melodicdir
 
-    if args.specBGfile is not None:
-        BGfile = args.specBGfile
-    if BGfile is None:
-        print('Cannot set background file.  Use either the --featdir or --backgroundfile option.')
+
+    if Funcfile is None and runmode != 'groupmelodic':
+        print('Cannot set functional file.  Use either the --featdir or --Funcfile option.')
         sys.exit()
 
-    if args.specfuncfile is not None:
-        funcfile = args.specfuncfile
-    if funcfile is None and runmode != 'groupmelodic':
-        print('Cannot set functional file.  Use either the --featdir or --funcfile option.')
-        sys.exit()
-
-    if args.specMotionfile is not None:
-        Motionfile = args.specMotionfile
     if Motionfile is None and runmode != 'groupmelodic':
         print('Cannot set motion timecourse file.  Use either the --featdir or --motionfile option.')
         sys.exit()
 
-    if args.melodicdir is not None:
-        ICfile, ICmask, mixfile, melodicICstatsfile = findfrommelodicdir(args.melodicdir)
-        removefiledir = args.melodicdir
+    if BGfile is None:
+        print('Cannot set background file.  Use either the --featdir or --backgroundfile option.')
+        sys.exit()
 
-    if args.specICfile is not None:
-        ICfile = args.specICfile
-        removefiledir = os.path.dirname(ICfile)
     if ICfile is None:
         print('Cannot set IC file.  Use either the --melodicdir or --ICfile option.')
         sys.exit()
+    removefiledir = os.path.dirname(ICfile)
 
-    if args.specICmask is not None:
-        ICmask = args.specICmask
     if ICmask is None:
         print('Cannot set IC mask.  Use either the --melodicdir or --ICmask option.')
         sys.exit()
 
-    if args.specICmask is not None:
-        mixfile = args.specmixfile
-    if mixfile is None:
+    if Mixfile is None:
         print('Cannot set timecourse file.  Use either the --melodicdir or --timecoursefile option.')
         sys.exit()
 
@@ -782,6 +853,7 @@ def main():
             print('will create new removed component file at', outputfile)
             initfileexists = True
     elif runmode == 'groupmelodic':
+        domotion = False
         if args.initfile is not None:
             Removefile = args.initfile
         else:
@@ -845,8 +917,8 @@ def main():
         print(ICfile)
         print(ICmask)
         print(BGfile)
-        print(funcfile)
-        print(mixfile)
+        print(Funcfile)
+        print(Mixfile)
         print(Motionfile)
         print(Removefile)
         print(filteredfile)
@@ -920,13 +992,16 @@ def main():
         config['motionlimitlinewidth'] = args.motionlimitlinewidth
 
     # set the sample rate
-    tr, timepoints = io.fmritimeinfo(funcfile)
+    if domotion:
+        tr, timepoints = io.fmritimeinfo(Funcfile)
+    else:
+        tr = 1.0
     samplerate = 1.0 / tr
 
     # read in the timecourses and their current labels
     alldata = {}
     numelements = 0
-    alltcs = io.readvecs(mixfile)
+    alltcs = io.readvecs(Mixfile)
     numelements = alltcs.shape[0]
     grades = np.ones(numelements, dtype=np.int)
     if initfileexists:
@@ -942,38 +1017,39 @@ def main():
         grades = None
 
     # read in the motion timecourses
-    print('reading motion timecourses...')
-    filebase, extension = os.path.splitext(Motionfile)
-    if extension == '.par':
-        allmotion = io.readvecs(Motionfile)
-        motion = {}
-        motion['xtrans'] = allmotion[3, :] * 1.0
-        motion['ytrans'] = allmotion[4, :] * 1.0
-        motion['ztrans'] = allmotion[5, :] * 1.0
-        motion['maxtrans'] = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
-        motion['mintrans'] = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
-        motion['xrot'] = allmotion[0, :] * 1.0
-        motion['yrot'] = allmotion[1, :] * 1.0
-        motion['zrot'] = allmotion[2, :] * 1.0
-        motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
-        motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
-    elif extension == '.tsv':
-        allmotion = io.readfmriprepconfounds(filebase)
-        motion = {}
-        motion['xtrans'] = allmotion['trans_x'] * 1.0
-        motion['ytrans'] = allmotion['trans_y'] * 1.0
-        motion['ztrans'] = allmotion['trans_z'] * 1.0
-        motion['maxtrans'] = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
-        motion['mintrans'] = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
-        motion['xrot'] = allmotion['rot_x'] * 1.0
-        motion['yrot'] = allmotion['rot_y'] * 1.0
-        motion['zrot'] = allmotion['rot_z'] * 1.0
-        motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
-        motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
-    else:
-        print('cannot read files with extension', extension)
-        sys.exit()
-    motionlen = motion['xtrans'].shape[0]
+    if domotion:
+        print('reading motion timecourses...')
+        filebase, extension = os.path.splitext(Motionfile)
+        if extension == '.par':
+            allmotion = io.readvecs(Motionfile)
+            motion = {}
+            motion['xtrans'] = allmotion[3, :] * 1.0
+            motion['ytrans'] = allmotion[4, :] * 1.0
+            motion['ztrans'] = allmotion[5, :] * 1.0
+            motion['maxtrans'] = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
+            motion['mintrans'] = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
+            motion['xrot'] = allmotion[0, :] * 1.0
+            motion['yrot'] = allmotion[1, :] * 1.0
+            motion['zrot'] = allmotion[2, :] * 1.0
+            motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
+            motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
+        elif extension == '.tsv':
+            allmotion = io.readfmriprepconfounds(filebase)
+            motion = {}
+            motion['xtrans'] = allmotion['trans_x'] * 1.0
+            motion['ytrans'] = allmotion['trans_y'] * 1.0
+            motion['ztrans'] = allmotion['trans_z'] * 1.0
+            motion['maxtrans'] = np.max([np.max(motion['xtrans']), np.max(motion['ytrans']), np.max(motion['ztrans'])])
+            motion['mintrans'] = np.min([np.min(motion['xtrans']), np.min(motion['ytrans']), np.min(motion['ztrans'])])
+            motion['xrot'] = allmotion['rot_x'] * 1.0
+            motion['yrot'] = allmotion['rot_y'] * 1.0
+            motion['zrot'] = allmotion['rot_z'] * 1.0
+            motion['maxrot'] = np.max([np.max(motion['xrot']), np.max(motion['yrot']), np.max(motion['zrot'])])
+            motion['minrot'] = np.min([np.min(motion['xrot']), np.min(motion['yrot']), np.min(motion['zrot'])])
+        else:
+            print('cannot read files with extension', extension)
+            sys.exit()
+        motionlen = motion['xtrans'].shape[0]
 
     # read in the variance percents
     melodicICstats = io.readvecs(melodicICstatsfile)
@@ -994,18 +1070,22 @@ def main():
         alldata[theIC]['motioncorrs'] = {}
         alldata[theIC]['motioncorrps'] = {}
         tclen = alldata[theIC]['timecourse'].shape[0]
-        alldata['componentstartpoint'] = motionlen - tclen
-        for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
-            alldata[theIC]['motioncorrs'][component], alldata[theIC]['motioncorrps'][component] = \
-                pearsonr(motion[component][alldata['componentstartpoint']:], alldata[theIC]['timecourse'])
+        if domotion:
+            alldata['componentstartpoint'] = motionlen - tclen
+            for component in ['xtrans', 'ytrans', 'ztrans', 'xrot', 'yrot', 'zrot']:
+                alldata[theIC]['motioncorrs'][component], alldata[theIC]['motioncorrps'][component] = \
+                    pearsonr(motion[component][alldata['componentstartpoint']:], alldata[theIC]['timecourse'])
+            alldata[theIC]['mottimeaxis'] = np.linspace(0.0, 1.0 * (motionlen - 1),
+                                                        num=motionlen,
+                                                        endpoint=True) / thesamplerate
+        else:
+            alldata['componentstartpoint'] = 0
+
         alldata[theIC]['totalvar'] = melodicICstats[1, idx]
         alldata[theIC]['explainedvar'] = melodicICstats[0, idx]
         alldata[theIC]['timeaxis'] = np.linspace(1.0 * alldata['componentstartpoint'], 1.0 * (len(invec) - 1),
                                                  num=len(invec),
                                                  endpoint=True) / thesamplerate
-        alldata[theIC]['mottimeaxis'] = np.linspace(0.0, 1.0 * (motionlen - 1),
-                                                    num=motionlen,
-                                                    endpoint=True) / thesamplerate
         alldata[theIC]['freqaxis'], alldata[theIC]['spectrum'] = \
             spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='mag')
         alldata[theIC]['grade'] = thegrade
@@ -1013,7 +1093,8 @@ def main():
         if verbose:
             print(theIC, thegrade, thesamplerate)
     print('Read in', numelements, 'files')
-    motion['maxtime'] = alldata['1']['timeaxis'][-1] + 0.0
+    if domotion:
+        motion['maxtime'] = alldata['1']['timeaxis'][-1] + 0.0
     whichcomponent = 0
 
     # make the main window
@@ -1067,7 +1148,8 @@ def main():
 
     # initialize everything
     updateTimecourse()
-    updateMotion()
+    if domotion:
+        updateMotion()
     updateLightbox()
 
     QtGui.QApplication.instance().exec_()
