@@ -1,6 +1,6 @@
-# Contributing to rapidtide
+# Contributing to picachooser
 
-Welcome to the rapidtide repository! We're excited you're here and want to contribute.  
+Welcome to the picachooser repository! We're excited you're here and want to contribute.  
 
 These guidelines are designed to make it as easy as possible to get involved. If you have any questions that aren't discussed below, please let us know by opening an [issue][link_issues]!
 
@@ -14,9 +14,9 @@ Already know what you're looking for in this guide? Jump to the following sectio
 
 ## Joining the conversation
 
-`rapidtide` is a young project maintained by a growing group of enthusiastic developers&mdash; and we're excited to have you join! Most of our discussions will take place on open [issues][link_issues].
+`picachooser` is a young project maintained by a growing group of enthusiastic developers&mdash; and we're excited to have you join! Most of our discussions will take place on open [issues][link_issues].
 
-As a reminder, we expect all contributions to `rapidtide` to adhere to our [code of conduct][link_coc].
+As a reminder, we expect all contributions to `picachooser` to adhere to our [code of conduct][link_coc].
 
 ### Issue labels
 
@@ -37,17 +37,17 @@ The current list of labels are [here][link_labels] and include:
 
 ## Making a change
 
-We appreciate all contributions to rapidtide, but those accepted fastest will follow a workflow similar to the following:
+We appreciate all contributions to picachooser, but those accepted fastest will follow a workflow similar to the following:
 
 **1. Comment on an existing issue or open a new issue referencing your addition.**
 
-This allows other members of the rapidtide development team to confirm that you aren't overlapping with work that's currently underway and that everyone is on the same page with the goal of the work you're going to carry out.
+This allows other members of the picachooser development team to confirm that you aren't overlapping with work that's currently underway and that everyone is on the same page with the goal of the work you're going to carry out.
 
 [This blog][link_pushpullblog] is a nice explanation of why putting this work in up front is so useful to everyone involved.
 
-**2. [Fork][link_fork] the [rapidtide repository][link_rapidtide] to your profile.**
+**2. [Fork][link_fork] the [picachooser repository][link_picachooser] to your profile.**
 
-This is now your own unique copy of rapidtide. Changes here won't effect anyone else's work, so it's a safe space to explore edits to the code!
+This is now your own unique copy of picachooser. Changes here won't effect anyone else's work, so it's a safe space to explore edits to the code!
 
 Make sure to [keep your fork up to date][link_updateupstreamwiki] with the master repository.
 
@@ -55,7 +55,7 @@ Make sure to [keep your fork up to date][link_updateupstreamwiki] with the maste
 
 Try to keep the changes focused. We've found that working on a [new branch][link_branches] makes it easier to keep your changes targeted.
 
-When you're creating your pull request, please make sure to review the rapidtide [style conventions][link_styleguide].
+When you're creating your pull request, please make sure to review the picachooser [style conventions][link_styleguide].
 
 **4. Submit a [pull request][link_pullrequest].**
 
@@ -75,24 +75,24 @@ You're awesome. :wave::smiley:
 *&mdash; Based on contributing guidelines from the [tedana][link_tedana] project, which in turn are based on guidelines from the [STEMMRoleModels][link_stemmrolemodels] project.*
 
 [link_github]: https://github.com/
-[link_rapidtide]: https://github.com/bbfrederick/rapidtide
+[link_picachooser]: https://github.com/bbfrederick/picachooser
 [link_signupinstructions]: https://help.github.com/articles/signing-up-for-a-new-github-account
 [link_react]: https://github.com/blog/2119-add-reactions-to-pull-requests-issues-and-comments
-[link_issues]: https://github.com/bbfrederick/rapidtide/issues
-[link_coc]: https://github.com/bbfrederick/rapidtide/blob/master/CODE_OF_CONDUCT.md
-[link_labels]: https://github.com/bbfrederick/rapidtide/labels
+[link_issues]: https://github.com/bbfrederick/picachooser/issues
+[link_coc]: https://github.com/bbfrederick/picachooser/blob/master/CODE_OF_CONDUCT.md
+[link_labels]: https://github.com/bbfrederick/picachooser/labels
 [link_discussingissues]: https://help.github.com/articles/discussing-projects-in-issues-and-pull-requests
 
-[link_bugs]: https://github.com/bbfrederick/rapidtide/labels/bug
-[link_helpwanted]: https://github.com/bbfrederick/rapidtide/labels/help%20wanted
-[link_enhancement]: https://github.com/bbfrederick/rapidtide/labels/enhancement
+[link_bugs]: https://github.com/bbfrederick/picachooser/labels/bug
+[link_helpwanted]: https://github.com/bbfrederick/picachooser/labels/help%20wanted
+[link_enhancement]: https://github.com/bbfrederick/picachooser/labels/enhancement
 
 [link_pullrequest]: https://help.github.com/articles/creating-a-pull-request/
 [link_fork]: https://help.github.com/articles/fork-a-repo/
 [link_pushpullblog]: https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/
 [link_branches]: https://help.github.com/articles/creating-and-deleting-branches-within-your-repository/
-[link_styleguide]: http://rapidtide.readthedocs.io/en/latest/contributing.html
+[link_styleguide]: http://picachooser.readthedocs.io/en/latest/contributing.html
 [link_updateupstreamwiki]: https://help.github.com/articles/syncing-a-fork/
-[link_contributors]: https://github.com/bbfrederick/rapidtide/graphs/contributors
+[link_contributors]: https://github.com/bbfrederick/picachooser/graphs/contributors
 [link_tedana]: https://github.com/ME-ICA/tedana
 [link_stemmrolemodels]: https://github.com/KirstieJane/STEMMRoleModels
