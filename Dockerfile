@@ -57,6 +57,7 @@ RUN conda install -y python=3.8 \
                      pillow \
                      nibabel \
                      pandas \
+                     pyqt \
                      pyqtgraph; sync && \
     chmod -R a+rX /usr/local/miniconda; sync && \
     chmod +x /usr/local/miniconda/bin/*; sync && \
