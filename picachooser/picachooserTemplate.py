@@ -25,10 +25,14 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.translation_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.translation_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.translation_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.translation_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.translation_graphicsView.setSizePolicy(sizePolicy)
         self.translation_graphicsView.setMinimumSize(QtCore.QSize(400, 100))
         self.translation_graphicsView.setMaximumSize(QtCore.QSize(610, 1000))
@@ -37,10 +41,14 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.translation_graphicsView)
         self.rotation_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.rotation_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.rotation_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.rotation_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.rotation_graphicsView.setSizePolicy(sizePolicy)
         self.rotation_graphicsView.setMinimumSize(QtCore.QSize(400, 100))
         self.rotation_graphicsView.setMaximumSize(QtCore.QSize(610, 1000))
@@ -49,10 +57,14 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.rotation_graphicsView)
         self.timecourse_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.timecourse_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.timecourse_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.timecourse_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.timecourse_graphicsView.setSizePolicy(sizePolicy)
         self.timecourse_graphicsView.setMinimumSize(QtCore.QSize(400, 100))
         self.timecourse_graphicsView.setMaximumSize(QtCore.QSize(610, 1000))
@@ -61,10 +73,14 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.timecourse_graphicsView)
         self.spectrum_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.spectrum_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.spectrum_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.spectrum_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.spectrum_graphicsView.setSizePolicy(sizePolicy)
         self.spectrum_graphicsView.setMinimumSize(QtCore.QSize(400, 100))
         self.spectrum_graphicsView.setMaximumSize(QtCore.QSize(610, 1000))
@@ -74,10 +90,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.image_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.image_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.image_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.image_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.image_graphicsView.setSizePolicy(sizePolicy)
         self.image_graphicsView.setMinimumSize(QtCore.QSize(600, 100))
         self.image_graphicsView.setMaximumSize(QtCore.QSize(2000, 1200))
@@ -100,4 +120,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+
+
 from pyqtgraph import GraphicsLayoutWidget

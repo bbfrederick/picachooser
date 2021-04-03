@@ -50,9 +50,13 @@ def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
     cb_xdim = imgsize // 10
     cb_ydim = imgsize
     theviewbox = pg.ViewBox(enableMouse=False)
-    theviewbox.setRange(QtCore.QRectF(0, 0, cb_xdim, cb_ydim),
-                        xRange=(0, cb_xdim - 1), yRange=(0, cb_ydim - 1), padding=0.0,
-                        disableAutoRange=False)
+    theviewbox.setRange(
+        QtCore.QRectF(0, 0, cb_xdim, cb_ydim),
+        xRange=(0, cb_xdim - 1),
+        yRange=(0, cb_ydim - 1),
+        padding=0.0,
+        disableAutoRange=False,
+    )
     theviewbox.setAspectLocked()
 
     thecolorbarwin = pg.ImageItem()
@@ -70,7 +74,9 @@ def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):
 def newViewWindow(view, winwidth, winheight, enableMouse=False):
     theviewbox = view.addViewBox(enableMouse=enableMouse, enableMenu=False)
     theviewbox.autoRange(padding=0.02)
-    theviewbox.setRange(QtCore.QRectF(0, 0, winwidth, winheight), padding=0.0, disableAutoRange=False)
+    theviewbox.setRange(
+        QtCore.QRectF(0, 0, winwidth, winheight), padding=0.0, disableAutoRange=False
+    )
     theviewbox.setBackgroundColor([50, 50, 50])
     theviewbox.setAspectLocked()
 
@@ -86,7 +92,7 @@ def newViewWindow(view, winwidth, winheight, enableMouse=False):
     theviewbox.addItem(theviewbgwin)
     theviewbgwin.setZValue(0)
 
-    thelabel = pg.TextItem(anchor=(0.0,1.0))
+    thelabel = pg.TextItem(anchor=(0.0, 1.0))
     theviewbox.addItem(thelabel)
     thelabel.setZValue(20)
 
@@ -96,17 +102,22 @@ def newViewWindow(view, winwidth, winheight, enableMouse=False):
 class imagedataset:
     "Store and image dataset and some information about it"
 
-    def __init__(self, name, filename, namebase,
-                 mask=None,
-                 label=None,
-                 isaMask=False,
-                 geommask=None,
-                 funcmask=None,
-                 xlims=[0, -1],
-                 ylims=[0, -1],
-                 zlims=[0, -1],
-                 lut_state=cm.gray_state,
-                 verbose=False):
+    def __init__(
+        self,
+        name,
+        filename,
+        namebase,
+        mask=None,
+        label=None,
+        isaMask=False,
+        geommask=None,
+        funcmask=None,
+        xlims=[0, -1],
+        ylims=[0, -1],
+        zlims=[0, -1],
+        lut_state=cm.gray_state,
+        verbose=False,
+    ):
         self.verbose = verbose
         self.name = name
         if label is None:
@@ -116,11 +127,11 @@ class imagedataset:
         self.filename = filename
         self.namebase = namebase
         if self.verbose:
-            print('reading map ', self.name, ' from ', self.filename, '...')
+            print("reading map ", self.name, " from ", self.filename, "...")
         self.isaMask = isaMask
-        self.gradient = pg.GradientWidget(orientation='right', allowAdd=True)
-        self.ry_gradient = pg.GradientWidget(orientation='right', allowAdd=True)
-        self.blb_gradient = pg.GradientWidget(orientation='right', allowAdd=True)
+        self.gradient = pg.GradientWidget(orientation="right", allowAdd=True)
+        self.ry_gradient = pg.GradientWidget(orientation="right", allowAdd=True)
+        self.blb_gradient = pg.GradientWidget(orientation="right", allowAdd=True)
         self.lut_state = lut_state
         self.theLUT = None
         self.theRedyellowLUT = None
@@ -136,16 +147,17 @@ class imagedataset:
         self.setGeomMask(geommask, maskdata=False)
         self.maskData()
         self.updateStats()
-        self.space = 'unspecified'
-        if (self.header['sform_code'] == 4) or (self.header['qform_code'] == 4):
-            if ((self.xdim == 61) and (self.ydim == 73) and (self.zdim == 61)) or \
-                ((self.xdim == 91) and (self.ydim == 109) and (self.zdim == 91)):
+        self.space = "unspecified"
+        if (self.header["sform_code"] == 4) or (self.header["qform_code"] == 4):
+            if ((self.xdim == 61) and (self.ydim == 73) and (self.zdim == 61)) or (
+                (self.xdim == 91) and (self.ydim == 109) and (self.zdim == 91)
+            ):
                 self.space = "MNI152"
             else:
                 self.space = "MNI152NLin2009cAsym"
-        if self.header['sform_code'] != 0:
+        if self.header["sform_code"] != 0:
             self.affine = self.header.get_sform()
-        elif self.header['qform_code'] != 0:
+        elif self.header["qform_code"] != 0:
             self.affine = self.header.get_qform()
         else:
             self.affine = self.header.get_base_affine()
@@ -160,18 +172,29 @@ class imagedataset:
         self.tcoord = 0.0
 
         if self.verbose:
-            print('imagedata initialized:', self.name, self.filename, self.minval, self.dispmin, self.dispmax,
-                  self.maxval)
+            print(
+                "imagedata initialized:",
+                self.name,
+                self.filename,
+                self.minval,
+                self.dispmin,
+                self.dispmax,
+                self.maxval,
+            )
             self.summarize()
 
     def duplicate(self, newname, newlabel):
-        return imagedataset(newname, self.filename, self.namebase,
-                       label=newlabel,
-                       lut_state=self.lut_state)
+        return imagedataset(
+            newname,
+            self.filename,
+            self.namebase,
+            label=newlabel,
+            lut_state=self.lut_state,
+        )
 
     def updateStats(self):
         if self.verbose:
-            print('entering updateStats')
+            print("entering updateStats")
         if self.mask is None:
             calcmaskeddata = self.maskeddata
         else:
@@ -179,25 +202,41 @@ class imagedataset:
         self.numstatvoxels = len(calcmaskeddata)
         self.minval = calcmaskeddata.min()
         self.maxval = calcmaskeddata.max()
-        self.robustmin, self.pct25, self.pct50, self.pct75, self.robustmax = stats.getfracvals(calcmaskeddata, [0.02, 0.25, 0.5, 0.75, 0.98], nozero=False)
+        (
+            self.robustmin,
+            self.pct25,
+            self.pct50,
+            self.pct75,
+            self.robustmax,
+        ) = stats.getfracvals(
+            calcmaskeddata, [0.02, 0.25, 0.5, 0.75, 0.98], nozero=False
+        )
         self.dispmin = self.robustmin
         self.dispmax = self.robustmax
         self.dispmaxmag = np.max([self.dispmax, -self.dispmin])
-        self.histy, self.histx = np.histogram(calcmaskeddata,
-                                              bins=np.linspace(self.minval, self.maxval, 200))
+        self.histy, self.histx = np.histogram(
+            calcmaskeddata, bins=np.linspace(self.minval, self.maxval, 200)
+        )
         self.quartiles = [self.pct25, self.pct50, self.pct75]
         if self.verbose:
-            print(self.name,':',self.minval, self.maxval, self.robustmin, self.robustmax, self.quartiles)
+            print(
+                self.name,
+                ":",
+                self.minval,
+                self.maxval,
+                self.robustmin,
+                self.robustmax,
+                self.quartiles,
+            )
 
     def setData(self, data, isaMask=False):
         if self.verbose:
-            print('entering setData')
+            print("entering setData")
         self.data = data.copy()
         if isaMask:
             self.data[np.where(self.data < 0.5)] = 0.0
             self.data[np.where(self.data > 0.5)] = 1.0
         self.updateStats()
-
 
     def setFuncMask(self, funcmask, maskdata=True):
         self.funcmask = funcmask
@@ -209,16 +248,14 @@ class imagedataset:
         else:
             self.funcmask = funcmask.copy()
         if self.verbose:
-            print('setFuncMask - mask dims', self.funcmask.shape)
+            print("setFuncMask - mask dims", self.funcmask.shape)
         if maskdata:
             self.maskData()
-
 
     def setFuncMaskByThresh(self, threshval=2.3, maskdata=True):
         self.funcmask = np.where(np.fabs(self.data) > threshval, 1.0, 0.0)
         if maskdata:
             self.maskData()
-
 
     def setGeomMask(self, geommask, maskdata=True):
         self.geommask = geommask
@@ -227,10 +264,9 @@ class imagedataset:
         else:
             self.geommask = geommask.copy()
         if self.verbose:
-            print('setGeomMask - mask dims', self.geommask.shape)
+            print("setGeomMask - mask dims", self.geommask.shape)
         if maskdata:
             self.maskData()
-
 
     def maskData(self):
         if len(self.funcmask.shape) == 3:
@@ -239,40 +275,52 @@ class imagedataset:
             self.mask = self.funcmask * self.geommask[:, :, :, None]
         if self.verbose:
             if self.mask is None:
-                print('self.mask is None')
+                print("self.mask is None")
             if self.funcmask is None:
-                print('self.funcmask is None')
+                print("self.funcmask is None")
             if self.geommask is None:
-                print('self.geommask is None')
+                print("self.geommask is None")
         self.maskeddata = self.data.copy()
         self.maskeddata[np.where(self.mask < 0.5)] = 0.0
         self.updateStats()
 
-
     def readImageData(self, isaMask=False):
         if self.verbose:
-            print('entering readImageData')
-        self.nim, indata, self.header, self.dims, self.sizes = io.readfromnifti(self.filename)
-        self.xdim, self.ydim, self.zdim, self.tdim = \
-            io.parseniftidims(self.dims)
-        self.xsize, self.ysize, self.zsize, self.tr = \
-            io.parseniftisizes(self.sizes)
+            print("entering readImageData")
+        self.nim, indata, self.header, self.dims, self.sizes = io.readfromnifti(
+            self.filename
+        )
+        self.xdim, self.ydim, self.zdim, self.tdim = io.parseniftidims(self.dims)
+        self.xsize, self.ysize, self.zsize, self.tr = io.parseniftisizes(self.sizes)
         if self.tdim > 1:
-            self.data = indata[self.xlims[0]:self.xlims[1], self.ylims[0]:self.ylims[1], self.zlims[0]:self.zlims[1], :]
+            self.data = indata[
+                self.xlims[0] : self.xlims[1],
+                self.ylims[0] : self.ylims[1],
+                self.zlims[0] : self.zlims[1],
+                :,
+            ]
         else:
-            self.data = indata[self.xlims[0]:self.xlims[1], self.ylims[0]:self.ylims[1], self.zlims[0]:self.zlims[1]]
-        self.xdim, self.ydim, self.zdim = self.data.shape[0], self.data.shape[1], self.data.shape[2]
+            self.data = indata[
+                self.xlims[0] : self.xlims[1],
+                self.ylims[0] : self.ylims[1],
+                self.zlims[0] : self.zlims[1],
+            ]
+        self.xdim, self.ydim, self.zdim = (
+            self.data.shape[0],
+            self.data.shape[1],
+            self.data.shape[2],
+        )
         if isaMask:
             self.data[np.where(self.data < 0.5)] = 0.0
             self.data[np.where(self.data > 0.5)] = 1.0
         if self.verbose:
-            print('imagedata data range:', np.min(self.data), np.max(self.data))
-            print('header', self.header)
-        self.toffset = self.header['toffset']
+            print("imagedata data range:", np.min(self.data), np.max(self.data))
+            print("header", self.header)
+        self.toffset = self.header["toffset"]
         if self.verbose:
-            print('imagedata dims:', self.xdim, self.ydim, self.zdim, self.tdim)
-            print('imagedata sizes:', self.xsize, self.ysize, self.zsize, self.tr)
-            print('imagedata toffset:', self.toffset)
+            print("imagedata dims:", self.xdim, self.ydim, self.zdim, self.tdim)
+            print("imagedata sizes:", self.xsize, self.ysize, self.zsize, self.tr)
+            print("imagedata toffset:", self.toffset)
 
     def real2tr(self, time):
         return np.round((time - self.toffset) / self.tr, 0)
@@ -283,10 +331,18 @@ class imagedataset:
     def real2vox(self, xcoord, ycoord, zcoord, time):
         x, y, z = apply_affine(self.invaffine, [xcoord, ycoord, zcoord])
         t = self.real2tr(time)
-        return int(np.round(x, 0)), int(np.round(y, 0)), int(np.round(z, 0)), int(np.round(t, 0))
+        return (
+            int(np.round(x, 0)),
+            int(np.round(y, 0)),
+            int(np.round(z, 0)),
+            int(np.round(t, 0)),
+        )
 
     def vox2real(self, xpos, ypos, zpos, tpos):
-        return np.concatenate((apply_affine(self.affine, [xpos, ypos, zpos]), [self.tr2real(tpos)]), axis=0)
+        return np.concatenate(
+            (apply_affine(self.affine, [xpos, ypos, zpos]), [self.tr2real(tpos)]),
+            axis=0,
+        )
 
     def setXYZpos(self, xpos, ypos, zpos):
         self.xpos = int(xpos)
@@ -324,53 +380,57 @@ class imagedataset:
 
     def summarize(self):
         print()
-        print('imagedata name:       ', self.name)
-        print('    label:            ', self.label)
-        print('    filename:         ', self.filename)
-        print('    namebase:         ', self.namebase)
-        print('    xdim:             ', self.xdim)
-        print('    ydim:             ', self.ydim)
-        print('    zdim:             ', self.zdim)
-        print('    tdim:             ', self.tdim)
-        print('    space:            ', self.space)
-        print('    toffset:          ', self.toffset)
-        print('    tr:               ', self.tr)
-        print('    min:              ', self.minval)
-        print('    max:              ', self.maxval)
-        print('    robustmin:        ', self.robustmin)
-        print('    robustmax:        ', self.robustmax)
-        print('    dispmin:          ', self.dispmin)
-        print('    dispmax:          ', self.dispmax)
-        print('    xlims:            ', self.xlims)
-        print('    ylims:            ', self.ylims)
-        print('    zlims:            ', self.zlims)
-        print('    data shape:       ', np.shape(self.data))
-        print('    masked data shape:', np.shape(self.maskeddata))
+        print("imagedata name:       ", self.name)
+        print("    label:            ", self.label)
+        print("    filename:         ", self.filename)
+        print("    namebase:         ", self.namebase)
+        print("    xdim:             ", self.xdim)
+        print("    ydim:             ", self.ydim)
+        print("    zdim:             ", self.zdim)
+        print("    tdim:             ", self.tdim)
+        print("    space:            ", self.space)
+        print("    toffset:          ", self.toffset)
+        print("    tr:               ", self.tr)
+        print("    min:              ", self.minval)
+        print("    max:              ", self.maxval)
+        print("    robustmin:        ", self.robustmin)
+        print("    robustmax:        ", self.robustmax)
+        print("    dispmin:          ", self.dispmin)
+        print("    dispmax:          ", self.dispmax)
+        print("    xlims:            ", self.xlims)
+        print("    ylims:            ", self.ylims)
+        print("    zlims:            ", self.zlims)
+        print("    data shape:       ", np.shape(self.data))
+        print("    masked data shape:", np.shape(self.maskeddata))
         if self.geommask is None:
-            print('    geometric mask not set')
+            print("    geometric mask not set")
         else:
-            print('    geometric mask is set')
+            print("    geometric mask is set")
         if self.funcmask is None:
-            print('    functional mask not set')
+            print("    functional mask not set")
         else:
-            print('    functional mask is set')
+            print("    functional mask is set")
         if self.mask is None:
-            print('    overall mask not set')
+            print("    overall mask not set")
         else:
-            print('    overall mask is set')
-
+            print("    overall mask is set")
 
 
 class LightboxItem(QtGui.QWidget):
     updated = QtCore.pyqtSignal()
 
-    def __init__(self, fgmap, thisview,
-                 orientation='ax',
-                 enableMouse=False,
-                 button=None,
-                 winwidth=64, winheight=64,
-                 bgmap=None,
-                 verbose=False):
+    def __init__(
+        self,
+        fgmap,
+        thisview,
+        orientation="ax",
+        enableMouse=False,
+        button=None,
+        winwidth=64,
+        winheight=64,
+        bgmap=None,
+        verbose=False,
+    ):
         QtGui.QWidget.__init__(self)
         self.fgmap = fgmap
         self.bgmap = bgmap
@@ -378,13 +438,19 @@ class LightboxItem(QtGui.QWidget):
         self.button = button
         self.verbose = verbose
         self.enableMouse = enableMouse
-        self.xdim = self.fgmap.xdim     # this is the number of voxels along this axis
-        self.ydim = self.fgmap.ydim     # this is the number of voxels along this axis
-        self.zdim = self.fgmap.zdim     # this is the number of voxels along this axis
-        self.tdim = self.fgmap.tdim     # this is the number of voxels along this axis
-        self.xsize = self.fgmap.xsize   # this is the mapping between voxel and physical space
-        self.ysize = self.fgmap.ysize   # this is the mapping between voxel and physical space
-        self.zsize = self.fgmap.zsize   # this is the mapping between voxel and physical space
+        self.xdim = self.fgmap.xdim  # this is the number of voxels along this axis
+        self.ydim = self.fgmap.ydim  # this is the number of voxels along this axis
+        self.zdim = self.fgmap.zdim  # this is the number of voxels along this axis
+        self.tdim = self.fgmap.tdim  # this is the number of voxels along this axis
+        self.xsize = (
+            self.fgmap.xsize
+        )  # this is the mapping between voxel and physical space
+        self.ysize = (
+            self.fgmap.ysize
+        )  # this is the mapping between voxel and physical space
+        self.zsize = (
+            self.fgmap.zsize
+        )  # this is the mapping between voxel and physical space
         self.xfov = self.xdim * self.xsize
         self.yfov = self.ydim * self.ysize
         self.zfov = self.zdim * self.zsize
@@ -406,12 +472,17 @@ class LightboxItem(QtGui.QWidget):
         self.setorient(self.orientation)
 
         if self.verbose:
-            print('LightboxItem intialization:')
-            print('    Dimensions:', self.xdim, self.ydim, self.zdim)
-            print('    Voxel sizes:', self.xsize, self.ysize)
-            print('    FOVs:', self.xfov, self.yfov)
-            print('    maxfov, winwidth, winheight:', self.maxfov, self.winwidth, self.winheight)
-            print('    scale factors:', self.hscale, self.vscale)
+            print("LightboxItem intialization:")
+            print("    Dimensions:", self.xdim, self.ydim, self.zdim)
+            print("    Voxel sizes:", self.xsize, self.ysize)
+            print("    FOVs:", self.xfov, self.yfov)
+            print(
+                "    maxfov, winwidth, winheight:",
+                self.maxfov,
+                self.winwidth,
+                self.winheight,
+            )
+            print("    scale factors:", self.hscale, self.vscale)
         self.buttonisdown = False
 
         self.thisview.setBackground(None)
@@ -419,14 +490,22 @@ class LightboxItem(QtGui.QWidget):
         self.thisview.ci.layout.setContentsMargins(0, 0, 0, 0)
         self.thisview.ci.layout.setSpacing(5)
 
-        self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thislabel, self.thisviewbox = \
-            newViewWindow(self.thisview,
-                          self.numperrow * self.hdim, self.numpercol * self.vdim,
-                          enableMouse=self.enableMouse)
+        (
+            self.thisviewposwin,
+            self.thisviewnegwin,
+            self.thisviewbgwin,
+            self.thislabel,
+            self.thisviewbox,
+        ) = newViewWindow(
+            self.thisview,
+            self.numperrow * self.hdim,
+            self.numpercol * self.vdim,
+            enableMouse=self.enableMouse,
+        )
         self.resetWinProps()
 
         if self.enableMouse:
-            #self.thisviewbox.keyPressEvent = self.handlekey
+            # self.thisviewbox.keyPressEvent = self.handlekey
             self.thisviewbox.mousePressEvent = self.handleclick
             self.thisviewbox.mouseMoveEvent = self.handlemousemove
             self.thisviewbox.mouseReleaseEvent = self.handlemouseup
@@ -436,7 +515,7 @@ class LightboxItem(QtGui.QWidget):
 
     def setorient(self, orientation):
         self.orientation = orientation
-        if self.orientation == 'ax':
+        if self.orientation == "ax":
             self.hdim = self.xdim
             self.hfov = self.xfov
             self.hsize = self.xsize
@@ -444,7 +523,7 @@ class LightboxItem(QtGui.QWidget):
             self.vfov = self.yfov
             self.vsize = self.ysize
             self.slicedim = self.zdim
-        elif self.orientation == 'cor':
+        elif self.orientation == "cor":
             self.hdim = self.xdim
             self.hfov = self.xfov
             self.hsize = self.xsize
@@ -452,7 +531,7 @@ class LightboxItem(QtGui.QWidget):
             self.vfov = self.zfov
             self.vsize = self.zsize
             self.slicedim = self.ydim
-        elif self.orientation == 'sag':
+        elif self.orientation == "sag":
             self.hdim = self.ydim
             self.hfov = self.yfov
             self.hsize = self.ysize
@@ -461,7 +540,7 @@ class LightboxItem(QtGui.QWidget):
             self.vsize = self.zsize
             self.slicedim = self.xdim
         else:
-            print('illegal orientation')
+            print("illegal orientation")
 
         self.startslice = 0
         self.slicestep = 1
@@ -477,18 +556,14 @@ class LightboxItem(QtGui.QWidget):
         self.tiledmasks = {}
         self.tiledforegrounds = {}
 
-
     def hvox2pix(self, hpos):
         return int(np.round(self.offseth + self.impixpervoxh * hpos))
-
 
     def vvox2pix(self, vpos):
         return int(np.round(self.offsetv + self.impixpervoxv * vpos))
 
-
-    '''def zvox2pix(self, zpos):
-        return int(np.round(self.offsetz + self.impixpervoxz * zpos))'''
-
+    """def zvox2pix(self, zpos):
+        return int(np.round(self.offsetz + self.impixpervoxz * zpos))"""
 
     def hpix2vox(self, hpix):
         thepos = (hpix - self.offseth) / self.impixpervoxh
@@ -498,7 +573,6 @@ class LightboxItem(QtGui.QWidget):
             thepos = 0
         return int(np.round(thepos))
 
-
     def vpix2vox(self, vpix):
         thepos = (vpix - self.offsetv) / self.impixpervoxv
         if thepos > self.vdim - 1:
@@ -507,15 +581,13 @@ class LightboxItem(QtGui.QWidget):
             thepos = 0
         return int(np.round(thepos))
 
-
-    '''def zpix2vox(self, zpix):
+    """def zpix2vox(self, zpix):
         thepos = (zpix - self.offsetz) / self.impixpervoxz
         if thepos > self.zdim - 1:
             thepos = self.zdim - 1
         if thepos < 0:
             thepos = 0
-        return int(np.round(thepos))'''
-
+        return int(np.round(thepos))"""
 
     def optmatrix(self, horizontalmm, verticalmm, targetaspectratio, verbose=False):
         # first find all the combinations of x and y that will minimally hold all the images
@@ -530,22 +602,35 @@ class LightboxItem(QtGui.QWidget):
         if verbose:
             for i in range(len(numcols)):
                 if i == theindex:
-                    print('columns, rows, positions, numslices, aspect, target:',
-                          numcols[i], numrows[i],
-                          numcols[i] * numrows[i],
-                          theaspectratios[i], targetaspectratio, '***')
+                    print(
+                        "columns, rows, positions, numslices, aspect, target:",
+                        numcols[i],
+                        numrows[i],
+                        numcols[i] * numrows[i],
+                        theaspectratios[i],
+                        targetaspectratio,
+                        "***",
+                    )
                 else:
-                    print('columns, rows, positions, aspect, target:',
-                          numcols[i], numrows[i],
-                          numcols[i] * numrows[i],
-                          theaspectratios[i], targetaspectratio)
+                    print(
+                        "columns, rows, positions, aspect, target:",
+                        numcols[i],
+                        numrows[i],
+                        numcols[i] * numrows[i],
+                        theaspectratios[i],
+                        targetaspectratio,
+                    )
         if verbose:
-            print('optmatrix: horizontalmm, verticalmm, thisaspectratio, targetapectratio, numcols, numrows:',
-                  horizontalmm, verticalmm,
-                  theaspectratios[theindex], targetaspectratio,
-                  numcols[theindex], numrows[theindex])
+            print(
+                "optmatrix: horizontalmm, verticalmm, thisaspectratio, targetapectratio, numcols, numrows:",
+                horizontalmm,
+                verticalmm,
+                theaspectratios[theindex],
+                targetaspectratio,
+                numcols[theindex],
+                numrows[theindex],
+            )
         return numcols[theindex], numrows[theindex]
-
 
     def getWinProps(self):
         self.winwidth = self.thisview.frameGeometry().width()
@@ -559,7 +644,9 @@ class LightboxItem(QtGui.QWidget):
         newaspectpix = (1.0 * self.winwidth) / self.winheight
         if (newaspectpix != self.windowaspectpix) or self.forcerecalc:
             self.aspectchanged = True
-            self.numperrow, self.numpercol = self.optmatrix(self.hdim * self.hsize, self.vdim * self.vsize, newaspectpix)
+            self.numperrow, self.numpercol = self.optmatrix(
+                self.hdim * self.hsize, self.vdim * self.vsize, newaspectpix
+            )
             self.imwidthpix = self.numperrow * self.hdim
             self.imheightpix = self.numpercol * self.vdim
             self.imwidthmm = self.imwidthpix * self.hsize
@@ -571,27 +658,32 @@ class LightboxItem(QtGui.QWidget):
             self.aspectchanged = False
         self.windowaspectpix = newaspectpix
         if self.verbose:
-            print('current lightbox dimensions, aspect ratio, changed:',
-                  self.winwidth,
-                  self.winheight,
-                  self.windowaspectpix,
-                  self.aspectchanged)
-
+            print(
+                "current lightbox dimensions, aspect ratio, changed:",
+                self.winwidth,
+                self.winheight,
+                self.windowaspectpix,
+                self.aspectchanged,
+            )
 
     def printWinProps(self):
-        print('\nLightbox window properties:')
-        print('\tOrientation:', self.orientation)
-        print('\thdim, vdim:', self.hdim, self.vdim)
-        print('\thsize, vsize:', self.hsize, self.vsize)
-        print('\thfov, vfov:', self.hfov, self.vfov)
+        print("\nLightbox window properties:")
+        print("\tOrientation:", self.orientation)
+        print("\thdim, vdim:", self.hdim, self.vdim)
+        print("\thsize, vsize:", self.hsize, self.vsize)
+        print("\thfov, vfov:", self.hfov, self.vfov)
 
-        print('\tnumperrow, numpercol:', self.numperrow, self.numpercol)
-        print('\twinwidth, winheight, windowaspectpix, aspectchanged:',
-              self.winwidth, self.winheight, self.windowaspectpix, self.aspectchanged)
-        print('\timwidthpix, imheightpix:', self.imwidthpix, self.imheightpix)
-        print('\timwidthmm, imheightmm:', self.imwidthmm, self.imheightmm)
-        print('\thscale, vscale:', self.hscale, self.vscale)
-
+        print("\tnumperrow, numpercol:", self.numperrow, self.numpercol)
+        print(
+            "\twinwidth, winheight, windowaspectpix, aspectchanged:",
+            self.winwidth,
+            self.winheight,
+            self.windowaspectpix,
+            self.aspectchanged,
+        )
+        print("\timwidthpix, imheightpix:", self.imwidthpix, self.imheightpix)
+        print("\timwidthmm, imheightmm:", self.imwidthmm, self.imheightmm)
+        print("\thscale, vscale:", self.hscale, self.vscale)
 
     def resetWinProps(self):
         self.tiledbackground = None
@@ -600,41 +692,56 @@ class LightboxItem(QtGui.QWidget):
         if self.hscale > self.vscale:
             voffset = self.imheightpix * (1.0 - self.hscale / self.vscale) / 2.0
             if self.verbose:
-                print('image needs vertical padding')
-                print('voffset is:', voffset)
-            self.thisviewbox.setRange(QtCore.QRectF(0,
-                                                    voffset,
-                                                    self.numperrow * self.hdim,
-                                                    (self.hscale / self.vscale) * self.numpercol * self.vdim),
-                                  padding=0.0)
+                print("image needs vertical padding")
+                print("voffset is:", voffset)
+            self.thisviewbox.setRange(
+                QtCore.QRectF(
+                    0,
+                    voffset,
+                    self.numperrow * self.hdim,
+                    (self.hscale / self.vscale) * self.numpercol * self.vdim,
+                ),
+                padding=0.0,
+            )
         else:
             hoffset = self.imwidthpix * (1.0 - self.vscale / self.hscale) / 2.0
             if self.verbose:
-                print('image needs horizontal padding')
-                print('hoffset is:', hoffset)
-            self.thisviewbox.setRange(QtCore.QRectF(hoffset,
-                                                    0,
-                                                    (self.vscale / self.hscale) * self.numperrow * self.hdim,
-                                                    self.numpercol * self.vdim),
-                                  padding=0.0)
+                print("image needs horizontal padding")
+                print("hoffset is:", hoffset)
+            self.thisviewbox.setRange(
+                QtCore.QRectF(
+                    hoffset,
+                    0,
+                    (self.vscale / self.hscale) * self.numperrow * self.hdim,
+                    self.numpercol * self.vdim,
+                ),
+                padding=0.0,
+            )
         self.thisviewbox.setAspectLocked(lock=False, ratio=(self.vsize / self.hsize))
-        #self.thisviewbox.setAspectLocked(lock=False, ratio=(self.imheightmm / self.imwidthmm))
+        # self.thisviewbox.setAspectLocked(lock=False, ratio=(self.imheightmm / self.imwidthmm))
         self.aspectchanged = True
-
 
     def tileSlices(self, inputimage):
         tiledimage = np.zeros((self.numperrow * self.hdim, self.numpercol * self.vdim))
-        for whichslice in range(np.min([self.numslices, self.numperrow * self.numpercol])):
+        for whichslice in range(
+            np.min([self.numslices, self.numperrow * self.numpercol])
+        ):
             hpos = (self.numperrow - (whichslice % self.numperrow) - 1) * self.hdim
             vpos = (int(whichslice // self.numperrow)) * self.vdim
-            if self.orientation == 'ax':
-                tiledimage[hpos:hpos + self.hdim, vpos:vpos + self.vdim] = inputimage[:, :, self.slicelist[whichslice]]
-            elif self.orientation == 'cor':
-                tiledimage[hpos:hpos + self.hdim, vpos:vpos + self.vdim] = inputimage[:, self.slicelist[whichslice], :]
-            elif self.orientation == 'sag':
-                tiledimage[hpos:hpos + self.hdim, vpos:vpos + self.vdim] = inputimage[self.slicelist[whichslice], :, :]
+            if self.orientation == "ax":
+                tiledimage[
+                    hpos : hpos + self.hdim, vpos : vpos + self.vdim
+                ] = inputimage[:, :, self.slicelist[whichslice]]
+            elif self.orientation == "cor":
+                tiledimage[
+                    hpos : hpos + self.hdim, vpos : vpos + self.vdim
+                ] = inputimage[:, self.slicelist[whichslice], :]
+            elif self.orientation == "sag":
+                tiledimage[
+                    hpos : hpos + self.hdim, vpos : vpos + self.vdim
+                ] = inputimage[self.slicelist[whichslice], :, :]
             else:
-                print('illegal orientation in tileSlices')
+                print("illegal orientation in tileSlices")
 
         return tiledimage
 
@@ -645,11 +752,13 @@ class LightboxItem(QtGui.QWidget):
         try:
             thisviewdata = self.tiledforegrounds[str(self.tpos)]
             if self.verbose:
-                print('using precached tiled foreground image')
+                print("using precached tiled foreground image")
         except KeyError:
             if self.verbose:
-                print('tiling foreground image')
-            self.tiledforegrounds[str(self.tpos)] = self.tileSlices(self.fgmap.maskeddata[:, :, :, self.tpos])
+                print("tiling foreground image")
+            self.tiledforegrounds[str(self.tpos)] = self.tileSlices(
+                self.fgmap.maskeddata[:, :, :, self.tpos]
+            )
             thisviewdata = self.tiledforegrounds[str(self.tpos)]
 
         if self.bgmap is None:
@@ -657,38 +766,59 @@ class LightboxItem(QtGui.QWidget):
         else:
             if self.tiledbackground is None:
                 if self.verbose:
-                    print('tiling background image')
+                    print("tiling background image")
                 self.tiledbackground = self.tileSlices(self.bgmap.maskeddata[:, :, :])
             else:
                 if self.verbose:
-                    print('using precached tiled background image')
+                    print("using precached tiled background image")
             thisviewbg = self.tiledbackground
 
-        self.updateOneView(thisviewdata, thisviewbg, self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin)
-
+        self.updateOneView(
+            thisviewdata,
+            thisviewbg,
+            self.thisviewposwin,
+            self.thisviewnegwin,
+            self.thisviewbgwin,
+        )
 
     def updateOneView(self, data, background, thefgposwin, thefgnegwin, thebgwin):
         if self.verbose:
-            print('setting min and max to', -self.fgmap.dispmaxmag, self.fgmap.dispmaxmag, '(', self.fgmap.numstatvoxels, ')')
-        impos = self.applyLUT(data, np.where(data >= self.thresh, 1, 0), self.fgmap.theRedyellowLUT, self.thresh, self.fgmap.dispmaxmag)
-        thefgposwin.setImage(impos.astype('float'))
-        imneg = self.applyLUT(data, np.where(data <= -self.thresh, 1, 0), self.fgmap.theBluelightblueLUT, self.thresh, self.fgmap.dispmaxmag)
-        thefgnegwin.setImage(imneg.astype('float'))
+            print(
+                "setting min and max to",
+                -self.fgmap.dispmaxmag,
+                self.fgmap.dispmaxmag,
+                "(",
+                self.fgmap.numstatvoxels,
+                ")",
+            )
+        impos = self.applyLUT(
+            data,
+            np.where(data >= self.thresh, 1, 0),
+            self.fgmap.theRedyellowLUT,
+            self.thresh,
+            self.fgmap.dispmaxmag,
+        )
+        thefgposwin.setImage(impos.astype("float"))
+        imneg = self.applyLUT(
+            data,
+            np.where(data <= -self.thresh, 1, 0),
+            self.fgmap.theBluelightblueLUT,
+            self.thresh,
+            self.fgmap.dispmaxmag,
+        )
+        thefgnegwin.setImage(imneg.astype("float"))
         if background is not None:
-            thebgwin.setImage(background.astype('float'), autoLevels=True)
-
+            thebgwin.setImage(background.astype("float"), autoLevels=True)
 
     def setLabel(self, label, color):
         if self.verbose:
-            print('entering setLabel')
+            print("entering setLabel")
         self.thislabel.setText(label)
         self.thislabel.setColor(color)
-
 
     def setMap(self, themap):
         self.fgmap = themap
         self.tdim = self.fgmap.tdim
-
 
     def enableView(self):
         if self.button is not None:
@@ -697,20 +827,18 @@ class LightboxItem(QtGui.QWidget):
             self.button.show()
         self.thisview.show()
 
-
     def applyLUT(self, theimage, mask, theLUT, dispmin, dispmax):
         offset = dispmin
         if dispmax - dispmin > 0:
             scale = len(theLUT) / (dispmax - dispmin)
         else:
             scale = 0.0
-        scaleddata = np.rint((theimage - offset) * scale).astype('int32')
+        scaleddata = np.rint((theimage - offset) * scale).astype("int32")
         scaleddata[np.where(scaleddata < 0)] = 0
         scaleddata[np.where(scaleddata > (len(theLUT) - 1))] = len(theLUT) - 1
         mappeddata = theLUT[scaleddata]
         mappeddata[:, :, 3][np.where(mask < 1)] = 0
         return mappeddata
-
 
     def updateCursors(self):
         xpix = self.hvox2pix(self.xpos)
@@ -719,12 +847,10 @@ class LightboxItem(QtGui.QWidget):
         self.thisviewvLine.setValue(xpix)
         self.thisviewhLine.setValue(ypix)
 
-
     def handlemouseup(self, event):
         self.buttonisdown = False
         self.updateCursors()
         self.updateAllViews()
-
 
     def handlemousemove(self, event):
         if self.buttonisdown:
@@ -733,13 +859,11 @@ class LightboxItem(QtGui.QWidget):
             self.updateAllViews()
             self.updated.emit()
 
-
     def handlekey(self, event):
         if self.verbose:
             print(event)
         self.updateAllViews()
         self.updated.emit()
-
 
     def handleclick(self, event):
         self.xpos = self.xpix2vox(event.pos().x() - 1)
@@ -748,14 +872,12 @@ class LightboxItem(QtGui.QWidget):
         self.updateAllViews()
         self.updated.emit()
 
-
     def handlerefresh(self, event):
         if self.verbose:
-            print('refreshing viewbox range')
+            print("refreshing viewbox range")
         self.getWinProps()
         self.resetWinProps()
         self.updateAllViews
-
 
     def setXYZpos(self, xpos, ypos, zpos, emitsignal=True):
         self.xpos = int(xpos)
@@ -765,17 +887,15 @@ class LightboxItem(QtGui.QWidget):
         if emitsignal:
             self.updated.emit()
 
-
     def setTpos(self, tpos, emitsignal=True):
         if tpos > self.tdim - 1:
             self.tpos = int(self.tdim - 1)
         else:
             self.tpos = int(tpos)
-        
+
         self.updateAllViews()
         if emitsignal:
             self.updated.emit()
-
 
     def getFocusVal(self):
         if self.tdim > 1:
@@ -783,13 +903,12 @@ class LightboxItem(QtGui.QWidget):
         else:
             return self.fgmap.maskeddata[self.xpos, self.ypos, self.zpos]
 
-
     def saveandcomposite(self, fg_img, bg_img, name, savedir, scalefach, scalefacv):
         if PILexists:
-            print('using PIL to save ', name)
-            fgname = os.path.join(savedir, name + '_foreground.png')
-            bgname = os.path.join(savedir, name + '_background.png')
-            compositename = os.path.join(savedir, name + '.jpg')
+            print("using PIL to save ", name)
+            fgname = os.path.join(savedir, name + "_foreground.png")
+            bgname = os.path.join(savedir, name + "_background.png")
+            compositename = os.path.join(savedir, name + ".jpg")
             fg_img.save(fgname)
             bg_img.save(bgname)
             background = Image.open(bgname)
@@ -797,33 +916,43 @@ class LightboxItem(QtGui.QWidget):
             print(foreground.getbands())
             background.paste(foreground, None, foreground)
             flipped = background.transpose(Image.FLIP_TOP_BOTTOM)
-            print('scaling')
+            print("scaling")
             basesize = 512
             hsize = int(basesize / scalefach)
             vsize = int(basesize / scalefacv)
-            print('scaling to ', hsize, vsize)
+            print("scaling to ", hsize, vsize)
             flipped = flipped.resize((hsize, vsize), Image.ANTIALIAS)
-            print('saving to ', compositename)
-            flipped.save(compositename, 'jpeg')
-            print('cleaning')
+            print("saving to ", compositename)
+            flipped.save(compositename, "jpeg")
+            print("cleaning")
             os.remove(fgname)
             os.remove(bgname)
         else:
-            print('saving ', name)
-            fg_img.save(os.path.join(savedir, name + '_fg.png'))
-            bg_img.save(os.path.join(savedir, name + '_bg.png'))
-
+            print("saving ", name)
+            fg_img.save(os.path.join(savedir, name + "_fg.png"))
+            bg_img.save(os.path.join(savedir, name + "_bg.png"))
 
     def saveDisp(self):
         mydialog = QtGui.QFileDialog()
         options = mydialog.Options()
-        thedir = str(mydialog.getExistingDirectory(options=options, caption="Image output directory"))
+        thedir = str(
+            mydialog.getExistingDirectory(
+                options=options, caption="Image output directory"
+            )
+        )
         if self.verbose:
-            print('thedir=', thedir)
+            print("thedir=", thedir)
         thename = self.fgmap.namebase + self.fgmap.name
-        self.saveandcomposite(self.thisviewposwin, self.thisviewbgwin, thename, thedir, self.impixpervoxh, self.impixpervoxv)
-        with open(os.path.join(thedir, thename + '_lims.txt'), 'w') as FILE:
-            FILE.writelines(str(self.fgmap.dispmin) + '\t' + str(self.fgmap.dispmax))
+        self.saveandcomposite(
+            self.thisviewposwin,
+            self.thisviewbgwin,
+            thename,
+            thedir,
+            self.impixpervoxh,
+            self.impixpervoxv,
+        )
+        with open(os.path.join(thedir, thename + "_lims.txt"), "w") as FILE:
+            FILE.writelines(str(self.fgmap.dispmin) + "\t" + str(self.fgmap.dispmax))
             # img_colorbar.save(thedir + self.map.name + '_colorbar.png')
 
     def summarize(self):

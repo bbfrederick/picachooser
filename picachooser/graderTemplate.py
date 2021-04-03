@@ -22,10 +22,15 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.timecourse_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.timecourse_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.MinimumExpanding,
+            QtWidgets.QSizePolicy.MinimumExpanding,
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.timecourse_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.timecourse_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.timecourse_graphicsView.setSizePolicy(sizePolicy)
         self.timecourse_graphicsView.setMinimumSize(QtCore.QSize(610, 100))
         self.timecourse_graphicsView.setMaximumSize(QtCore.QSize(3000, 1000))
@@ -34,10 +39,15 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.timecourse_graphicsView, 0, 0, 1, 1)
         self.spectrum_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.spectrum_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.MinimumExpanding,
+            QtWidgets.QSizePolicy.MinimumExpanding,
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.spectrum_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.spectrum_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.spectrum_graphicsView.setSizePolicy(sizePolicy)
         self.spectrum_graphicsView.setMinimumSize(QtCore.QSize(610, 100))
         self.spectrum_graphicsView.setMaximumSize(QtCore.QSize(3000, 1000))
@@ -60,4 +70,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+
+
 from pyqtgraph import GraphicsLayoutWidget

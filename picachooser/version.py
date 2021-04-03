@@ -5,7 +5,7 @@ from os.path import join as pjoin
 _version_major = 1
 _version_minor = 0
 _version_micro = 2  # use '' for first of series, number for 1 and above
-_version_extra = ''
+_version_extra = ""
 # _version_extra = ''  # Uncomment this for full releases
 
 # Construct full version string from these.
@@ -15,15 +15,17 @@ if _version_micro:
 if _version_extra:
     _ver.append(_version_extra)
 
-__version__ = '.'.join(map(str, _ver))
+__version__ = ".".join(map(str, _ver))
 
-CLASSIFIERS = ['Development Status :: 4 - Alpha',
-               'Intended Audience :: Science/Research',
-               'Topic :: Scientific/Engineering :: Medical Science Apps.',
-               'License :: OSI Approved :: Apache Software License',
-               "Environment :: Console",
-               "Operating System :: OS Independent",
-               "Programming Language :: Python"]
+CLASSIFIERS = [
+    "Development Status :: 4 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "License :: OSI Approved :: Apache Software License",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
 
 # Description should be a one-liner:
 description = "PICAchooser - a lightweight GUI tool for sorting MELODIC ICA components"
@@ -61,5 +63,5 @@ MAJOR = _version_major
 MINOR = _version_minor
 MICRO = _version_micro
 VERSION = __version__
-PACKAGE_DATA = {'picachooser': [pjoin('data', '*')]}
-REQUIRES = ['numpy', 'scipy', 'pandas', 'pillow', 'nibabel', 'pyqtgraph']
+PACKAGE_DATA = {"picachooser": [pjoin("data", "*")]}
+REQUIRES = ["numpy", "scipy", "pandas", "pillow", "nibabel", "pyqtgraph"]
