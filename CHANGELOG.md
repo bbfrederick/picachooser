@@ -1,7 +1,7 @@
 # History of changes
 
-## Version 1.1.1 (4/4/20)
-* Attempting to deploy to pypi
+## Version 1.1.1,2,3 (4/4/20)
+* Attempting to deploy to pypi and not screw up versioning.
 
 ## Version 1.1.0 (4/3/20)
 * Added groupmelodic runmode, for examining group ICAs.
