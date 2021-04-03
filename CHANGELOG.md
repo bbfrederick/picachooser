@@ -1,5 +1,10 @@
 # History of changes
 
+## Version 1.1.0 (4/3/20)
+* Added groupmelodic runmode, for examining group ICAs.
+* General code cleanup, reformatting with black.
+* Updated documentation.
+
 ## Version 1.0.2 (11/24/20)
 * Added line to help QT compatibility with macOS 11 (Big Sur).
 
