@@ -17,26 +17,45 @@ kept (and the timecourses are in green\*).
 Usage
 -----
 
-\`\`\` bash usage: PICAchooser runmode [options]
+`` usage: PICAchooser runmode [options] ``
+
 
 A program to review (and alter) melodic component selections.
 
-positional arguments: runmode Analysis mode. Valid choices are
-"melodic", "aroma", and "fix". In melodic mode, the default output file
-is named "badcomponents.txt" and will be written to MELODICDIR as comma
-separated integers. In aroma mode, the file
+positional arguments:
+
+runmode. Valid choices are
+"melodic", "groupmelodic", "aroma", and "fix".
+
+In melodic mode, the default output file
+is named "badcomponents.txt"; components flagged for removal will be written to MELODICDIR as comma
+separated integers.  Component numbers start at 1 (for compatibility with fsl_regfilt).
+
+In groupmelodic mode, the default output file
+is named "goodcomponents.txt"; components which are worth keeping will be written to MELODICDIR as integers,
+one per line.  Component numbers start at 0 (for compatibility with standard NIFTI array indexing).
+
+In aroma mode, the file
 "classified\_motion\_ICs.txt" must exist in the parent of MELODICDIR; by
 default the output will be written to
-"classified\_motion\_ICs\_revised.txt" in the same directory. In fix
+"classified\_motion\_ICs\_revised.txt" in the same directory.
+Component numbers start at 1 (for compatibility with AROMA numbering convention).
+
+In fix
 mode, the default output file is named "hand\_labels\_noise.txt" and
 will be written to MELODICDIR as comma separated integers with square
 brackets surrounding the line.
+Component numbers start at 1 (for compatibility with FIX numbering convention).
 
 optional arguments: -h, --help show this help message and exit
 
-Standard input file location specification: --featdir FEATDIR The FEAT
-directory associated with this MELODIC run. --melodicdir MELODICDIR The
-.ica directory for this MELODIC run.
+Standard input file location specification:
+
+``--featdir FEATDIR``
+The FEAT directory associated with this MELODIC run.
+
+``--melodicdir MELODICDIR``
+The .ica directory for this MELODIC run.
 
 Nonstandard input file location specification: --backgroundfile BGFILE
 The anatomic file on which to display the ICs (usually found in
@@ -130,6 +149,12 @@ using the currently tagged bad components whenever the file is saved
 
 ``--displaythresh`` sets the z-threshold for the component maps.
 
+``--spatialroi XMIN XMAX YMIN YMAX ZMIN ZMAX`` lets you zoom in on a
+cubic ROI within the NIFTI dataset.  Useful if you did a constrained ICA
+on a particular brain region.  Set the MAX value to -1 to go to the maximum
+value for a given dimension.  These are voxel indices, with 0 being the first
+element of each dimension.
+
 \* Configuration changes
 ------------------------
 
@@ -140,6 +165,13 @@ semi-permanently, edit the file ${HOME}/.picachooser.json. This file is
 created with default values if it is not present. You can use any valid
 python color specification string for color values, e.g. "r", "ff0000",
 or "FF0000" could all be used for red.
+
+``--componentlinewidth``, ``--motionlinewidth``, and ``--motionlimitlinewidth``
+can all be used to specify various linewidths (in pixels) for the various plots.
+Useful if you want to make a screenshot pretty for a figure.
+
+``--scalemotiontodata`` autoscales the motion plots to the motion timecourse values
+rather than to fixed limits.
 
 The motion plots have two dotted lines to indicate "normal" motion
 limits (by default +/-2.5 mm for translation and +/-0.04 radians for
@@ -246,4 +278,3 @@ pandas:
 1) McKinney, W., pandas: a foundational Python library for data analysis
    and statistics. Python for High Performance and Scientific Computing,
    2011. 14.
-

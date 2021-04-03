@@ -124,36 +124,6 @@ def findfromfeatdir(featdir, initBGfile, initFuncfile, initMotionfile):
     return bgfile, Funcfile, motionfile
 
 
-"""def findfrommelodicdir(melodicdir, initICfile, initICmask, initTCfile):
-    if initICfile is None:
-        icfile = os.path.join(melodicdir, 'melodic_IC.nii.gz')
-    else:
-        icfile = initICfile
-    if not os.path.isfile(icfile):
-        print('cannot find independent component file at', icfile)
-        sys.exit()
-
-    if initICmask is None:
-        icmask = os.path.join(melodicdir, 'mask.nii.gz')
-    else:
-        icmask = initICmask
-    if not os.path.isfile(icmask):
-        print('cannot find independent component file at', icmask)
-        sys.exit()
-
-    if initTCfile is None:
-        tcfile = os.path.join(melodicdir, 'melodic_mix')
-    else:
-        tcfile = initTCfile
-    if not os.path.isfile(tcfile):
-        print('cannot find component timecourse file at', tcfile)
-        sys.exit()
-
-    melodicICstatsfile = os.path.join(melodicdir, 'melodic_ICstats')
-
-    return icfile, icmask, tcfile, melodicICstatsfile"""
-
-
 def findfrommelodicdir(
     melodicdir, initBGfile, initICfile, initICmask, initTCfile, initmelodicICstatsfile
 ):
@@ -330,10 +300,16 @@ def writegrades():
     global Funcfile, Mixfile, filteredfile
 
     badlist = []
+    goodlist = []
     for i in range(len(namelist)):
         if alldata[namelist[i]]["grade"] < 0:
             badlist.append(str(i + 1))
-    outputstring = ",".join(badlist)
+        else:
+            goodlist.append(str(i))
+    if runmode == "groupmelodic":
+        outputstring = "\n".join(goodlist)
+    else:
+        outputstring = ",".join(badlist)
     if runmode == "fix":
         outputstring = "[" + outputstring + "]"
     with open(outputfile, "w") as thefile:
@@ -697,8 +673,8 @@ def main():
             'Analysis mode.  Valid choices are "melodic", "groupmelodic" "aroma", and "fix".  '
             'In melodic mode, the default output file is named "badcomponents.txt" and will be written to MELODICDIR '
             'as comma separated integers. In groupmelodic mode, the default output file is named "goodcomponents.txt" '
-            "(you are more interested in which components should be retained) and will be written to MELODICDIR as comma "
-            'separated integers. In aroma mode, the file "classified_motion_ICs.txt" must exist in the parent of '
+            "(you are more interested in which components should be retained) and will be written to MELODICDIR as newline "
+            'separated integers (starting from 0). In aroma mode, the file "classified_motion_ICs.txt" must exist in the parent of '
             'MELODICDIR; by default the output will be written to "classified_motion_ICs_revised.txt" in the same '
             'directory.  In fix mode, the default output file is named "hand_labels_noise.txt" and will be written '
             "to MELODICDIR as comma separated integers with square brackets surrounding the line."
@@ -707,7 +683,7 @@ def main():
     )
 
     # input file specification
-    hlfilespec = parser.add_argument_group("Standard input file location specification")
+    hlfilespec = parser.add_argument_group("Standard input file location specification.  For certain runmodes, one of these will be sufficient to fully specify all file locations.")
     hlfilespec.add_argument(
         "--featdir",
         dest="featdir",
@@ -725,7 +701,7 @@ def main():
     )
 
     llfilespec = parser.add_argument_group(
-        "Nonstandard input file location specification"
+        "Nonstandard input file location specification.  Setting any of these overrides any location inferred from --melodicdir or --featdir."
     )
     llfilespec.add_argument(
         "--backgroundfile",
