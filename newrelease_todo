@@ -10,10 +10,18 @@
 
 + Sync everything to github.
 
++ Install locally
+
+    python setup.py install
+
 + Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
     git tag -a v1.1.1 -m "v1.1.1"
     git push origin v1.1.1
+
++ Install locally
+
+    python setup.py install
 
 + Edit the release notes on github
 
