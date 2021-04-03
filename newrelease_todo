@@ -1,43 +1,24 @@
 + Fix the version numbers in files:
 
-    vi setup.py PICAchooser/version.py VERSION Dockerfile dockerbuild/build.sh newrelease_todo
-
-    setup.py
-        search for version=
-
-    PICAchooser/version.py
-        search for "_version_major =", "_version_minor =", and "_version_micro ="
-
-    VERSION
-        Contains just the version number
-
-    INSTALL.rst
-        search for '(currently'
+    vi Dockerfile newrelease_todo
 
     Dockerfile
         search for 'org.label-schema.schema-version='
 
-    dockerbuild/build.sh
-        search for VERSION=
 
-    newrelease_todo
-        search for ' v'
-        
++ Edit CHANGELOG.md (use git log to get the history)
 
++ Sync everything to github.
 
-+ Edit CHANGELOG.md
++ Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
+
+    git tag -a v1.1.0 -m "v1.1.0"
+    git push origin v1.1.0
+
++ Edit the release notes on github
 
 + Rebuild Docker container and push
 
     dockerbuild/build.sh
     dockerbuild/test.sh
 
-+ Sync everything to github.
-
-+ Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
-
-    git tag -a v1.0.2 -m "v1.0.2"
-    git push origin v1.0.2
-
-
-+ Edit the release notes on github
