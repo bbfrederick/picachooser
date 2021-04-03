@@ -32,6 +32,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
 import numpy as np
 import os
+from nibabel.affines import apply_affine
 
 try:
     from PIL import Image
