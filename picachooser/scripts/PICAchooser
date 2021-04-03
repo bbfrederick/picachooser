@@ -705,6 +705,16 @@ def main():
         type=lambda x: is_float(parser, x),
         help='z threshold for the displayed ICA components.  Default is 2.3.',
         default=2.3)
+    other.add_argument(
+        "--spatialroi",
+        dest="spatialroi",
+        type=int,
+        nargs=6,
+        metavar=("XMIN", "XMAX", "YMIN", "YMAX", "ZMIN", "ZMAX"),
+        help=(
+            "Only read in image data within the specified ROI.  Set MAX to -1 to go to the end of that dimension."
+        ),
+        default=(0, -1, 0, -1, 0, -1))
 
     configuration = parser.add_argument_group('Configuration arguments')
     configuration.add_argument(
@@ -1140,10 +1150,22 @@ def main():
                                   labels={'left': 'Rotation (radians)', 'bottom': 'Time (s)'})
 
     print('setting up image window')
-    geommaskimage = lb.imagedataset('ICmask', ICmask, 'ICmask', lut_state=cm.mask_state)
-    fgimage = lb.imagedataset('IC', ICfile, 'IC', lut_state=cm.redyellow_state, geommask=geommaskimage.data)
+    geommaskimage = lb.imagedataset('ICmask', ICmask, 'ICmask',
+                                    xlims=args.spatialroi[0:2],
+                                    ylims=args.spatialroi[2:4],
+                                    zlims=args.spatialroi[4:6],
+                                    lut_state=cm.mask_state)
+    fgimage = lb.imagedataset('IC', ICfile, 'IC',
+                              xlims=args.spatialroi[0:2],
+                              ylims=args.spatialroi[2:4],
+                              zlims=args.spatialroi[4:6],
+                              lut_state=cm.redyellow_state, geommask=geommaskimage.data)
     fgimage.setFuncMaskByThresh(threshval=args.displaythresh)
-    bgimage = lb.imagedataset('BG', BGfile, 'background', lut_state=cm.gray_state)
+    bgimage = lb.imagedataset('BG', BGfile, 'background',
+                              xlims=args.spatialroi[0:2],
+                              ylims=args.spatialroi[2:4],
+                              zlims=args.spatialroi[4:6],
+                              lut_state=cm.gray_state)
     mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
 
     # initialize everything

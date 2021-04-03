@@ -102,6 +102,9 @@ class imagedataset:
                  isaMask=False,
                  geommask=None,
                  funcmask=None,
+                 xlims=[0, -1],
+                 ylims=[0, -1],
+                 zlims=[0, -1],
                  lut_state=cm.gray_state,
                  verbose=False):
         self.verbose = verbose
@@ -123,6 +126,9 @@ class imagedataset:
         self.theRedyellowLUT = None
         self.theBluelightblueLUT = None
         self.setLUT(self.lut_state)
+        self.xlims = xlims
+        self.ylims = ylims
+        self.zlims = zlims
         self.readImageData(isaMask=self.isaMask)
         self.mask = None
         self.maskeddata = None
@@ -246,17 +252,22 @@ class imagedataset:
     def readImageData(self, isaMask=False):
         if self.verbose:
             print('entering readImageData')
-        self.nim, self.data, self.header, self.dims, self.sizes = io.readfromnifti(self.filename)
+        self.nim, indata, self.header, self.dims, self.sizes = io.readfromnifti(self.filename)
+        self.xdim, self.ydim, self.zdim, self.tdim = \
+            io.parseniftidims(self.dims)
+        self.xsize, self.ysize, self.zsize, self.tr = \
+            io.parseniftisizes(self.sizes)
+        if self.tdim > 1:
+            self.data = indata[self.xlims[0]:self.xlims[1], self.ylims[0]:self.ylims[1], self.zlims[0]:self.zlims[1], :]
+        else:
+            self.data = indata[self.xlims[0]:self.xlims[1], self.ylims[0]:self.ylims[1], self.zlims[0]:self.zlims[1]]
+        self.xdim, self.ydim, self.zdim = self.data.shape[0], self.data.shape[1], self.data.shape[2]
         if isaMask:
             self.data[np.where(self.data < 0.5)] = 0.0
             self.data[np.where(self.data > 0.5)] = 1.0
         if self.verbose:
             print('imagedata data range:', np.min(self.data), np.max(self.data))
             print('header', self.header)
-        self.xdim, self.ydim, self.zdim, self.tdim = \
-            io.parseniftidims(self.dims)
-        self.xsize, self.ysize, self.zsize, self.tr = \
-            io.parseniftisizes(self.sizes)
         self.toffset = self.header['toffset']
         if self.verbose:
             print('imagedata dims:', self.xdim, self.ydim, self.zdim, self.tdim)
@@ -330,6 +341,9 @@ class imagedataset:
         print('    robustmax:        ', self.robustmax)
         print('    dispmin:          ', self.dispmin)
         print('    dispmax:          ', self.dispmax)
+        print('    xlims:            ', self.xlims)
+        print('    ylims:            ', self.ylims)
+        print('    zlims:            ', self.zlims)
         print('    data shape:       ', np.shape(self.data))
         print('    masked data shape:', np.shape(self.maskeddata))
         if self.geommask is None:
@@ -477,7 +491,7 @@ class LightboxItem(QtGui.QWidget):
 
 
     def hpix2vox(self, hpix):
-        thepos = (xpix - self.offseth) / self.impixpervoxh
+        thepos = (hpix - self.offseth) / self.impixpervoxh
         if thepos > self.hdim - 1:
             thepos = self.hdim - 1
         if thepos < 0:
