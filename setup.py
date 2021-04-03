@@ -5,28 +5,26 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 """
 
-# Always prefer setuptools over distutils
-from setuptools import setup, find_packages
-
 # To use a consistent encoding
 from codecs import open
 from os import path
-import subprocess
-import re
-import sys
 
+# Always prefer setuptools over distutils
+from setuptools import find_packages, setup
 
-GITTAG_PY = """
-# This file is originally generated from Git information by running 'setup.py
-# install'. Distribution tarballs contain a pre-generated copy of this file.
-__gittag__ = '%s'
-"""
+import versioneer
 
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
 with open(path.join(here, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
+
+# Write version number out to VERSION file
+version = versioneer.get_version()
+with open(path.join(here, "VERSION"), "w", encoding="utf-8") as f:
+    f.write(version)
+
 
 modules_list = [
     "picachooser/graderTemplate",
@@ -37,6 +35,7 @@ modules_list = [
     "picachooser/stats",
     "picachooser/colormaps",
     "picachooser/LightboxItem",
+    "picachooser/_version",
 ]
 
 script_list = [
@@ -45,45 +44,13 @@ script_list = [
     "picachooser/scripts/PICAchooser",
 ]
 
-
-def update_gittag_py():
-    if not path.isdir(".git"):
-        print("This does not appear to be a Git repository.")
-        f = open("picachooser/_gittag.py", "w")
-        f.write(GITTAG_PY % "UNKNOWN-UNKNOWN")
-        f.close()
-        return
-    try:
-        p = subprocess.Popen(
-            ["git", "describe", "--tags", "--dirty", "--always"], stdout=subprocess.PIPE
-        )
-    except EnvironmentError:
-        print("unable to run git, leaving picachooser/_gittag.py alone")
-        return
-    stdout = p.communicate()[0]
-    if p.returncode != 0:
-        print("unable to run git, leaving picachooser/_gittag.py alone")
-        return
-    # we use tags like "python-picachooser-0.5", so strip the prefix
-    if sys.version_info[0] == 3:
-        ver = str(stdout.strip(), "utf-8")
-    else:
-        ver = stdout.strip()
-    print(ver)
-    f = open("picachooser/_gittag.py", "w")
-    f.write(GITTAG_PY % ver)
-    f.close()
-
-
-update_gittag_py()
-
-
 setup(
     name="picachooser",
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="1.0.0rc11",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     description="Lightweight GUI for sorting MELODIC ICA components.",
     long_description=long_description,
     # The project's main homepage.

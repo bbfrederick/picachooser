@@ -377,7 +377,7 @@ def windowResized(evt):
 
 
 def keyPressed(evt):
-    global whichcomponent, numelements, mainwin, verbose, domotion
+    global whichcomponent, numelements, mainwin, verbose, domotion, dotimecourse
 
     if verbose:
         print("processing keypress event")
@@ -413,10 +413,31 @@ def keyPressed(evt):
     else:
         print(evt.key())
 
-    updateTimecourse()
+    updateTCinfo()
+    if dotimecourse:
+        updateTimecourse()
     if domotion:
         updateMotion()
     updateLightbox()
+
+
+def updateTCinfo():
+    global whichcomponent, alldata, namelist, win, numelements, verbose
+
+    if verbose:
+        print("entering updateTCinfo")
+    thiscomponent = alldata[namelist[whichcomponent]]
+    windowtitle = "PICAchooser - Component {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
+        whichcomponent + 1,
+        numelements,
+        thiscomponent["explainedvar"],
+        thiscomponent["totalvar"],
+    )
+    thiscomponent = alldata[namelist[whichcomponent]]
+    if thiscomponent["grade"] is not None:
+        if thiscomponent["grade"] <= 0:
+            windowtitle = windowtitle + " - marked for removal"
+    win.setWindowTitle(windowtitle)
 
 
 def updateTimecourse():
@@ -426,12 +447,6 @@ def updateTimecourse():
     if verbose:
         print("entering updateTimecourse")
     thiscomponent = alldata[namelist[whichcomponent]]
-    windowtitle = "PICAchooser - Component {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
-        whichcomponent + 1,
-        numelements,
-        thiscomponent["explainedvar"],
-        thiscomponent["totalvar"],
-    )
     if thiscomponent["grade"] is None:
         pencolor = "w"
     elif thiscomponent["grade"] == 0:
@@ -440,8 +455,7 @@ def updateTimecourse():
         pencolor = config["keepcolor"]
     else:
         pencolor = config["discardcolor"]
-        windowtitle = windowtitle + " - marked for removal"
-    win.setWindowTitle(windowtitle)
+        #windowtitle = windowtitle + " - marked for removal"
 
     timecourse_ax.plot(
         thiscomponent["timeaxis"],
@@ -661,11 +675,12 @@ def main():
     global mainwin, verbose
     global config
     global Funcfile, Mixfile, filteredfile
-    global domotion
+    global domotion, dotimecourse
 
     mainwin = None
     verbose = False
     domotion = True
+    dotimecourse = True
 
     parser = argparse.ArgumentParser(
         prog="PICAchooser",
@@ -1010,6 +1025,7 @@ def main():
             initfileexists = True
     elif runmode == "groupmelodic":
         domotion = False
+        dotimecourse = False
         if args.initfile is not None:
             Removefile = args.initfile
         else:
@@ -1331,23 +1347,24 @@ def main():
     win.show()
     win.setWindowTitle("PICAchooser")
 
-    # set up the regressor timecourse window
-    print("about to set up the timecourse")
-    global timecourse_ax
-    timecoursewin = ui.timecourse_graphicsView
-    timecourse_ax = timecoursewin.addPlot(
-        title="Independent component",
-        labels={"left": "Intensity (a.u.)", "bottom": "Time (s)"},
-    )
+    if dotimecourse:
+        # set up the regressor timecourse window
+        print("about to set up the timecourse")
+        global timecourse_ax
+        timecoursewin = ui.timecourse_graphicsView
+        timecourse_ax = timecoursewin.addPlot(
+            title="Independent component",
+            labels={"left": "Intensity (a.u.)", "bottom": "Time (s)"},
+        )
 
-    # set up the regressor spectrum window
-    print("about to set up the spectrum")
-    global spectrum_ax
-    spectrumwin = ui.spectrum_graphicsView
-    spectrum_ax = spectrumwin.addPlot(
-        title="Magnitude spectrum of timecourse",
-        labels={"left": "Power (a.u.)", "bottom": "Frequency (Hz)"},
-    )
+        # set up the regressor spectrum window
+        print("about to set up the spectrum")
+        global spectrum_ax
+        spectrumwin = ui.spectrum_graphicsView
+        spectrum_ax = spectrumwin.addPlot(
+            title="Magnitude spectrum of timecourse",
+            labels={"left": "Power (a.u.)", "bottom": "Frequency (Hz)"},
+        )
 
     if domotion:
         global transmot_ax, rotmot_ax
@@ -1402,7 +1419,9 @@ def main():
     )
 
     # initialize everything
-    updateTimecourse()
+    updateTCinfo()
+    if dotimecourse:
+        updateTimecourse()
     if domotion:
         updateMotion()
     updateLightbox()
