@@ -1,7 +1,11 @@
 # History of changes
 
+## Version 1.1.1 (4/4/20)
+* Attempting to deploy to pypi
+
 ## Version 1.1.0 (4/3/20)
 * Added groupmelodic runmode, for examining group ICAs.
+* Added the ability to select an ROI from the dataset.
 * General code cleanup, reformatting with black.
 * Updated documentation.
 
