@@ -1082,15 +1082,15 @@ def main():
     filteredfile = args.filteredfile
 
     if verbose:
-        print(ICfile)
-        print(ICmask)
-        print(BGfile)
-        print(Funcfile)
-        print(Mixfile)
-        print(Motionfile)
-        print(Removefile)
-        print(filteredfile)
-        print(melodicICstatsfile)
+        print(f"ICfile: {ICfile}")
+        print(f"ICmask: {ICmask}")
+        print(f"BGfile: {BGfile}")
+        print(f"Funcfile: {Funcfile}")
+        print(f"Mixfile: {Mixfile}")
+        print(f"Motionfile: {Motionfile}")
+        print(f"Removefile: {Removefile}")
+        print(f"filteredfile: {filteredfile}")
+        print(f"melodicICstatsfile: {melodicICstatsfile}")
 
     # set the configurable options
     def initconfig():
@@ -1314,7 +1314,10 @@ def main():
     whichcomponent = 0
 
     # make the main window
-    import picachooser.picachooserTemplate as uiTemplate
+    if domotion:
+        import picachooser.picachooserTemplate as uiTemplate
+    else:
+        import picachooser.picachooser_imonlyTemplate as uiTemplate
 
     app = QtGui.QApplication([])
     print("setting up output window")
@@ -1346,22 +1349,23 @@ def main():
         labels={"left": "Power (a.u.)", "bottom": "Frequency (Hz)"},
     )
 
-    global transmot_ax, rotmot_ax
-    # set up the translational motion window
-    print("about to set up the translational motion")
-    transmotwin = ui.translation_graphicsView
-    transmot_ax = transmotwin.addPlot(
-        title="Translation timecourses",
-        labels={"left": "Displacement (mm)", "bottom": "Time (s)"},
-    )
+    if domotion:
+        global transmot_ax, rotmot_ax
+        # set up the translational motion window
+        print("about to set up the translational motion")
+        transmotwin = ui.translation_graphicsView
+        transmot_ax = transmotwin.addPlot(
+            title="Translation timecourses",
+            labels={"left": "Displacement (mm)", "bottom": "Time (s)"},
+        )
 
-    # set up the rotational motion window
-    print("about to set up the rotational motion")
-    rotmotwin = ui.rotation_graphicsView
-    rotmot_ax = rotmotwin.addPlot(
-        title="Rotation timecourses",
-        labels={"left": "Rotation (radians)", "bottom": "Time (s)"},
-    )
+        # set up the rotational motion window
+        print("about to set up the rotational motion")
+        rotmotwin = ui.rotation_graphicsView
+        rotmot_ax = rotmotwin.addPlot(
+            title="Rotation timecourses",
+            labels={"left": "Rotation (radians)", "bottom": "Time (s)"},
+        )
 
     print("setting up image window")
     geommaskimage = lb.imagedataset(

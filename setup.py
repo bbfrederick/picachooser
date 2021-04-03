@@ -31,6 +31,7 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 modules_list = [
     "picachooser/graderTemplate",
     "picachooser/picachooserTemplate",
+    "picachooser/picachooser_imonlyTemplate",
     "picachooser/io",
     "picachooser/fit",
     "picachooser/stats",
