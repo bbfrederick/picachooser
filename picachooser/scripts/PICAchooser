@@ -431,7 +431,7 @@ def updateTimecourse():
         pencolor = config["keepcolor"]
     else:
         pencolor = config["discardcolor"]
-        #windowtitle = windowtitle + " - marked for removal"
+        # windowtitle = windowtitle + " - marked for removal"
 
     timecourse_ax.plot(
         thiscomponent["timeaxis"],
@@ -683,7 +683,9 @@ def main():
     )
 
     # input file specification
-    hlfilespec = parser.add_argument_group("Standard input file location specification.  For certain runmodes, one of these will be sufficient to fully specify all file locations.")
+    hlfilespec = parser.add_argument_group(
+        "Standard input file location specification.  For certain runmodes, one of these will be sufficient to fully specify all file locations."
+    )
     hlfilespec.add_argument(
         "--featdir",
         dest="featdir",

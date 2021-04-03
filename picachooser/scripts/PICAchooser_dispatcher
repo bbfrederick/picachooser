@@ -27,26 +27,24 @@ import sys
 import os
 import subprocess
 
+
 def main():
     # get the command line parameters
     execdir = sys.path[0]
-    validcommands = [
-        'PICAchooser',
-        'grader',
-        'xyzzy']
+    validcommands = ["PICAchooser", "grader", "xyzzy"]
 
     thecommand = sys.argv[1:]
     if thecommand[0] in validcommands:
         # the script exists, now check if it is installed
         if os.path.isfile(os.path.join(execdir, thecommand[0])):
             subprocess.call(thecommand)
-        elif thecommand[0] == 'xyzzy':
-            subprocess.call('/bin/bash')
+        elif thecommand[0] == "xyzzy":
+            subprocess.call("/bin/bash")
         else:
-            print(thecommand[0], 'is a PICAchooser script, but is not installed')
+            print(thecommand[0], "is a PICAchooser script, but is not installed")
     else:
-        print(thecommand[0], 'is not a script in the PICAchooser package')
-    
+        print(thecommand[0], "is not a script in the PICAchooser package")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

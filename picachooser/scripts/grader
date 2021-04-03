@@ -50,7 +50,7 @@ def is_valid_file(parser, arg):
     Check if argument is existing file.
     """
     if not os.path.isfile(arg) and arg is not None:
-        parser.error('The file {0} does not exist!'.format(arg))
+        parser.error("The file {0} does not exist!".format(arg))
 
     return arg
 
@@ -59,13 +59,13 @@ def invert_float(parser, arg):
     """
     Check if argument is float or auto.
     """
-    if arg != 'auto':
+    if arg != "auto":
         try:
             arg = float(arg)
         except parser.error:
             parser.error('Value {0} is not a float or "auto"'.format(arg))
 
-    if arg != 'auto':
+    if arg != "auto":
         arg = 1.0 / arg
     return arg
 
@@ -74,7 +74,7 @@ def is_float(parser, arg):
     """
     Check if argument is float or auto.
     """
-    if arg != 'auto':
+    if arg != "auto":
         try:
             arg = float(arg)
         except parser.error:
@@ -107,13 +107,14 @@ def hamming(length, debug=False):
         return hammingwindows[str(length)]
     except KeyError:
         hammingwindows[str(length)] = 0.54 - 0.46 * np.cos(
-            (np.arange(0.0, float(length), 1.0) / float(length)) * 2.0 * np.pi)
+            (np.arange(0.0, float(length), 1.0) / float(length)) * 2.0 * np.pi
+        )
         if debug:
-            print('initialized hamming window for length', length)
+            print("initialized hamming window for length", length)
         return hammingwindows[str(length)]
 
 
-def spectrum(inputdata, Fs=1.0, mode='power', trim=True):
+def spectrum(inputdata, Fs=1.0, mode="power", trim=True):
     r"""Performs an FFT of the input data, and returns the frequency axis and spectrum
     of the input signal.
 
@@ -153,27 +154,27 @@ def spectrum(inputdata, Fs=1.0, mode='power', trim=True):
         :param mode:
     """
     if trim:
-        specvals = fftpack.fft(inputdata)[0:len(inputdata) // 2]
+        specvals = fftpack.fft(inputdata)[0 : len(inputdata) // 2]
         maxfreq = Fs / 2.0
         specaxis = np.linspace(0.0, maxfreq, len(specvals), endpoint=False)
     else:
         specvals = fftpack.fft(inputdata)
         maxfreq = Fs
         specaxis = np.linspace(0.0, maxfreq, len(specvals), endpoint=False)
-    if mode == 'real':
+    if mode == "real":
         specvals = specvals.real
-    elif mode == 'imag':
+    elif mode == "imag":
         specvals = specvals.imag
-    elif mode == 'complex':
+    elif mode == "complex":
         pass
-    elif mode == 'mag':
+    elif mode == "mag":
         specvals = np.absolute(specvals)
-    elif mode == 'phase':
+    elif mode == "phase":
         specvals = np.angle(specvals)
-    elif mode == 'power':
+    elif mode == "power":
         specvals = np.sqrt(np.absolute(specvals))
     else:
-        print('illegal spectrum mode')
+        print("illegal spectrum mode")
         specvals = None
     return specaxis, specvals
 
@@ -195,27 +196,33 @@ class KeyPressWindow(QtGui.QMainWindow):
 def incrementgrade(whichfile):
     global alldata, namelist
 
-    alldata[namelist[whichfile]]['grade'] += 1
+    alldata[namelist[whichfile]]["grade"] += 1
 
 
 def decrementgrade(whichfile):
     global alldata, namelist
 
-    alldata[namelist[whichfile]]['grade'] -= 1
+    alldata[namelist[whichfile]]["grade"] -= 1
 
 
 def writegrades():
     global alldata, namelist, numelements, outputfile
 
-    with open(outputfile, 'w') as thefile:
+    with open(outputfile, "w") as thefile:
         for i in range(len(namelist)):
-            thefile.write('{0}, {1:d}, {2:f}\n'.format(namelist[i], alldata[namelist[i]]['grade'], alldata[namelist[i]]['samplerate']))
+            thefile.write(
+                "{0}, {1:d}, {2:f}\n".format(
+                    namelist[i],
+                    alldata[namelist[i]]["grade"],
+                    alldata[namelist[i]]["samplerate"],
+                )
+            )
 
 
 def windowResized(evt):
     global mainwin
 
-    print('handling window resize')
+    print("handling window resize")
     if mainwin is not None:
         updateLightbox()
 
@@ -233,7 +240,7 @@ def keyPressed(evt):
         whichfile = (whichfile + 1) % numelements
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
-        print('done')
+        print("done")
     else:
         print(evt.key())
 
@@ -245,84 +252,104 @@ def keyPressed(evt):
 def updateTimecourse():
     global timecourse_ax, spectrum_ax, whichfile, alldata, namelist, win, numelements
     thisfile = alldata[namelist[whichfile]]
-    windowtitle = 'Grader - {0} ({1} of {2})'.format(namelist[whichfile], whichfile, numelements)
+    windowtitle = "Grader - {0} ({1} of {2})".format(
+        namelist[whichfile], whichfile, numelements
+    )
     win.setWindowTitle(windowtitle)
 
-    if thisfile['grade'] is None:
-        pencolor = 'w'
-    elif thisfile['grade'] == 0:
-        pencolor = 'w'
-    elif thisfile['grade'] > 0:
-        pencolor = 'g'
+    if thisfile["grade"] is None:
+        pencolor = "w"
+    elif thisfile["grade"] == 0:
+        pencolor = "w"
+    elif thisfile["grade"] > 0:
+        pencolor = "g"
     else:
-        pencolor = 'r'
+        pencolor = "r"
 
-    timecourse_ax.plot(thisfile['timeaxis'], thisfile['timecourse'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=1), clear=True)
+    timecourse_ax.plot(
+        thisfile["timeaxis"],
+        thisfile["timecourse"],
+        stepMode=False,
+        fillLevel=0,
+        pen=pg.mkPen(pencolor, width=1),
+        clear=True,
+    )
 
-    if thisfile['grade'] is None:
-        thelabel = 'Grade: None'
+    if thisfile["grade"] is None:
+        thelabel = "Grade: None"
     else:
-        thelabel = 'Grade: {0}'.format(thisfile['grade'])
+        thelabel = "Grade: {0}".format(thisfile["grade"])
 
-    spectrum_ax.plot(thisfile['freqaxis'], thisfile['spectrum'],
-                     name=thelabel,
-                     stepMode=False,
-                     fillLevel=0,
-                     pen=pg.mkPen(pencolor, width=1),
-                     clear=True)
+    spectrum_ax.plot(
+        thisfile["freqaxis"],
+        thisfile["spectrum"],
+        name=thelabel,
+        stepMode=False,
+        fillLevel=0,
+        pen=pg.mkPen(pencolor, width=1),
+        clear=True,
+    )
 
-    spectop = 1.25 * np.max(thisfile['spectrum'])
+    spectop = 1.25 * np.max(thisfile["spectrum"])
     spectrum_ax.setYRange(0.0, spectop, padding=0)
 
-
-    #text = pg.TextItem(text=thelabel,
+    # text = pg.TextItem(text=thelabel,
     #                   anchor = (0.0, 1.0),
     #                   angle = 0,
     #                   fill = (0, 0, 0, 100))
-    #spectrum_ax.addItem(text)
+    # spectrum_ax.addItem(text)
     spectrum_ax.addLegend(offset=(200, 30))
 
 
 def updateMotion():
     global transmot_ax, rotmot_ax, whichfile, alldata, namelist, win, numelements
     thisfile = alldata[namelist[whichfile]]
-    windowtitle = 'Grader - {0} ({1} of {2})'.format(namelist[whichfile], whichfile, numelements)
+    windowtitle = "Grader - {0} ({1} of {2})".format(
+        namelist[whichfile], whichfile, numelements
+    )
     win.setWindowTitle(windowtitle)
 
-    if thisfile['grade'] is None:
-        pencolor = 'w'
-    elif thisfile['grade'] == 0:
-        pencolor = 'w'
-    elif thisfile['grade'] > 0:
-        pencolor = 'g'
+    if thisfile["grade"] is None:
+        pencolor = "w"
+    elif thisfile["grade"] == 0:
+        pencolor = "w"
+    elif thisfile["grade"] > 0:
+        pencolor = "g"
     else:
-        pencolor = 'r'
+        pencolor = "r"
 
-    timecourse_ax.plot(thisfile['timeaxis'], thisfile['timecourse'],
-                      stepMode=False, fillLevel=0, pen=pg.mkPen(pencolor, width=1), clear=True)
+    timecourse_ax.plot(
+        thisfile["timeaxis"],
+        thisfile["timecourse"],
+        stepMode=False,
+        fillLevel=0,
+        pen=pg.mkPen(pencolor, width=1),
+        clear=True,
+    )
 
-    if thisfile['grade'] is None:
-        thelabel = 'Grade: None'
+    if thisfile["grade"] is None:
+        thelabel = "Grade: None"
     else:
-        thelabel = 'Grade: {0}'.format(thisfile['grade'])
+        thelabel = "Grade: {0}".format(thisfile["grade"])
 
-    spectrum_ax.plot(thisfile['freqaxis'], thisfile['spectrum'],
-                     name=thelabel,
-                     stepMode=False,
-                     fillLevel=0,
-                     pen=pg.mkPen(pencolor, width=1),
-                     clear=True)
+    spectrum_ax.plot(
+        thisfile["freqaxis"],
+        thisfile["spectrum"],
+        name=thelabel,
+        stepMode=False,
+        fillLevel=0,
+        pen=pg.mkPen(pencolor, width=1),
+        clear=True,
+    )
 
-    spectop = 1.25 * np.max(thisfile['spectrum'])
+    spectop = 1.25 * np.max(thisfile["spectrum"])
     spectrum_ax.setYRange(0.0, spectop, padding=0)
 
-
-    #text = pg.TextItem(text=thelabel,
+    # text = pg.TextItem(text=thelabel,
     #                   anchor = (0.0, 1.0),
     #                   angle = 0,
     #                   fill = (0, 0, 0, 100))
-    #spectrum_ax.addItem(text)
+    # spectrum_ax.addItem(text)
     spectrum_ax.addLegend(offset=(200, 30))
 
 
@@ -350,60 +377,71 @@ def main():
 
     mainwin = None
 
-    parser = argparse.ArgumentParser(description='A program to sort through timecourses and assign grades')
+    parser = argparse.ArgumentParser(
+        description="A program to sort through timecourses and assign grades"
+    )
     datasource = parser.add_mutually_exclusive_group()
-    datasource.add_argument('--filespec',
-                        type=str,
-                        help='A regex (with path) that will select files.  Should be enclosed in quotes.',
-                        default=None)
-    datasource.add_argument('--reopen',
-                           type=lambda x: is_valid_file(parser, x),
-                           help='Reopen a previously opened grader session output file.',
-                           default=None)
+    datasource.add_argument(
+        "--filespec",
+        type=str,
+        help="A regex (with path) that will select files.  Should be enclosed in quotes.",
+        default=None,
+    )
+    datasource.add_argument(
+        "--reopen",
+        type=lambda x: is_valid_file(parser, x),
+        help="Reopen a previously opened grader session output file.",
+        default=None,
+    )
 
-    parser.add_argument('--outputfile',
-                        type=str,
-                        help='The name of the output file'
-                        )
+    parser.add_argument("--outputfile", type=str, help="The name of the output file")
 
     sampling = parser.add_mutually_exclusive_group()
-    sampling.add_argument('--samplerate',
-                        dest='samplerate',
-                        action='store',
-                        metavar='FREQ',
-                        type=lambda x: is_float(parser, x),
-                        help=('Set the sample rate of the data file to FREQ. '
-                              'If neither samplerate or sampletime is specified, sample rate is 1.0.'),
-                        default='auto')
-    sampling.add_argument('--sampletime',
-                        dest='samplerate',
-                        action='store',
-                        metavar='TSTEP',
-                        type=lambda x: invert_float(parser, x),
-                        help=('Set the sample rate of the data file to 1.0/TSTEP. '
-                              'If neither samplerate or sampletime is specified, sample rate is 1.0.'),
-                        default='auto')
+    sampling.add_argument(
+        "--samplerate",
+        dest="samplerate",
+        action="store",
+        metavar="FREQ",
+        type=lambda x: is_float(parser, x),
+        help=(
+            "Set the sample rate of the data file to FREQ. "
+            "If neither samplerate or sampletime is specified, sample rate is 1.0."
+        ),
+        default="auto",
+    )
+    sampling.add_argument(
+        "--sampletime",
+        dest="samplerate",
+        action="store",
+        metavar="TSTEP",
+        type=lambda x: invert_float(parser, x),
+        help=(
+            "Set the sample rate of the data file to 1.0/TSTEP. "
+            "If neither samplerate or sampletime is specified, sample rate is 1.0."
+        ),
+        default="auto",
+    )
 
     args = parser.parse_args()
 
-    runmode = 'aroma'
-    args.aromaICfile = '/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/melodic_IC.nii.gz'
-    args.aromaICmask = '/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/mask.nii.gz'
-    args.aromaBGfile = '/usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz'
-    args.aromaMotionfile = '/Users/frederic/Documents/MR_data/Axial/derivatives/fmriprep/sub-005/ses-001/func/sub-005_ses-001_run-2_task-rest_desc-confounds_regressors.json'
-    args.aromaMix = '/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/melodic_mix'
-    args.aromaPreclean = '/Users/frederic/Documents/MR_data/Axial/derivatives/fmriprep/sub-005/ses-001/func/sub-005_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz'
+    runmode = "aroma"
+    args.aromaICfile = "/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/melodic_IC.nii.gz"
+    args.aromaICmask = "/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/mask.nii.gz"
+    args.aromaBGfile = "/usr/local/fsl/data/standard/MNI152_T1_2mm.nii.gz"
+    args.aromaMotionfile = "/Users/frederic/Documents/MR_data/Axial/derivatives/fmriprep/sub-005/ses-001/func/sub-005_ses-001_run-2_task-rest_desc-confounds_regressors.json"
+    args.aromaMix = "/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/melodic_mix"
+    args.aromaPreclean = "/Users/frederic/Documents/MR_data/Axial/derivatives/fmriprep/sub-005/ses-001/func/sub-005_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz"
 
     if (args.filespec is None) and (args.reopen is None):
-        print('a data source must be specified')
+        print("a data source must be specified")
         sys.exit()
 
     if args.outputfile is None:
-        print('output file must be specified')
+        print("output file must be specified")
         sys.exit()
 
     # set the sample rate
-    if args.samplerate == 'auto':
+    if args.samplerate == "auto":
         samplerate = 25.0
     else:
         samplerate = args.samplerate
@@ -412,7 +450,7 @@ def main():
     if args.filespec is not None:
         namelist = glob.glob(args.filespec)
         if len(namelist) == 0:
-            print('filespec returned no files')
+            print("filespec returned no files")
             sys.exit()
         grades = None
         samplerates = None
@@ -420,17 +458,17 @@ def main():
         df = pd.read_csv(args.reopen, header=None)
         namelist = df.iloc[:, 0].to_numpy()
         if len(namelist) == 0:
-            print('reopen returned no files')
+            print("reopen returned no files")
             sys.exit()
         grades = df.iloc[:, 1].to_numpy()
         samplerates = df.iloc[:, 2].to_numpy()
     else:
-        print('either filespec or reopen must be specified')
+        print("either filespec or reopen must be specified")
         sys.exit()
 
     whichfile = 0
 
-    print('reading data...')
+    print("reading data...")
     alldata = {}
     numelements = 0
     for idx in range(len(namelist)):
@@ -445,29 +483,33 @@ def main():
             thesamplerate = samplerate
         alldata[thefile] = {}
         invec = np.loadtxt(thefile)
-        alldata[thefile]['timecourse'] = invec * 1.0
-        alldata[thefile]['timeaxis'] = np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
-        alldata[thefile]['freqaxis'], alldata[thefile]['spectrum'] = \
-            spectrum(hamming(len(invec)) * invec, Fs=thesamplerate, mode='power')
-        alldata[thefile]['grade'] = thegrade
-        alldata[thefile]['samplerate'] = thesamplerate
+        alldata[thefile]["timecourse"] = invec * 1.0
+        alldata[thefile]["timeaxis"] = (
+            np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True)
+            / thesamplerate
+        )
+        alldata[thefile]["freqaxis"], alldata[thefile]["spectrum"] = spectrum(
+            hamming(len(invec)) * invec, Fs=thesamplerate, mode="power"
+        )
+        alldata[thefile]["grade"] = thegrade
+        alldata[thefile]["samplerate"] = thesamplerate
         print(thefile, thegrade, thesamplerate)
 
         numelements += 1
-    print('Read in', numelements, 'files')
+    print("Read in", numelements, "files")
 
     # make the main window
-    if runmode == 'timecourse':
+    if runmode == "timecourse":
         import picachooser.graderTemplate as uiTemplate
-    elif runmode == 'aroma':
+    elif runmode == "aroma":
         import picachooser.aromaviewTemplate as uiTemplate
     else:
-        print('illegal runmode')
+        print("illegal runmode")
         sys.exit()
 
     app = QtGui.QApplication([])
     print("setting up output window")
-    #win = QtGui.QMainWindow()
+    # win = QtGui.QMainWindow()
     win = KeyPressWindow()
     win.sigKeyPress.connect(keyPressed)
     win.sigResize.connect(windowResized)
@@ -478,29 +520,29 @@ def main():
     win.setWindowTitle("Grader")
 
     # set up the regressor timecourse window
-    print('about to set up the timecourse')
+    print("about to set up the timecourse")
     global timecourse_ax
     timecoursewin = ui.timecourse_graphicsView
     timecourse_ax = timecoursewin.addPlot()
 
     # set up the regressor spectrum window
-    print('about to set up the spectrum')
+    print("about to set up the spectrum")
     global spectrum_ax
     spectrumwin = ui.spectrum_graphicsView
     spectrum_ax = spectrumwin.addPlot()
 
     global transmot_ax, rotmot_ax
-    if runmode == 'aromatic':
+    if runmode == "aromatic":
         # set up the translational motion window
-        print('about to set up the translational motion')
+        print("about to set up the translational motion")
         transmotwin = ui.translation_graphicsView
         transmot_ax = transmotwin.addPlot()
 
         # set up the translational motion window
-        print('about to set up the translational motion')
+        print("about to set up the translational motion")
         rotmotwin = ui.rotation_graphicsView
         rotmot_ax = rotmotwin.addPlot()
-    elif runmode == 'timecourse':
+    elif runmode == "timecourse":
         transmot_ax = None
         rotmot_ax = None
     else:
@@ -509,21 +551,29 @@ def main():
 
     updateTimecourse()
 
-    if runmode == 'aroma':
+    if runmode == "aroma":
         thresh = 0.5
-        print('setting up image window')
-        maskimage = lb.imagedataset('ICmask', args.aromaICmask, 'ICmask', lut_state=lb.mask_state)
-        fgimage = lb.imagedataset('IC', args.aromaICfile, 'IC', lut_state=lb.ry_blb_state, geommask=maskimage.data)
+        print("setting up image window")
+        maskimage = lb.imagedataset(
+            "ICmask", args.aromaICmask, "ICmask", lut_state=lb.mask_state
+        )
+        fgimage = lb.imagedataset(
+            "IC",
+            args.aromaICfile,
+            "IC",
+            lut_state=lb.ry_blb_state,
+            geommask=maskimage.data,
+        )
         funcmaskimage = fgimage.maskeddata * 1.0
         funcmaskimage[np.where(np.fabs(fgimage.data) < thresh)] = 0
         fgimage.setFuncMask(funcmaskimage)
-        bgimage = lb.imagedataset('BG', args.aromaBGfile, 'background', lut_state=lb.viridis_state)
+        bgimage = lb.imagedataset(
+            "BG", args.aromaBGfile, "background", lut_state=lb.viridis_state
+        )
         mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage)
         updateLightbox()
 
-
     # wire up keystrokes to control interface
-
 
     QtGui.QApplication.instance().exec_()
 

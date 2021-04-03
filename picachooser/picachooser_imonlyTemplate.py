@@ -23,10 +23,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.image_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.image_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.image_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.image_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.image_graphicsView.setSizePolicy(sizePolicy)
         self.image_graphicsView.setMinimumSize(QtCore.QSize(600, 100))
         self.image_graphicsView.setMaximumSize(QtCore.QSize(2000, 1200))
@@ -49,4 +53,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+
+
 from pyqtgraph import GraphicsLayoutWidget
