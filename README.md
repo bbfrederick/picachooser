@@ -17,45 +17,42 @@ kept (and the timecourses are in green\*).
 Usage
 -----
 
-`` usage: PICAchooser runmode [options] ``
-
+`usage: PICAchooser runmode [options]`
 
 A program to review (and alter) melodic component selections.
 
 positional arguments:
 
-runmode. Valid choices are
-"melodic", "groupmelodic", "aroma", and "fix".
+runmode. Valid choices are "melodic", "groupmelodic", "aroma", and
+"fix".
 
-In melodic mode, the default output file
-is named "badcomponents.txt"; components flagged for removal will be written to MELODICDIR as comma
-separated integers.  Component numbers start at 1 (for compatibility with fsl_regfilt).
+In melodic mode, the default output file is named "badcomponents.txt";
+components flagged for removal will be written to MELODICDIR as comma
+separated integers. Component numbers start at 1 (for compatibility with
+fsl\_regfilt).
 
-In groupmelodic mode, the default output file
-is named "goodcomponents.txt"; components which are worth keeping will be written to MELODICDIR as integers,
-one per line.  Component numbers start at 0 (for compatibility with standard NIFTI array indexing).
+In groupmelodic mode, the default output file is named
+"goodcomponents.txt"; components which are worth keeping will be written
+to MELODICDIR as integers, one per line. Component numbers start at 0
+(for compatibility with standard NIFTI array indexing).
 
-In aroma mode, the file
-"classified\_motion\_ICs.txt" must exist in the parent of MELODICDIR; by
-default the output will be written to
-"classified\_motion\_ICs\_revised.txt" in the same directory.
-Component numbers start at 1 (for compatibility with AROMA numbering convention).
+In aroma mode, the file "classified\_motion\_ICs.txt" must exist in the
+parent of MELODICDIR; by default the output will be written to
+"classified\_motion\_ICs\_revised.txt" in the same directory. Component
+numbers start at 1 (for compatibility with AROMA numbering convention).
 
-In fix
-mode, the default output file is named "hand\_labels\_noise.txt" and
-will be written to MELODICDIR as comma separated integers with square
-brackets surrounding the line.
-Component numbers start at 1 (for compatibility with FIX numbering convention).
+In fix mode, the default output file is named "hand\_labels\_noise.txt"
+and will be written to MELODICDIR as comma separated integers with
+square brackets surrounding the line. Component numbers start at 1 (for
+compatibility with FIX numbering convention).
 
 optional arguments: -h, --help show this help message and exit
 
 Standard input file location specification:
 
-``--featdir FEATDIR``
-The FEAT directory associated with this MELODIC run.
+`--featdir FEATDIR` The FEAT directory associated with this MELODIC run.
 
-``--melodicdir MELODICDIR``
-The .ica directory for this MELODIC run.
+`--melodicdir MELODICDIR` The .ica directory for this MELODIC run.
 
 Nonstandard input file location specification: --backgroundfile BGFILE
 The anatomic file on which to display the ICs (usually found in
@@ -99,10 +96,9 @@ configuration file with LINEWIDTH. \`\`\`
 
 You'll then get a window that looks like this:
 
-.. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2.png
-   :alt: PICAchooser screenshot
+![PICAchooser
+screenshot](https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2.png)
 
-   PICAchooser screenshot
 Controls
 ========
 
@@ -133,45 +129,46 @@ default locations calculated from the FEATDIR and MELODICDIR).
 Other command line options
 --------------------------
 
-``--initfile`` lets you read in a bad component file from anywhere to
-use as a starting point in your classification. It's the normal behavior
-in aroma mode (reading from MELODICDIR/../classified\_motion\_ICs.txt),
-but you can do it in any mode with this flag, and it will override the
-aroma classifications.
+`--initfile` lets you read in a bad component file from anywhere to use
+as a starting point in your classification. It's the normal behavior in
+aroma mode (reading from MELODICDIR/../classified\_motion\_ICs.txt), but
+you can do it in any mode with this flag, and it will override the aroma
+classifications.
 
-``--outputfile`` lets you write the bad component file anywhere you
-want, rather than just the default location.
+`--outputfile` lets you write the bad component file anywhere you want,
+rather than just the default location.
 
-``--filteredfile`` specifies where the filtered file would go. If this
-is set, PICAchooser prints the fsl\_regfilt command to filter the data
+`--filteredfile` specifies where the filtered file would go. If this is
+set, PICAchooser prints the fsl\_regfilt command to filter the data
 using the currently tagged bad components whenever the file is saved
 (when the escape key is pressed, or when you quit).
 
-``--displaythresh`` sets the z-threshold for the component maps.
+`--displaythresh` sets the z-threshold for the component maps.
 
-``--spatialroi XMIN XMAX YMIN YMAX ZMIN ZMAX`` lets you zoom in on a
-cubic ROI within the NIFTI dataset.  Useful if you did a constrained ICA
-on a particular brain region.  Set the MAX value to -1 to go to the maximum
-value for a given dimension.  These are voxel indices, with 0 being the first
-element of each dimension.
+`--spatialroi XMIN XMAX YMIN YMAX ZMIN ZMAX` lets you zoom in on a cubic
+ROI within the NIFTI dataset. Useful if you did a constrained ICA on a
+particular brain region. Set the MAX value to -1 to go to the maximum
+value for a given dimension. These are voxel indices, with 0 being the
+first element of each dimension.
 
 \* Configuration changes
 ------------------------
 
-You can use ``--keepcolor``, ``--discardcolor``, ``--transmotlimits``
-and ``--rotmotlimits`` to alter display behavior for the current run
-(useful if you're using the docker container). To change things
-semi-permanently, edit the file ${HOME}/.picachooser.json. This file is
+You can use `--keepcolor`, `--discardcolor`, `--transmotlimits` and
+`--rotmotlimits` to alter display behavior for the current run (useful
+if you're using the docker container). To change things
+semi-permanently, edit the file \${HOME}/.picachooser.json. This file is
 created with default values if it is not present. You can use any valid
 python color specification string for color values, e.g. "r", "ff0000",
 or "FF0000" could all be used for red.
 
-``--componentlinewidth``, ``--motionlinewidth``, and ``--motionlimitlinewidth``
-can all be used to specify various linewidths (in pixels) for the various plots.
-Useful if you want to make a screenshot pretty for a figure.
+`--componentlinewidth`, `--motionlinewidth`, and
+`--motionlimitlinewidth` can all be used to specify various linewidths
+(in pixels) for the various plots. Useful if you want to make a
+screenshot pretty for a figure.
 
-``--scalemotiontodata`` autoscales the motion plots to the motion timecourse values
-rather than to fixed limits.
+`--scalemotiontodata` autoscales the motion plots to the motion
+timecourse values rather than to fixed limits.
 
 The motion plots have two dotted lines to indicate "normal" motion
 limits (by default +/-2.5 mm for translation and +/-0.04 radians for
@@ -197,26 +194,26 @@ directory, as they are intermediate files, not analysis products. It
 turns out the entire melodic directory does exist in the work directory.
 In this particular case, if I set:
 
-``--melodicdir ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic``
+`--melodicdir ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic`
 
 then PICAchooser can find the ICfile and ICmask.
 
 The background file is also in this directory:
 
-``--backgroundfile ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic/mean.nii.gz``
+`--backgroundfile ${WORKDIR}/fmriprep_wf/single_subject_015_wf/func_preproc_ses_001_task_rest_run_1_wf/ica_aroma_wf/melodic/mean.nii.gz`
 
 Everything else can be found in the functional output directory for this
 session:
 
-``FUNCDIR=${BIDSDIR}/derivatives/fmriprep/sub-015/ses-001/func``
+`FUNCDIR=${BIDSDIR}/derivatives/fmriprep/sub-015/ses-001/func`
 
 By setting the following options:
 
-``--initfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_AROMAnoiseICs.csv --funcfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz --motionfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_desc-confounds_regressors.tsv``
+`--initfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_AROMAnoiseICs.csv --funcfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz --motionfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_desc-confounds_regressors.tsv`
 
 As a bonus, if you also set:
 
-``--filteredfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-AROMAnonaggr_bold.nii.gz``
+`--filteredfile ${FUNCDIR}/sub-015_ses-001_task-rest_run-1_space-MNI152NLin6Asym_desc-AROMAnonaggr_bold.nii.gz`
 
 Then when you save your bad component file, you'll see the command
 necessary to refilter your data printed to the terminal window. I
@@ -228,7 +225,7 @@ Support
 =======
 
 This code base is being developed and supported by a grant from the US
-NIH `1R01 NS097512 <http://grantome.com/grant/NIH/R01-NS097512-02>`__.
+NIH [1R01 NS097512](http://grantome.com/grant/NIH/R01-NS097512-02).
 
 Additional packages used
 ========================
@@ -239,42 +236,46 @@ packages. These include:
 pyqtgraph:
 ----------
 
-1) Luke Campagnola. `PyQtGraph: Scientific Graphics and GUI Library for
-   Python <http://www.pyqtgraph.org>`__
+1)  Luke Campagnola. [PyQtGraph: Scientific Graphics and GUI Library for
+    Python](http://www.pyqtgraph.org)
 
 nibabel:
 --------
 
-1) `Nibabel: Python package to access a cacophony of neuro-imaging file
-   formats <https://github.com/nipy/nibabel>`__ \|
-   https://10.5281/zenodo.591597
+1)  [Nibabel: Python package to access a cacophony of neuro-imaging file
+    formats](https://github.com/nipy/nibabel) |
+    <https://10.5281/zenodo.591597>
 
 numpy:
 ------
 
-1) Stéfan van der Walt, S. Chris Colbert and Gaël Varoquaux. The NumPy
-   Array: A Structure for Efficient Numerical Computation, Computing in
-   Science & Engineering, 13, 22-30 (2011) \| https:10.1109/MCSE.2011.37
+1)  Stéfan van der Walt, S. Chris Colbert and Gaël Varoquaux. The NumPy
+    Array: A Structure for Efficient Numerical Computation, Computing in
+    Science & Engineering, 13, 22-30 (2011) |
+    <https:10.1109/MCSE.2011.37>
 
 scipy:
 ------
 
-1) Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland,
-   Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson,
-   Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew
-   Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R.
-   J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan
-   Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef
-   Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R
-   Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul
-   van Mulbregt, and SciPy 1.0 Contributors. (2020) SciPy 1.0:
-   Fundamental Algorithms for Scientific Computing in Python. Nature
-   Methods, 17, 261–272 (2020) \|
-   https://doi.org/10.1038/s41592-019-0686-2
+1)  Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland,
+    Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson,
+    Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew
+    Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R.
+    J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan
+    Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef
+    Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R
+    Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa,
+    Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) SciPy 1.0:
+    Fundamental Algorithms for Scientific Computing in Python. Nature
+    Methods, 17, 261–272 (2020) |
+    <https://doi.org/10.1038/s41592-019-0686-2>
 
 pandas:
 -------
 
-1) McKinney, W., pandas: a foundational Python library for data analysis
-   and statistics. Python for High Performance and Scientific Computing,
-   2011. 14.
+1)  McKinney, W., pandas: a foundational Python library for data
+    analysis and statistics. Python for High Performance and Scientific
+    Computing,
+    2011. 14.
+
+

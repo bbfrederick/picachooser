@@ -17,11 +17,12 @@ import versioneer
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, "README.rst"), encoding="utf-8") as f:
+with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 # Write version number out to VERSION file
 version = versioneer.get_version()
+version = "v1.1.3"
 with open(path.join(here, "VERSION"), "w", encoding="utf-8") as f:
     f.write(version)
 
@@ -49,7 +50,8 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version=versioneer.get_version(),
+    #version=versioneer.get_version(),
+    version="v1.1.3",
     cmdclass=versioneer.get_cmdclass(),
     description="Lightweight GUI for sorting MELODIC ICA components.",
     long_description=long_description,
