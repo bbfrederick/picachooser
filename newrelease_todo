@@ -12,8 +12,8 @@
 
 + Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.1.3 -m "v1.1.3"
-    git push origin v1.1.3
+    git tag -a v1.1.4 -m "v1.1.4"
+    git push origin v1.1.4
 
 
 + Edit the release notes on github
@@ -21,6 +21,11 @@
 + Build picachooser
 
     python setup.py install
+
++ Build and sync the dist files to pypi
+
+    python -m build
+    python -m twine upload --repository picachooser_test dist/* --verbose
 
 + Rebuild Docker container and push
 
