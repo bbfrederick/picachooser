@@ -545,26 +545,15 @@ def main():
         print("initializing preferences")
         config = {
             "prefsversion": 1,
-            "componentlinewidth": 2,
             "keepcolor": "g",
             "discardcolor": "r",
-            "motionxcolor": "ff8888",
-            "motionycolor": "88ff88",
-            "motionzcolor": "8888ff",
-            "motionlinewidth": 2,
-            "transmotlimits": (-2.5, 2.5),
-            "rotmotlimits": (-0.04, 0.04),
-            "motionlimitcolor": "cccccc",
-            "motionlimitlinewidth": 4,
-            "motionplotstyle": 1,
-            "scalemotiontodata": False,
         }
         return config
 
     configfile = os.path.join(os.environ["HOME"], ".melodicomp.json")
     if not os.path.isfile(configfile):
         config = initconfig()
-        # io.writedicttojson(config, configfile, sort_keys=False)
+        io.writedicttojson(config, configfile, sort_keys=False)
     else:
         config = io.readdictfromjson(configfile)
         try:
@@ -573,7 +562,7 @@ def main():
             prefsversion = 0
         if prefsversion < 1:
             config = initconfig()
-            # io.writedicttojson(config, configfile)
+            io.writedicttojson(config, configfile)
 
     # read in the information for both datasets
     alldata1 = {}
