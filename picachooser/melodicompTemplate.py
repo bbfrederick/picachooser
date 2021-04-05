@@ -86,5 +86,5 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pane1_label.setText(_translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var."))
         self.pane2_label.setText(_translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var."))
-        self.label.setText(_translate("MainWindow", "Right and left arrows step through components. Up and down arrows toggle sortmode.  \"a\", \"c\", and \"s\" select axial, coronal, or sagittal views.  \"b\" to blink!"))
+        self.label.setText(_translate("MainWindow", "Right and left arrows step through components. Up and down arrows toggle sortmode.  \"a\", \"c\", and \"s\" select axial, coronal, or sagittal views.  ESC to write component file.  \"b\" to blink! "))
 from pyqtgraph import GraphicsLayoutWidget

@@ -181,6 +181,13 @@
       </item>
      </layout>
     </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Right and left arrows step through components. Up and down arrows toggle component retention.  &quot;a&quot;, &quot;c&quot;, and &quot;s&quot; select axial, coronal, or sagittal views.  ESC to write component file.</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -189,7 +196,7 @@
      <x>0</x>
      <y>0</y>
      <width>1746</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
