@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.2.1 (4/5/20)
+* Fiddled with .gitignore to try to get deplyment working again.
+* Added a help line to the bottom of grader GUI window.
+
 ## Version 1.2.0 (4/5/20)
 * Added a new program - melodicomp - to compare ICs between runs.
 * Added a help line to the bottom of GUI windows.

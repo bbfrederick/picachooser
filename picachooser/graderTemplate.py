@@ -22,7 +22,9 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.timecourse_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.timecourse_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.timecourse_graphicsView.sizePolicy().hasHeightForWidth())
@@ -34,7 +36,9 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.timecourse_graphicsView, 0, 0, 1, 1)
         self.spectrum_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.spectrum_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.spectrum_graphicsView.sizePolicy().hasHeightForWidth())
@@ -63,5 +67,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Right and left arrows step through components. Up and down arrows toggle component retention.  ESC to write component file."))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "Right and left arrows step through components. Up and down arrows toggle component retention.  ESC to write component file.",
+            )
+        )
+
+
 from pyqtgraph import GraphicsLayoutWidget

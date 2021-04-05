@@ -12,8 +12,8 @@
 
 + Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
 
-    git tag -a v1.2.0 -m "v1.2.0"
-    git push origin v1.2.0
+    git tag -a v1.2.1 -m "v1.2.1"
+    git push origin v1.2.1
 
 
 + Edit the release notes on github
