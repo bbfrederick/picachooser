@@ -504,6 +504,17 @@ class LightboxItem(QtGui.QWidget):
         self.enableView()
         self.updateAllViews()
 
+    def getviewinfo(self):
+        return self.thisview, self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thislabel, self.thisviewbox
+
+    def setviewinfo(self, theinfo):
+        self.thisview = theinfo[0]
+        self.thisviewposwin  = theinfo[1]
+        self.thisviewnegwin = theinfo[2]
+        self.thisviewbgwin = theinfo[3]
+        self.thislabel = theinfo[4]
+        self.thisviewbox = theinfo[5]
+
     def setorient(self, orientation):
         self.orientation = orientation
         if self.orientation == "ax":

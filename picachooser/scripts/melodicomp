@@ -201,6 +201,7 @@ def windowResized(evt):
 
 def keyPressed(evt):
     global whichcomponent, numelements1, lbwin1, lbwin2, verbose, domotion, dotimecourse
+    global leftinfo, rightinfo, blinkstatus
 
     if verbose:
         print("processing keypress event")
@@ -234,6 +235,15 @@ def keyPressed(evt):
         print("Dumping main window information")
         for thewin in [lbwin1, lbwin2]:
             thewin.printWinProps()
+    elif evt.key() == QtCore.Qt.Key_B:
+        print("Blinking")
+        blinkstatus = not blinkstatus
+        if blinkstatus:
+            lbwin1.setviewinfo(rightinfo)
+            lbwin2.setviewinfo(leftinfo)
+        else:
+            lbwin1.setviewinfo(leftinfo)
+            lbwin2.setviewinfo(rightinfo)
     elif evt.key() == QtCore.Qt.Key_Escape:
         writecorrespondance()
         print("correspondance file written")
@@ -291,8 +301,8 @@ def updateLightboxes():
     thiscomponent1 = alldata1[namelist1[componentindex1]]
     componentindex2 = thiscomponent1["bestmatch"]
 
-    thelabel1 = f"IC {namelist1[componentindex1]}"
-    thelabel2 = f"IC {namelist2[componentindex2]}: correlation with file1 is {thiscomponent1['bestcorr']:.3f}"
+    thelabel1 = f"{alldata1['filelabel']} IC {namelist1[componentindex1]}"
+    thelabel2 = f"{alldata2['filelabel']} IC {namelist2[componentindex2]}: correlation with {alldata1['filelabel']} is {thiscomponent1['bestcorr']:.3f}"
     if thiscomponent1["bestcorr"] >= thecorrthresh:
         thecolor = config["keepcolor"]
     else:
@@ -315,6 +325,7 @@ def main():
     global indexmap, sorttype, sortnames, thecorrcoeffs, numelements1, numelements2
     global verbose
     global config
+    global leftinfo, rightinfo, blinkstatus
     global Funcfile, Mixfile, filteredfile
     global domotion, dotimecourse
     global thecorrthresh
@@ -450,7 +461,7 @@ def main():
     other.add_argument(
         "--label2",
         type=str,
-        help="Label to give to file 1 components in display.  Default is 'File 2'.",
+        help="Label to give to file 2 components in display.  Default is 'File 2'.",
         default="File 2",
     )
 
@@ -668,7 +679,10 @@ def main():
         lut_state=cm.gray_state,
     )
     lbwin1 = lb.LightboxItem(fgimage1, ui.image_graphicsView_1, bgmap=bgimage, verbose=verbose)
+    leftinfo = lbwin1.getviewinfo()
     lbwin2 = lb.LightboxItem(fgimage2, ui.image_graphicsView_2, bgmap=bgimage, verbose=verbose)
+    rightinfo = lbwin2.getviewinfo()
+    blinkstatus = False
 
     # initialize everything
     updateTCinfo()
