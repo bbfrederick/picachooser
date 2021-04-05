@@ -252,9 +252,7 @@ def keyPressed(evt):
 def updateTimecourse():
     global timecourse_ax, spectrum_ax, whichfile, alldata, namelist, win, numelements
     thisfile = alldata[namelist[whichfile]]
-    windowtitle = "Grader - {0} ({1} of {2})".format(
-        namelist[whichfile], whichfile, numelements
-    )
+    windowtitle = "Grader - {0} ({1} of {2})".format(namelist[whichfile], whichfile, numelements)
     win.setWindowTitle(windowtitle)
 
     if thisfile["grade"] is None:
@@ -304,9 +302,7 @@ def updateTimecourse():
 def updateMotion():
     global transmot_ax, rotmot_ax, whichfile, alldata, namelist, win, numelements
     thisfile = alldata[namelist[whichfile]]
-    windowtitle = "Grader - {0} ({1} of {2})".format(
-        namelist[whichfile], whichfile, numelements
-    )
+    windowtitle = "Grader - {0} ({1} of {2})".format(namelist[whichfile], whichfile, numelements)
     win.setWindowTitle(windowtitle)
 
     if thisfile["grade"] is None:
@@ -422,7 +418,11 @@ def main():
         default="auto",
     )
 
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except SystemExit:
+        parser.print_help()
+        raise
 
     runmode = "aroma"
     args.aromaICfile = "/Users/frederic/Documents/MR_data/workdirs/Axial/fmriprep_wf/single_subject_005_wf/ica_aroma_wf/melodic/melodic_IC.nii.gz"
@@ -485,8 +485,7 @@ def main():
         invec = np.loadtxt(thefile)
         alldata[thefile]["timecourse"] = invec * 1.0
         alldata[thefile]["timeaxis"] = (
-            np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True)
-            / thesamplerate
+            np.linspace(0.0, 1.0 * (len(invec) - 1), num=len(invec), endpoint=True) / thesamplerate
         )
         alldata[thefile]["freqaxis"], alldata[thefile]["spectrum"] = spectrum(
             hamming(len(invec)) * invec, Fs=thesamplerate, mode="power"
@@ -554,9 +553,7 @@ def main():
     if runmode == "aroma":
         thresh = 0.5
         print("setting up image window")
-        maskimage = lb.imagedataset(
-            "ICmask", args.aromaICmask, "ICmask", lut_state=lb.mask_state
-        )
+        maskimage = lb.imagedataset("ICmask", args.aromaICmask, "ICmask", lut_state=lb.mask_state)
         fgimage = lb.imagedataset(
             "IC",
             args.aromaICfile,
@@ -567,9 +564,7 @@ def main():
         funcmaskimage = fgimage.maskeddata * 1.0
         funcmaskimage[np.where(np.fabs(fgimage.data) < thresh)] = 0
         fgimage.setFuncMask(funcmaskimage)
-        bgimage = lb.imagedataset(
-            "BG", args.aromaBGfile, "background", lut_state=lb.viridis_state
-        )
+        bgimage = lb.imagedataset("BG", args.aromaBGfile, "background", lut_state=lb.viridis_state)
         mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage)
         updateLightbox()
 
