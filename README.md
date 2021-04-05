@@ -22,82 +22,97 @@ kept (and the timecourses are in green\*).
 Usage
 -----
 
-`usage: PICAchooser runmode [options]``
+```
+usage: PICAchooser runmode [options]
 
 A program to review (and alter) melodic component selections.
 
 positional arguments:
+  runmode               Analysis mode. Valid choices are "melodic", "groupmelodic" "aroma", and
+                        "fix". In melodic mode, the default output file is named
+                        "badcomponents.txt" and will be written to MELODICDIR as comma
+                        separated integers. In groupmelodic mode, the default output file is
+                        named "goodcomponents.txt" (you are more interested in which components
+                        should be retained) and will be written to MELODICDIR as newline
+                        separated integers (starting from 0). In aroma mode, the file
+                        "classified_motion_ICs.txt" must exist in the parent of MELODICDIR; by
+                        default the output will be written to
+                        "classified_motion_ICs_revised.txt" in the same directory. In fix mode,
+                        the default output file is named "hand_labels_noise.txt" and will be
+                        written to MELODICDIR as comma separated integers with square brackets
+                        surrounding the line.
 
-runmode. Valid choices are "melodic", "groupmelodic", "aroma", and
-"fix".
+optional arguments:
+  -h, --help            show this help message and exit
 
-In melodic mode, the default output file is named "badcomponents.txt";
-components flagged for removal will be written to MELODICDIR as comma
-separated integers. Component numbers start at 1 (for compatibility with
-fsl\_regfilt).
+Standard input file location specification.  For certain runmodes, one of these will be sufficient to fully specify all file locations.:
+  --featdir FEATDIR     The FEAT directory associated with this MELODIC run.
+  --melodicdir MELODICDIR
+                        The .ica directory for this MELODIC run.
 
-In groupmelodic mode, the default output file is named
-"goodcomponents.txt"; components which are worth keeping will be written
-to MELODICDIR as integers, one per line. Component numbers start at 0
-(for compatibility with standard NIFTI array indexing).
+Nonstandard input file location specification.  Setting any of these overrides any location inferred from --melodicdir or --featdir.:
+  --backgroundfile BGFILE
+                        The anatomic file on which to display the ICs (usually found in
+                        FEATDIR/reg/example_func.nii.gz),
+  --funcfile FUNCFILE   The functional file to be filtered (usually found in
+                        FEATDIR/filtered_func_data.nii.gz),
+  --motionfile MOTIONFILE
+                        The anatomic file on which to display the ICs (usually found in
+                        FEATDIR/mc/prefiltered_func_data_mcf.par). If the file has a .tsv
+                        extension, assume it is an fmriprep confounds file.
+  --ICfile ICFILE       The independent component file produced by MELODIC (usually found in
+                        MELODICDIR/melodic_IC.nii.gz).
+  --ICmask ICMASK       The independent component mask file produced by MELODIC (usually found
+                        in MELODICDIR/mask.nii.gz).
+  --timecoursefile MIXFILE
+                        The timecourses of the independant components (usually found in
+                        MELODICDIR/melodic_mix),
+  --ICstatsfile STATSFILE
+                        The melodic stats file (usually found in MELODICDIR/melodic_ICstats),
 
-In aroma mode, the file "classified\_motion\_ICs.txt" must exist in the
-parent of MELODICDIR; by default the output will be written to
-"classified\_motion\_ICs\_revised.txt" in the same directory. Component
-numbers start at 1 (for compatibility with AROMA numbering convention).
+Other arguments:
+  --initfile INITFILE   The name of an initial bad component file (in aroma mode, this
+                        overrides the default input file for AROMA).
+  --outputfile OUTPUTFILE
+                        Where to write the bad component file (this overrides the default
+                        output file name).
+  --filteredfile FILTEREDFILE
+                        The name of the filtered NIFTI file. If this is set, then when the bad
+                        component file is written, the command to generate the filtered file
+                        will be printed to the terminal window.
+  --displaythresh DISPLAYTHRESH
+                        z threshold for the displayed ICA components. Default is 2.3.
+  --spatialroi XMIN XMAX YMIN YMAX ZMIN ZMAX
+                        Only read in image data within the specified ROI. Set MAX to -1 to go
+                        to the end of that dimension.
 
-In fix mode, the default output file is named "hand\_labels\_noise.txt"
-and will be written to MELODICDIR as comma separated integers with
-square brackets surrounding the line. Component numbers start at 1 (for
-compatibility with FIX numbering convention).
+Configuration arguments:
+  --keepcolor KEEPCOLOR
+                        Set the color of timecourses to be kept (default is "g").
+  --discardcolor DISCARDCOLOR
+                        Set the color of timecourses to discard (default is "r").
+  --transmotlimits LOWERLIM UPPERLIM
+                        Override the "normal" limits of translational motion from the values in
+                        the configuration file to LOWERLIM-UPPERLIM mm.
+  --rotmotlimits LOWERLIM UPPERLIM
+                        Override the "normal" limits of rotations motion from the values in the
+                        configuration file to LOWERLIM-UPPERLIM radians.
+  --scalemotiontodata   Scale motion plots to the motion timecourse values rather than to the
+                        limit lines.
+  --componentlinewidth LINEWIDTH
+                        Override the component line width (in pixels) in the configuration file
+                        with LINEWIDTH.
+  --motionlinewidth LINEWIDTH
+                        Override the motion timecourse line widths (in pixels) in the
+                        configuration file with LINEWIDTH.
+  --motionlimitlinewidth LINEWIDTH
+                        Override the line widths of the motion limit lines (in pixels) in the
+                        configuration file with LINEWIDTH.
 
-optional arguments: -h, --help show this help message and exit
-
-Standard input file location specification:
-
-`--featdir FEATDIR` The FEAT directory associated with this MELODIC run.
-
-`--melodicdir MELODICDIR` The .ica directory for this MELODIC run.
-
-Nonstandard input file location specification: --backgroundfile BGFILE
-The anatomic file on which to display the ICs (usually found in
-FEATDIR/reg/example\_func.nii.gz), --funcfile FUNCFILE The functional
-file to be filtered (usually found in
-FEATDIR/filtered\_func\_data.nii.gz), --motionfile MOTIONFILE The
-anatomic file on which to display the ICs (usually found in
-FEATDIR/mc/prefiltered\_func\_data\_mcf.par). If the file has a .tsv
-extension, assume it is an fmriprep confounds file. --ICfile ICFILE The
-independent component file produced by MELODIC (usually found in
-MELODICDIR/melodic\_IC.nii.gz). --ICmask ICMASK The independent
-component mask file produced by MELODIC (usually found in
-MELODICDIR/mask.nii.gz). --timecoursefile MIXFILE The timecourses of the
-independant components (usually found in MELODICDIR/melodic\_mix),
-
-Other arguments: --initfile INITFILE The name of an initial bad
-component file (in aroma mode, this overrides the default input file for
-AROMA). --outputfile OUTPUTFILE Where to write the bad component file
-(this overrides the default output file name). --filteredfile
-FILTEREDFILE The name of the filtered NIFTI file. If this is set, then
-when the bad component file is written, the command to generate the
-filtered file will be printed to the terminal window. --displaythresh
-DISPLAYTHRESH z threshold for the displayed ICA components. Default is
-2.3.
-
-Configuration arguments: --keepcolor KEEPCOLOR Set the color of
-timecourses to be kept (default is "g"). --discardcolor DISCARDCOLOR Set
-the color of timecourses to discard (default is "r"). --transmotlimits
-LOWERLIM UPPERLIM Override the "normal" limits of translational motion
-from the values in the configuration file to LOWERLIM-UPPERLIM mm.
---rotmotlimits LOWERLIM UPPERLIM Override the "normal" limits of
-rotations motion from the values in the configuration file to
-LOWERLIM-UPPERLIM radians. --scalemotiontodata Scale motion plots to the
-motion timecourse values rather than to the limit lines.
---componentlinewidth LINEWIDTH Override the component line width (in
-pixels) in the configuration file with LINEWIDTH. --motionlinewidth
-LINEWIDTH Override the motion timecourse line widths (in pixels) in the
-configuration file with LINEWIDTH. --motionlimitlinewidth LINEWIDTH
-Override the line widths of the motion limit lines (in pixels) in the
-configuration file with LINEWIDTH. \`\`\`
+Debugging arguments:
+  --verbose             Output exhaustive amounts of information about the internal workings of
+                        PICAchooser. You almost certainly don't want this.
+```
 
 You'll then get a window that looks like this:
 
@@ -105,7 +120,7 @@ You'll then get a window that looks like this:
 screenshot](https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2.png)
 
 Controls
-========
+--------
 
 To toggle whether the current component should be kept or discarded,
 press the up or down arrow key. You can change back and forth as much as
@@ -182,8 +197,30 @@ rotation). The locations of these lines are set by "transmotlimits" and
 will remove the lines, and fix the y range of the plots to the limit
 values. Set the limit line color using "motionlimitcolor".
 
+Outputs
+-------
+In melodic mode, the default output file is named "badcomponents.txt";
+components flagged for removal will be written to MELODICDIR as comma
+separated integers. Component numbers start at 1 (for compatibility with
+fsl\_regfilt).
+
+In groupmelodic mode, the default output file is named
+"goodcomponents.txt"; components which are worth keeping will be written
+to MELODICDIR as integers, one per line. Component numbers start at 0
+(for compatibility with standard NIFTI array indexing).
+
+In aroma mode, the file "classified\_motion\_ICs.txt" must exist in the
+parent of MELODICDIR; by default the output will be written to
+"classified\_motion\_ICs\_revised.txt" in the same directory. Component
+numbers start at 1 (for compatibility with AROMA numbering convention).
+
+In fix mode, the default output file is named "hand\_labels\_noise.txt"
+and will be written to MELODICDIR as comma separated integers with
+square brackets surrounding the line. Component numbers start at 1 (for
+compatibility with FIX numbering convention).
+
 Reprocessing fmriprep AROMA analyses
-====================================
+------------------------------------
 
 fmriprep reformats things to conform to BIDS standard naming conventions
 and formatting, so file locations, names, and formats are a little
