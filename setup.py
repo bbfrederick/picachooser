@@ -30,6 +30,8 @@ modules_list = [
     "picachooser/graderTemplate",
     "picachooser/picachooserTemplate",
     "picachooser/picachooser_imonlyTemplate",
+    "picachooser/melodicompTemplate",
+    "picachooser/picachooserTemplate",
     "picachooser/io",
     "picachooser/fit",
     "picachooser/stats",
@@ -41,6 +43,7 @@ modules_list = [
 script_list = [
     "picachooser/scripts/PICAchooser_dispatcher",
     "picachooser/scripts/grader",
+    "picachooser/scripts/melodicomp",
     "picachooser/scripts/PICAchooser",
 ]
 
