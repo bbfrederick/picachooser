@@ -1,4 +1,4 @@
-recursive-include PICAchooser *.py
-recursive-include PICAchooser/scripts *
+recursive-include picachooser *.py
+recursive-include picachooser/scripts *
 include versioneer.py
 include picachooser/_version.py
