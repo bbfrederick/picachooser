@@ -69,7 +69,10 @@ author = "Blaise Frederick"
 # built documents.
 #
 # The short X.Y version.
-version = tideutil.version()[0].replace("v", "").split("+")[0]
+here = path.abspath(path.dirname(__file__))
+with open(path.join(here, "..", "VERSION"), encoding="utf-8") as f:
+    version = f.read().replace("v", "")
+
 # The full version, including alpha/beta/rc tags.
 release = version
 
