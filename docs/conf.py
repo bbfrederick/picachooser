@@ -70,7 +70,7 @@ author = "Blaise Frederick"
 #
 # The short X.Y version.
 here = os.path.abspath(os.path.dirname(__file__))
-with open(path.join(here, "..", "VERSION"), encoding="utf-8") as f:
+with open(os.path.join(here, "..", "VERSION"), encoding="utf-8") as f:
     version = f.read().replace("v", "")
 
 # The full version, including alpha/beta/rc tags.
