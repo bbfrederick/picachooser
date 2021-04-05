@@ -66,6 +66,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.image_graphicsView_2)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setObjectName("label")
+        self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1750, 24))
@@ -83,4 +86,5 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pane1_label.setText(_translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var."))
         self.pane2_label.setText(_translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var."))
+        self.label.setText(_translate("MainWindow", "Right and left arrows step through components. Up and down arrows toggle sortmode.  \"a\", \"c\", and \"s\" select axial, coronal, or sagittal views.  \"b\" to blink!"))
 from pyqtgraph import GraphicsLayoutWidget
