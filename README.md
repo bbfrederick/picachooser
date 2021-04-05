@@ -266,32 +266,13 @@ other steps to get to exactly the output you'd get from fmriprep...
 melodicomp
 ==========
 
-melodicomp handles a slightly different task - it's job is to allow for
+melodicomp handles a slightly different task - its job is to allow for
 rapid comparison of two melodic analyses.  In this case, you want to match
 components between the two analyses (the chances that you'll get the same components
 in the same order between two analyses is basicaly zero, so you
 need to match them up).  We do this with a spatial cross-correlation - higher
 cross-correlation means the the components look more like each other.  This works
 surprisingly well.  We then display the components side by side.
-
-Controls
---------
-As with PICAchooser, this is all keyboard driven.  Use the right and left arrows
-to step through components.  In melodicomp, the first file specified on the command line is considered the reference file - we
-go through all the components of that file and display them on the left, and show the component from the second file that
-matches best on the right.  The number of components in the files do NOT have to match (but their spatial
-dimensions, voxel sizes, and background images do).  Using the up and down arrows toggles between sorting
-based on the native order of components in file 1, and sorting in descending order of cross-correlation coefficient.  
-Use the "a", "c", and "s" keys to switch between axial, coronal, and sagittal views.
-"b" is for blink - this swaps the right and left images.  It takes essentially no time, so it makes it very clear how and where
-the components are changing.  Try it!
-
-By default, pairs of components with correlation coefficients lower than 0.5 are considered poor matches, and are indicated with red text in the annotations.  The correlation threshold can be set on the command line.
-
-Output
-------
-On exit (or when you hit escape), melodicomp will output a text file with the
-component of the first melodic file , the matching component from the second file, and the correlation coefficient between them on each line.  Component numbers start from 0.  The order of lines in the file is the same as the current sort order in the GUI.
 
 Usage
 -----
@@ -348,6 +329,26 @@ Debugging arguments:
   --verbose             Output exhaustive amounts of information about the internal workings of
                         melodicomp. You almost certainly don't want this.
 ```
+
+
+Controls
+--------
+As with PICAchooser, this is all keyboard driven.  Use the right and left arrows
+to step through components.  In melodicomp, the first file specified on the command line is considered the reference file - we
+go through all the components of that file and display them on the left, and show the component from the second file that
+matches best on the right.  The number of components in the files do NOT have to match (but their spatial
+dimensions, voxel sizes, and background images do).  Using the up and down arrows toggles between sorting
+based on the native order of components in file 1, and sorting in descending order of cross-correlation coefficient.  
+Use the "a", "c", and "s" keys to switch between axial, coronal, and sagittal views.
+"b" is for blink - this swaps the right and left images.  It takes essentially no time, so it makes it very clear how and where
+the components are changing.  Try it!
+
+By default, pairs of components with correlation coefficients lower than 0.5 are considered poor matches, and are indicated with red text in the annotations.  The correlation threshold can be set on the command line.
+
+Output
+------
+On exit (or when you hit escape), melodicomp will output a text file with the
+component of the first melodic file , the matching component from the second file, and the correlation coefficient between them on each line.  Component numbers start from 0.  The order of lines in the file is the same as the current sort order in the GUI.
 
 
 
