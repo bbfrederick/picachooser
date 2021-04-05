@@ -117,6 +117,7 @@ setup(
             "sphinx-gallery",
             "numpydoc",
             "m2r",
+            "recommonmark",
         ],
     },
     # If there are data files included in your packages that need to be
