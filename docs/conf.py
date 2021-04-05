@@ -69,7 +69,7 @@ author = "Blaise Frederick"
 # built documents.
 #
 # The short X.Y version.
-here = path.abspath(path.dirname(__file__))
+here = os.path.abspath(path.dirname(__file__))
 with open(path.join(here, "..", "VERSION"), encoding="utf-8") as f:
     version = f.read().replace("v", "")
 
