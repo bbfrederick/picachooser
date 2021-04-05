@@ -336,9 +336,7 @@ def writegrades():
             )
             print(denoisingcmd)
         else:
-            print(
-                "There are no components flagged for removal, so there is nothing to do."
-            )
+            print("There are no components flagged for removal, so there is nothing to do.")
         print()
         print()
 
@@ -403,11 +401,13 @@ def updateTCinfo():
     if verbose:
         print("entering updateTCinfo")
     thiscomponent = alldata[namelist[whichcomponent]]
-    windowtitle = "PICAchooser - Component {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
-        whichcomponent + 1,
-        numelements,
-        thiscomponent["explainedvar"],
-        thiscomponent["totalvar"],
+    windowtitle = (
+        "PICAchooser - Component {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
+            whichcomponent + 1,
+            numelements,
+            thiscomponent["explainedvar"],
+            thiscomponent["totalvar"],
+        )
     )
     thiscomponent = alldata[namelist[whichcomponent]]
     if thiscomponent["grade"] is not None:
@@ -498,9 +498,7 @@ def updateMotion():
     )
     transmot_ax.setXRange(thiscomponent["timeaxis"][0], thiscomponent["timeaxis"][-1])
     if config["motionplotstyle"] == 0:
-        transmot_ax.setYRange(
-            config["transmotlimits"][0], config["transmotlimits"][1], padding=0
-        )
+        transmot_ax.setYRange(config["transmotlimits"][0], config["transmotlimits"][1], padding=0)
     else:
         limitpen = pg.mkPen(
             config["motionlimitcolor"],
@@ -581,9 +579,7 @@ def updateMotion():
     )
     rotmot_ax.setXRange(thiscomponent["timeaxis"][0], thiscomponent["timeaxis"][-1])
     if config["motionplotstyle"] == 0:
-        rotmot_ax.setYRange(
-            config["rotmotlimits"][0], config["rotmotlimits"][1], padding=0
-        )
+        rotmot_ax.setYRange(config["rotmotlimits"][0], config["rotmotlimits"][1], padding=0)
     else:
         limitpen = pg.mkPen(
             config["motionlimitcolor"],
@@ -930,9 +926,7 @@ def main():
     melodicICstatsfile = args.melodicICstatsfile
 
     if args.featdir is not None:
-        BGfile, Funcfile, Motionfile = findfromfeatdir(
-            args.featdir, BGfile, Funcfile, Motionfile
-        )
+        BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir, BGfile, Funcfile, Motionfile)
 
     if args.melodicdir is not None:
         BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile = findfrommelodicdir(
@@ -944,9 +938,7 @@ def main():
         removefiledir = args.melodicdir
 
     if Funcfile is None and runmode != "groupmelodic":
-        print(
-            "Cannot set functional file.  Use either the --featdir or --Funcfile option."
-        )
+        print("Cannot set functional file.  Use either the --featdir or --Funcfile option.")
         sys.exit()
 
     if Motionfile is None and runmode != "groupmelodic":
@@ -956,9 +948,7 @@ def main():
         sys.exit()
 
     if BGfile is None:
-        print(
-            "Cannot set background file.  Use either the --featdir or --backgroundfile option."
-        )
+        print("Cannot set background file.  Use either the --featdir or --backgroundfile option.")
         sys.exit()
 
     if ICfile is None:
@@ -1392,9 +1382,7 @@ def main():
         zlims=args.spatialroi[4:6],
         lut_state=cm.gray_state,
     )
-    mainwin = lb.LightboxItem(
-        fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose
-    )
+    mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
 
     # initialize everything
     updateTCinfo()

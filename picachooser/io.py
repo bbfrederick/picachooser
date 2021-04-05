@@ -216,9 +216,7 @@ if nibabelexists:
             return firstsplit[0], firstsplit[1]
 
     def niftisplit(inputfile, outputroot, axis=3):
-        infile, infile_data, infile_hdr, infiledims, infilesizes = readfromnifti(
-            inputfile
-        )
+        infile, infile_data, infile_hdr, infiledims, infilesizes = readfromnifti(inputfile)
         theheader = copy.deepcopy(infile_hdr)
         numpoints = infiledims[axis + 1]
         print(infiledims)
@@ -252,22 +250,15 @@ if nibabelexists:
                     sys.exit()
             savetonifti(thisslice, theheader, outputroot + str(i).zfill(4))
 
-    def niftimerge(
-        inputlist, outputname, writetodisk=True, axis=3, returndata=False, debug=False
-    ):
+    def niftimerge(inputlist, outputname, writetodisk=True, axis=3, returndata=False, debug=False):
         inputdata = []
         for thefile in inputlist:
             if debug:
                 print("reading", thefile)
-            infile, infile_data, infile_hdr, infiledims, infilesizes = readfromnifti(
-                thefile
-            )
+            infile, infile_data, infile_hdr, infiledims, infilesizes = readfromnifti(thefile)
             if infiledims[0] == 3:
                 inputdata.append(
-                    infile_data.reshape(
-                        (infiledims[1], infiledims[2], infiledims[3], 1)
-                    )
-                    + 0.0
+                    infile_data.reshape((infiledims[1], infiledims[2], infiledims[3], 1)) + 0.0
                 )
             else:
                 inputdata.append(infile_data + 0.0)
@@ -281,9 +272,7 @@ if nibabelexists:
 
     def niftiroi(inputfile, outputfile, startpt, numpoints):
         print(inputfile, outputfile, startpt, numpoints)
-        infile, infile_data, infile_hdr, infiledims, infilesizes = readfromnifti(
-            inputfile
-        )
+        infile, infile_data, infile_hdr, infiledims, infilesizes = readfromnifti(inputfile)
         theheader = copy.deepcopy(infile_hdr)
         theheader["dim"][4] = numpoints
         if infiledims[0] == 5:
@@ -528,9 +517,7 @@ def readmotion(filename, colspec=None):
     labels = ["X", "Y", "Z", "RotX", "RotY", "RotZ"]
     motiontimeseries = readvecs(filename, colspec=colspec)
     if motiontimeseries.shape[0] != 6:
-        print(
-            "readmotion: expect 6 motion regressors", motiontimeseries.shape[0], "given"
-        )
+        print("readmotion: expect 6 motion regressors", motiontimeseries.shape[0], "given")
         sys.exit()
     motiondict = {}
     for j in range(0, 6):
@@ -538,9 +525,7 @@ def readmotion(filename, colspec=None):
     return motiondict
 
 
-def calcmotregressors(
-    motiondict, start=0, end=-1, position=True, deriv=True, derivdelayed=False
-):
+def calcmotregressors(motiondict, start=0, end=-1, position=True, deriv=True, derivdelayed=False):
     r"""Calculates various motion related timecourses from motion data dict, and returns an array
 
     Parameters
@@ -580,15 +565,11 @@ def calcmotregressors(
             activecolumn += 1
     if deriv:
         for thelabel in labels:
-            outputregressors[activecolumn, 1:] = np.diff(
-                motiondict[thelabel][start : end + 1]
-            )
+            outputregressors[activecolumn, 1:] = np.diff(motiondict[thelabel][start : end + 1])
             activecolumn += 1
     if derivdelayed:
         for thelabel in labels:
-            outputregressors[activecolumn, 2:] = np.diff(
-                motiondict[thelabel][start : end + 1]
-            )[1:]
+            outputregressors[activecolumn, 2:] = np.diff(motiondict[thelabel][start : end + 1])[1:]
             activecolumn += 1
     return outputregressors
 
@@ -667,9 +648,9 @@ def writedicttojson(thedict, thefilename, sort_keys=False):
             thisdict[key] = thedict[key]
     with open(thefilename, "wb") as fp:
         fp.write(
-            json.dumps(
-                thisdict, sort_keys=sort_keys, indent=4, separators=(",", ":")
-            ).encode("utf-8")
+            json.dumps(thisdict, sort_keys=sort_keys, indent=4, separators=(",", ":")).encode(
+                "utf-8"
+            )
         )
 
 
@@ -775,9 +756,7 @@ def readoptionsfile(inputfileroot):
     return thedict
 
 
-def writebidstsv(
-    outputfileroot, data, samplerate, columns=None, starttime=0.0, debug=False
-):
+def writebidstsv(outputfileroot, data, samplerate, columns=None, starttime=0.0, debug=False):
     if columns is None:
         columns = []
         for i in range(data.shape[1]):
@@ -794,9 +773,7 @@ def writebidstsv(
     headerdict["Columns"] = columns
     with open(outputfileroot + ".json", "wb") as fp:
         fp.write(
-            json.dumps(
-                headerdict, sort_keys=True, indent=4, separators=(",", ":")
-            ).encode("utf-8")
+            json.dumps(headerdict, sort_keys=True, indent=4, separators=(",", ":")).encode("utf-8")
         )
 
 
@@ -1068,9 +1045,7 @@ def readtc(inputfilename, colnum=None, colname=None, debug=False):
             print("You must specify a column name or number to read a bidstsv file")
             sys.exit()
         if (colnum is not None) and (colname is not None):
-            print(
-                "You must specify a column name or number, but not both, to read a bidstsv file"
-            )
+            print("You must specify a column name or number, but not both, to read a bidstsv file")
             sys.exit()
         inputfreq, inputstart, timecourse = readcolfrombidstsv(
             inputfilename, columnname=colname, columnnum=colnum, debug=debug

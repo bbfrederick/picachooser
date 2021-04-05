@@ -28,9 +28,7 @@ class Ui_MainWindow(object):
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.timecourse_graphicsView.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.timecourse_graphicsView.sizePolicy().hasHeightForWidth())
         self.timecourse_graphicsView.setSizePolicy(sizePolicy)
         self.timecourse_graphicsView.setMinimumSize(QtCore.QSize(610, 100))
         self.timecourse_graphicsView.setMaximumSize(QtCore.QSize(3000, 1000))
@@ -45,9 +43,7 @@ class Ui_MainWindow(object):
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.spectrum_graphicsView.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.spectrum_graphicsView.sizePolicy().hasHeightForWidth())
         self.spectrum_graphicsView.setSizePolicy(sizePolicy)
         self.spectrum_graphicsView.setMinimumSize(QtCore.QSize(610, 100))
         self.spectrum_graphicsView.setMaximumSize(QtCore.QSize(3000, 1000))

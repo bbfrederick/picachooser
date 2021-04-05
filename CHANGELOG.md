@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.2.0 (4/5/20)
+* Added a new program - melodicomp - to compare ICs between runs.
+
 ## Version 1.1.4 (4/3/20)
 * Now with pypi!  Just ``pip install picachooser``, and off you go!
 

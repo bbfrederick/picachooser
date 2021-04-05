@@ -114,7 +114,9 @@ def calccorrs(file1, file2, mask, debug=False):
         thebestmatches = np.argmax(thecorrmat, axis=1)
         if debug:
             for i in range(numelements1):
-                print(f"component {i}: best match of {thecorrmat[i, thebestmatches[i]]} at component {thebestmatches[i]}")
+                print(
+                    f"component {i}: best match of {thecorrmat[i, thebestmatches[i]]} at component {thebestmatches[i]}"
+                )
         return thecorrmat, thebestmatches
     else:
         print("data or mask dimensions do not match")
@@ -136,6 +138,7 @@ class KeyPressWindow(QtGui.QMainWindow):
 
     def resizeEvent(self, ev):
         self.sigResize.emit(ev)
+
 
 def selectsort():
     global sorttype, sortnames, indexmap, thecorrcoeffs
@@ -162,6 +165,7 @@ def incrementsorttype():
     sorttype = (sorttype + 1) % len(sortnames)
     selectsort()
 
+
 def decrementsorttype():
     global sorttype, sortnames
 
@@ -172,17 +176,17 @@ def decrementsorttype():
 def writecorrespondance():
     global alldata1, numelements1, Correspondancefile, indexmap, thecorrcoeffs
 
-    print("in writecorrespondance")
     outputlist = ["idx1\tidx2\tcorrcoeff"]
     for idx in range(numelements1):
         componentindex1 = indexmap[idx]
         thiscomponent1 = alldata1[namelist1[componentindex1]]
         componentindex2 = thiscomponent1["bestmatch"]
-        outputlist.append(f"{componentindex1}\t{componentindex2}\t{thecorrcoeffs[componentindex1]}")
+        outputlist.append(
+            f"{componentindex1}\t{componentindex2}\t{thecorrcoeffs[componentindex1]}"
+        )
     outputstring = "\n".join(outputlist)
     with open(Correspondancefile, "w") as thefile:
         thefile.write(outputstring + "\n")
-
 
 
 def windowResized(evt):
@@ -249,7 +253,9 @@ def updateTCinfo():
     thiscomponent1 = alldata1[namelist1[componentindex1]]
     componentindex2 = thiscomponent1["bestmatch"]
     thiscomponent2 = alldata2[namelist2[thiscomponent1["bestmatch"]]]
-    pane1title = alldata1["filelabel"] + ": IC {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
+    pane1title = alldata1[
+        "filelabel"
+    ] + ": IC {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
         componentindex1 + 1,
         numelements1,
         thiscomponent1["explainedvar"],
@@ -257,7 +263,9 @@ def updateTCinfo():
     )
     ui.pane1_label.setText(pane1title)
 
-    pane2title = alldata2["filelabel"] + ": IC {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
+    pane2title = alldata2[
+        "filelabel"
+    ] + ": IC {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
         componentindex2 + 1,
         numelements2,
         thiscomponent2["explainedvar"],
@@ -266,7 +274,7 @@ def updateTCinfo():
     ui.pane2_label.setText(pane2title)
 
     thiscomponent1 = alldata1[namelist1[componentindex1]]
-    #if thiscomponent1["bestmatch"] is not None:
+    # if thiscomponent1["bestmatch"] is not None:
     #   if thiscomponent1["bestmatch"] <= 0:
     #        windowtitle = windowtitle + " - marked for removal"
     win.setWindowTitle(f"melodicomp: sorting by {sortnames[sorttype]}")
@@ -282,7 +290,7 @@ def updateLightboxes():
     componentindex1 = indexmap[whichcomponent]
     thiscomponent1 = alldata1[namelist1[componentindex1]]
     componentindex2 = thiscomponent1["bestmatch"]
-    
+
     thelabel1 = f"IC {namelist1[componentindex1]}"
     thelabel2 = f"IC {namelist2[componentindex2]}: correlation with file1 is {thiscomponent1['bestcorr']:.3f}"
     if thiscomponent1["bestcorr"] >= thecorrthresh:
@@ -298,7 +306,7 @@ def updateLightboxes():
     lbwin1.setLabel(thelabel1, thecolor)
     lbwin2.setLabel(thelabel2, thecolor)
 
-    #ui.correlation_label.setText("thecorrcoeff")
+    # ui.correlation_label.setText("thecorrcoeff")
 
 
 def main():
@@ -317,7 +325,6 @@ def main():
     domotion = True
     dotimecourse = True
 
-
     parser = argparse.ArgumentParser(
         prog="melodicomp",
         description="A program to compare two sets of melodic components.",
@@ -330,8 +337,8 @@ def main():
         action="store",
         type=lambda x: is_valid_file(parser, x),
         help=(
-            'The first IC component file.  This will be the exemplar, and for each component, the closest component in ICfile2 will be '
-            'selected for comparison. '
+            "The first IC component file.  This will be the exemplar, and for each component, the closest component in ICfile2 will be "
+            "selected for comparison. "
         ),
         default=None,
     )
@@ -340,7 +347,7 @@ def main():
         action="store",
         type=lambda x: is_valid_file(parser, x),
         help=(
-            'The second IC component file.  Components in this file will be selected to match components in ICfile1. '
+            "The second IC component file.  Components in this file will be selected to match components in ICfile1. "
         ),
         default=None,
     )
@@ -375,7 +382,9 @@ def main():
         dest="melodicICstatsfile1",
         metavar="STATSFILE",
         type=lambda x: is_valid_file(parser, x),
-        help=("The melodic stats file (by default called 'melodic_ICstats' in the same directory as ICfile1),"),
+        help=(
+            "The melodic stats file (by default called 'melodic_ICstats' in the same directory as ICfile1),"
+        ),
         default=None,
     )
     llfilespec.add_argument(
@@ -383,10 +392,11 @@ def main():
         dest="melodicICstatsfile2",
         metavar="STATSFILE",
         type=lambda x: is_valid_file(parser, x),
-        help=("The melodic stats file (by default called 'melodic_ICstats' in the same directory as ICfile2),"),
+        help=(
+            "The melodic stats file (by default called 'melodic_ICstats' in the same directory as ICfile2),"
+        ),
         default=None,
     )
-
 
     # optional arguments
     other = parser.add_argument_group("Other arguments")
@@ -444,7 +454,6 @@ def main():
         default="File 2",
     )
 
-
     debugging = parser.add_argument_group("Debugging arguments")
     debugging.add_argument(
         "--verbose",
@@ -461,7 +470,6 @@ def main():
     except SystemExit:
         parser.print_help()
         raise
-
 
     # make sure we can find the required input files
     # first see if there are specific overrides
@@ -497,11 +505,8 @@ def main():
     else:
         melodicICstatsfile2 = melodicICstatsfile2
 
-
     if BGfile is None:
-        print(
-            "Cannot set background file. "
-        )
+        print("Cannot set background file. ")
         sys.exit()
 
     if ICmask is None:
@@ -548,7 +553,7 @@ def main():
     configfile = os.path.join(os.environ["HOME"], ".melodicomp.json")
     if not os.path.isfile(configfile):
         config = initconfig()
-        #io.writedicttojson(config, configfile, sort_keys=False)
+        # io.writedicttojson(config, configfile, sort_keys=False)
     else:
         config = io.readdictfromjson(configfile)
         try:
@@ -557,8 +562,7 @@ def main():
             prefsversion = 0
         if prefsversion < 1:
             config = initconfig()
-            #io.writedicttojson(config, configfile)
-
+            # io.writedicttojson(config, configfile)
 
     # read in the information for both datasets
     alldata1 = {}
@@ -663,12 +667,8 @@ def main():
         zlims=args.spatialroi[4:6],
         lut_state=cm.gray_state,
     )
-    lbwin1 = lb.LightboxItem(
-        fgimage1, ui.image_graphicsView_1, bgmap=bgimage, verbose=verbose
-    )
-    lbwin2 = lb.LightboxItem(
-        fgimage2, ui.image_graphicsView_2, bgmap=bgimage, verbose=verbose
-    )
+    lbwin1 = lb.LightboxItem(fgimage1, ui.image_graphicsView_1, bgmap=bgimage, verbose=verbose)
+    lbwin2 = lb.LightboxItem(fgimage2, ui.image_graphicsView_2, bgmap=bgimage, verbose=verbose)
 
     # initialize everything
     updateTCinfo()

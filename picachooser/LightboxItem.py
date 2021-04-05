@@ -209,9 +209,7 @@ class imagedataset:
             self.pct50,
             self.pct75,
             self.robustmax,
-        ) = stats.getfracvals(
-            calcmaskeddata, [0.02, 0.25, 0.5, 0.75, 0.98], nozero=False
-        )
+        ) = stats.getfracvals(calcmaskeddata, [0.02, 0.25, 0.5, 0.75, 0.98], nozero=False)
         self.dispmin = self.robustmin
         self.dispmax = self.robustmax
         self.dispmaxmag = np.max([self.dispmax, -self.dispmin])
@@ -288,9 +286,7 @@ class imagedataset:
     def readImageData(self, isaMask=False):
         if self.verbose:
             print("entering readImageData")
-        self.nim, indata, self.header, self.dims, self.sizes = io.readfromnifti(
-            self.filename
-        )
+        self.nim, indata, self.header, self.dims, self.sizes = io.readfromnifti(self.filename)
         self.xdim, self.ydim, self.zdim, self.tdim = io.parseniftidims(self.dims)
         self.xsize, self.ysize, self.zsize, self.tr = io.parseniftisizes(self.sizes)
         if self.tdim > 1:
@@ -443,15 +439,9 @@ class LightboxItem(QtGui.QWidget):
         self.ydim = self.fgmap.ydim  # this is the number of voxels along this axis
         self.zdim = self.fgmap.zdim  # this is the number of voxels along this axis
         self.tdim = self.fgmap.tdim  # this is the number of voxels along this axis
-        self.xsize = (
-            self.fgmap.xsize
-        )  # this is the mapping between voxel and physical space
-        self.ysize = (
-            self.fgmap.ysize
-        )  # this is the mapping between voxel and physical space
-        self.zsize = (
-            self.fgmap.zsize
-        )  # this is the mapping between voxel and physical space
+        self.xsize = self.fgmap.xsize  # this is the mapping between voxel and physical space
+        self.ysize = self.fgmap.ysize  # this is the mapping between voxel and physical space
+        self.zsize = self.fgmap.zsize  # this is the mapping between voxel and physical space
         self.xfov = self.xdim * self.xsize
         self.yfov = self.ydim * self.ysize
         self.zfov = self.zdim * self.zsize
@@ -724,23 +714,21 @@ class LightboxItem(QtGui.QWidget):
 
     def tileSlices(self, inputimage):
         tiledimage = np.zeros((self.numperrow * self.hdim, self.numpercol * self.vdim))
-        for whichslice in range(
-            np.min([self.numslices, self.numperrow * self.numpercol])
-        ):
+        for whichslice in range(np.min([self.numslices, self.numperrow * self.numpercol])):
             hpos = (self.numperrow - (whichslice % self.numperrow) - 1) * self.hdim
             vpos = (int(whichslice // self.numperrow)) * self.vdim
             if self.orientation == "ax":
-                tiledimage[
-                    hpos : hpos + self.hdim, vpos : vpos + self.vdim
-                ] = inputimage[:, :, self.slicelist[whichslice]]
+                tiledimage[hpos : hpos + self.hdim, vpos : vpos + self.vdim] = inputimage[
+                    :, :, self.slicelist[whichslice]
+                ]
             elif self.orientation == "cor":
-                tiledimage[
-                    hpos : hpos + self.hdim, vpos : vpos + self.vdim
-                ] = inputimage[:, self.slicelist[whichslice], :]
+                tiledimage[hpos : hpos + self.hdim, vpos : vpos + self.vdim] = inputimage[
+                    :, self.slicelist[whichslice], :
+                ]
             elif self.orientation == "sag":
-                tiledimage[
-                    hpos : hpos + self.hdim, vpos : vpos + self.vdim
-                ] = inputimage[self.slicelist[whichslice], :, :]
+                tiledimage[hpos : hpos + self.hdim, vpos : vpos + self.vdim] = inputimage[
+                    self.slicelist[whichslice], :, :
+                ]
             else:
                 print("illegal orientation in tileSlices")
 
@@ -937,9 +925,7 @@ class LightboxItem(QtGui.QWidget):
         mydialog = QtGui.QFileDialog()
         options = mydialog.Options()
         thedir = str(
-            mydialog.getExistingDirectory(
-                options=options, caption="Image output directory"
-            )
+            mydialog.getExistingDirectory(options=options, caption="Image output directory")
         )
         if self.verbose:
             print("thedir=", thedir)

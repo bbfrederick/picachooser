@@ -152,9 +152,7 @@ def fitjsbpdf(thehist, histlen, thedata, displayplots=False, nozero=False):
         thestore[1, 0] = zeroterm
 
     # generate the johnsonsb function
-    johnsonsbvals = johnsonsb.pdf(
-        thestore[0, :], params[0], params[1], params[2], params[3]
-    )
+    johnsonsbvals = johnsonsb.pdf(thestore[0, :], params[0], params[1], params[2], params[3])
     corrfac = (1.0 - zeroterm) / (1.0 * histlen)
     johnsonsbvals *= corrfac
     johnsonsbvals[0] = zeroterm
@@ -332,9 +330,7 @@ def kurtosisstats(timecourse):
 
 
 # --------------------------- histogram functions -------------------------------------------------
-def gethistprops(
-    indata, histlen, refine=False, therange=None, pickleft=False, peakthresh=0.33
-):
+def gethistprops(indata, histlen, refine=False, therange=None, pickleft=False, peakthresh=0.33):
     """
 
     Parameters
