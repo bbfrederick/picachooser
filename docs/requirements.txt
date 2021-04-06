@@ -3,3 +3,4 @@ numpydoc
 m2r
 sphinx-argparse
 sphinx-gallery
+rst2pdf
