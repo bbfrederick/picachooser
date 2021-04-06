@@ -1,5 +1,8 @@
+Installation
+============
+
 Required dependencies
-=====================
+---------------------
 
 PICAchooser requires some external libraries to be installed first:
 
@@ -13,10 +16,24 @@ PICAchooser requires some external libraries to be installed first:
 -  pillow
 
 
-Installing Python
------------------
+Installing from pypi (NEW!)
+---------------------------
 
-The simplest way BY FAR to get this all done is to use Anaconda python
+I've finally gotten pypi deployment working, so the new easiest way to
+install picachooser is to simply type:
+
+::
+
+    pip install picachooser
+
+
+That's it, I think.
+
+
+Installing with conda
+---------------------
+
+The other simple way to get this all done is to use Anaconda python
 from Continuum Analytics. It’s a free, curated scientific Python
 distribution that is easy to maintain and takes a lot of headaches out
 of maintaining a distribution. It also already comes with almost all of the
@@ -66,14 +83,6 @@ package directory and do a git pull first:
 
    git pull
    python setup.py install
-
-
-Usage
------
-Run PICAchooser to look at a series of independent components and assign them a rating:
-::
-
-    PICAchooser RUNMODE --featdir FEATDIRECTORY --melodicdir MELODICDIRECTORY
 
 
 Docker installation

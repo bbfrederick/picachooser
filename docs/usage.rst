@@ -133,6 +133,14 @@ Debugging arguments:
                         You almost certainly don't want this.
 
 
+Example
+-------
+Run PICAchooser to look at a series of independent components and assign them a rating:
+::
+
+    PICAchooser RUNMODE --featdir FEATDIRECTORY --melodicdir MELODICDIRECTORY
+
+
 You'll then get a window that looks like this:
 
 .. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2.png
