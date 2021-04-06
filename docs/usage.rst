@@ -9,6 +9,7 @@ map), the power spectrum of the active IC component, and the motion
 timecourses for comparison. By default, components are flagged to be
 kept (and the timecourses are in green\*).
 
+
 Usage
 -----
 

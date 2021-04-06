@@ -1,6 +1,9 @@
 PICAchooser (the package)
 =========================
 
+.. figure:: https://raw.githubusercontent.com/bbfrederick/picachooser/master/images/picalogo.png
+   :alt: Logo
+
 A set of simple gui tools for scanning through MELODIC probabalistic ICA
 runs and quickly making decisions about which components to retain, and
 what relates to what. These tools each only do one thing, but they do them
