@@ -106,7 +106,7 @@ napoleon_use_rtype = False
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-#latex_documents = [
+# latex_documents = [
 #    (
 #        master_doc,
 #        "picachooser.tex",
@@ -114,7 +114,7 @@ napoleon_use_rtype = False
 #        "Blaise Frederick",
 #        "manual",
 #    ),
-#]
+# ]
 
 # -----------------------------------------------------------------------------
 # Manual page output
