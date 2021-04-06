@@ -25,10 +25,14 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.translation_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.translation_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.translation_graphicsView.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.translation_graphicsView.sizePolicy().hasHeightForWidth()
+        )
         self.translation_graphicsView.setSizePolicy(sizePolicy)
         self.translation_graphicsView.setMinimumSize(QtCore.QSize(400, 100))
         self.translation_graphicsView.setMaximumSize(QtCore.QSize(610, 1000))
@@ -37,7 +41,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.translation_graphicsView)
         self.rotation_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.rotation_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.rotation_graphicsView.sizePolicy().hasHeightForWidth())
@@ -49,7 +55,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.rotation_graphicsView)
         self.timecourse_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.timecourse_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.timecourse_graphicsView.sizePolicy().hasHeightForWidth())
@@ -61,7 +69,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.timecourse_graphicsView)
         self.spectrum_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.spectrum_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.spectrum_graphicsView.sizePolicy().hasHeightForWidth())
@@ -74,7 +84,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.image_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.image_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.image_graphicsView.sizePolicy().hasHeightForWidth())
@@ -103,5 +115,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Right and left arrows step through components. Up and down arrows toggle component retention.  \"a\", \"c\", and \"s\" select axial, coronal, or sagittal views.  ESC to write component file."))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                'Right and left arrows step through components. Up and down arrows toggle component retention.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  ESC to write component file.',
+            )
+        )
+
+
 from pyqtgraph import GraphicsLayoutWidget

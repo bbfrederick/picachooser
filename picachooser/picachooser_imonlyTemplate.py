@@ -23,7 +23,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.image_graphicsView = GraphicsLayoutWidget(self.centralwidget)
         self.image_graphicsView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.image_graphicsView.sizePolicy().hasHeightForWidth())
@@ -52,5 +54,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Right and left arrows step through components. Up and down arrows toggle component retention.  \"a\", \"c\", and \"s\" select axial, coronal, or sagittal views.  ESC to write component file."))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                'Right and left arrows step through components. Up and down arrows toggle component retention.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  ESC to write component file.',
+            )
+        )
+
+
 from pyqtgraph import GraphicsLayoutWidget

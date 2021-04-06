@@ -144,7 +144,7 @@ Run PICAchooser to look at a series of independent components and assign them a 
 
 You'll then get a window that looks like this:
 
-.. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2.png
+.. figure:: https://raw.githubusercontent.com/bbfrederick/picachooser/master/images/picachooser_screenshot.png
    :alt: PICAchooser screenshot
 
    PICAchooser screenshot

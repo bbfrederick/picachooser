@@ -24,7 +24,7 @@ motion traces, and the correlation between them, to help with your decision maki
 Once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as possible, so
 you aren't waiting around for things.
 
-.. figure:: https://raw.githubusercontent.com/bbfrederick/picachooser/master/images/picachooser_screenshot2_small.png
+.. figure:: https://raw.githubusercontent.com/bbfrederick/picachooser/master/images/picachooser_screenshot_small.png
    :alt: PICAchooser screenshot
 
    PICAchooser screenshot

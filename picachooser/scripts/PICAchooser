@@ -381,6 +381,8 @@ def keyPressed(evt):
     elif evt.key() == QtCore.Qt.Key_D:
         print("Dumping main window information")
         mainwin.printWinProps()
+    elif evt.key() == QtCore.Qt.Key_R:
+        whichcomponent = 0
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
         print("bad component file written")
