@@ -21,7 +21,7 @@ motion traces, and the correlation between them, to help with your decision maki
 Once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as possible, so
 you aren't waiting around for things.
 
-.. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2_small.png
+.. image:: https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2_small.png
    :alt: PICAchooser screenshot
 
    PICAchooser screenshot
@@ -43,7 +43,7 @@ is inspired by blink microsopes, a cool old piece of tech probably long forgotte
 Again, once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as 
 possible, so you aren't waiting around for things.
 
-.. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/melodicomp_screenshot_small.png
+.. image:: https://github.com/bbfrederick/picachooser/blob/master/images/melodicomp_screenshot_small.png
    :alt: PICAchooser screenshot
 
    melodicomp screenshot
