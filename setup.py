@@ -54,7 +54,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Lightweight GUI for sorting MELODIC ICA components.",
+    description="Lightweight GUI for sorting, classifying, and matching MELODIC ICA components.",
     long_description=long_description,
     # The project's main homepage.
     url="https://github.com/bbfrederick/picachooser",
