@@ -164,3 +164,33 @@ linkcode_resolve = make_linkcode_resolve(
     "picachooser",
     "https://github.com/bbfrederick/" "picachooser/blob/{revision}/" "{package}/{path}#L{lineno}",
 )
+
+# -----------------------------------------------------------------------------
+# Setup functions
+# -----------------------------------------------------------------------------
+
+
+# https://github.com/rtfd/sphinx_rtd_theme/issues/117
+def setup(app):
+    app.add_css_file("theme_overrides.css")
+    app.connect("autodoc-process-docstring", generate_example_rst)
+    # Fix to https://github.com/sphinx-doc/sphinx/issues/7420
+    # from https://github.com/life4/deal/commit/7f33cbc595ed31519cefdfaaf6f415dada5acd94
+    # from m2r to make `mdinclude` work
+    app.add_config_value("no_underscore_emphasis", False, "env")
+    app.add_config_value("m2r_parse_relative_links", False, "env")
+    app.add_config_value("m2r_anonymous_references", False, "env")
+    app.add_config_value("m2r_disable_inline_math", False, "env")
+    app.add_directive("mdinclude", MdInclude)
+
+
+def generate_example_rst(app, what, name, obj, options, lines):
+    # generate empty examples files, so that we don't get
+    # inclusion errors if there are no examples for a class / module
+    folder = os.path.join(app.srcdir, "generated")
+    if not os.path.isdir(folder):
+        os.makedirs(folder)
+    examples_path = os.path.join(app.srcdir, "generated", "%s.examples" % name)
+    if not os.path.exists(examples_path):
+        # touch file
+        open(examples_path, "w").close()
