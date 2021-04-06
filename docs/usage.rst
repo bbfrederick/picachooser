@@ -41,13 +41,15 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
 
-Standard input file location specification.  For certain runmodes, one of these will be sufficient to fully specify all file locations.:
+Standard input file location specification.  For certain runmodes, 
+one of these will be sufficient to fully specify all file locations.:
   --featdir FEATDIR     The FEAT directory associated with this
                         MELODIC run.
   --melodicdir MELODICDIR
                         The .ica directory for this MELODIC run.
 
-Nonstandard input file location specification.  Setting any of these overrides any location inferred from --melodicdir or --featdir.:
+Nonstandard input file location specification.  Setting any 
+of these overrides any location inferred from --melodicdir or --featdir.:
   --backgroundfile BGFILE
                         The anatomic file on which to display the
                         ICs (usually found in

@@ -43,7 +43,7 @@ Then install the additional dependencies:
 Done.
 
 Installing PICAchooser
---------------------
+----------------------
 
 Once you have installed the prerequisites, cd into the package
 directory, and type the following:

@@ -1,1 +1,4 @@
-.. mdinclude:: ../CHANGELOG.md
+What's new
+==========
+
+.. include:: ../CHANGELOG.md
