@@ -3,6 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   introduction.rst
+   whats_new.rst
+   installation.rst
+   usage.rst
+   contributing.rst
+
+
 PICAchooser
 ===========
 PICAchooser is a simple, lightweight GUI that lets you sort through the components
@@ -29,16 +41,6 @@ expected for FIX training datasets.
 .. image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
    :target: https://opensource.org/licenses/Apache-2.0
 
-Contents
-========
-.. toctree::
-   :maxdepth: 2
-
-   introduction.rst
-   whats_new.rst
-   installation.rst
-   usage.rst
-   contributing.rst
 
 Indices and tables
 ==================
