@@ -1,5 +1,10 @@
 # History of changes
 
+## Version 1.2.3 (4/6/20)
+* Major documentation improvements.
+* Finally fixed picachooser.readthedocs.org.
+* Added reset component keystroke to PICAchooser and melodicomp.
+
 ## Version 1.2.2 (4/5/20)
 * More fiddling to get deplyment working again.
 
