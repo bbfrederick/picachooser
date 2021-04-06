@@ -3,9 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
+.. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/picalogo.png
+   :alt: Logo
+
+
+The PICAchooser package
+=======================
+
+PICAchooser is a suite of simple gui tools for scanning through MELODIC probabalistic ICA
+runs and quickly making decisions about which components are worth keeping, and
+what relates to what. These tools each only do one thing, but they do them
+quickly and easily using only keyboard input. Current programs are
+PICAchooser, melodicomp, and grader.
+
+
+Contents
+========
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    introduction.rst
    whats_new.rst
