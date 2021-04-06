@@ -148,7 +148,7 @@ def selectsort():
     if sortnames[sorttype] == "file 1 order":
         indexmap = sorted(indexmap)
     elif sortnames[sorttype] == "correlation coefficient":
-        print(thecorrcoeffs)
+        # print(thecorrcoeffs)
         indexmap = [x for _, x in sorted(zip(thecorrcoeffs, indexmap), reverse=True)]
     else:
         print("illegal sort type")
@@ -244,6 +244,8 @@ def keyPressed(evt):
         else:
             lbwin1.setviewinfo(leftinfo)
             lbwin2.setviewinfo(rightinfo)
+    elif evt.key() == QtCore.Qt.Key_R:
+        whichcomponent = 0
     elif evt.key() == QtCore.Qt.Key_Escape:
         writecorrespondance()
         print("correspondance file written")
@@ -255,7 +257,8 @@ def keyPressed(evt):
 
 
 def updateTCinfo():
-    global whichcomponent, indexmap, sorttype, sortnames, alldata1, alldata2, namelist1, namelist2, win, numelements1, numelements2, verbose
+    global whichcomponent, indexmap, sorttype, sortnames, blinkstatus
+    global alldata1, alldata2, namelist1, namelist2, win, numelements1, numelements2, verbose
 
     if verbose:
         print("entering updateTCinfo")
@@ -271,8 +274,6 @@ def updateTCinfo():
         thiscomponent1["explainedvar"],
         thiscomponent1["totalvar"],
     )
-    ui.pane1_label.setText(pane1title)
-
     pane2title = alldata2[
         "filelabel"
     ] + ": IC {0} of {1}: {2:.2f}% explained var., {3:.2f}% total var.".format(
@@ -281,12 +282,14 @@ def updateTCinfo():
         thiscomponent2["explainedvar"],
         thiscomponent2["totalvar"],
     )
-    ui.pane2_label.setText(pane2title)
 
-    thiscomponent1 = alldata1[namelist1[componentindex1]]
-    # if thiscomponent1["bestmatch"] is not None:
-    #   if thiscomponent1["bestmatch"] <= 0:
-    #        windowtitle = windowtitle + " - marked for removal"
+    if blinkstatus:
+        ui.pane1_label.setText(pane2title)
+        ui.pane2_label.setText(pane1title)
+    else:
+        ui.pane1_label.setText(pane1title)
+        ui.pane2_label.setText(pane2title)
+
     win.setWindowTitle(f"melodicomp: sorting by {sortnames[sorttype]}")
 
 
@@ -426,15 +429,15 @@ def main():
         ),
         default=None,
     )
-    other.add_argument(
-        "--sortedfile",
-        metavar="SORTEDFILE",
-        type=str,
-        help=(
-            "Save the components in ICfile2, sorted to match the components of ICfile1, in the file SORTEDFILE."
-        ),
-        default=None,
-    )
+    # other.add_argument(
+    #    "--sortedfile",
+    #    metavar="SORTEDFILE",
+    #    type=str,
+    #    help=(
+    #        "Save the components in ICfile2, sorted to match the components of ICfile1, in the file SORTEDFILE."
+    #    ),
+    #    default=None,
+    # )
     other.add_argument(
         "--spatialroi",
         dest="spatialroi",

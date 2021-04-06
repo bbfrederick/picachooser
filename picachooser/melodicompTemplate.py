@@ -14,7 +14,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1750, 826)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
@@ -35,7 +37,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.pane1_label)
         self.image_graphicsView_1 = GraphicsLayoutWidget(self.centralwidget)
         self.image_graphicsView_1.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.image_graphicsView_1.sizePolicy().hasHeightForWidth())
@@ -54,7 +58,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.pane2_label)
         self.image_graphicsView_2 = GraphicsLayoutWidget(self.centralwidget)
         self.image_graphicsView_2.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.image_graphicsView_2.sizePolicy().hasHeightForWidth())
@@ -84,7 +90,18 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pane1_label.setText(_translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var."))
-        self.pane2_label.setText(_translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var."))
-        self.label.setText(_translate("MainWindow", "Right and left arrows step through components. Up and down arrows toggle sortmode.  \"a\", \"c\", and \"s\" select axial, coronal, or sagittal views.  ESC to write component file.  \"b\" to blink! "))
+        self.pane1_label.setText(
+            _translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var.")
+        )
+        self.pane2_label.setText(
+            _translate("MainWindow", "Component XX of XX: XX.X% explained var., XX.X% total var.")
+        )
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                'Right and left arrows step through components. Up and down arrows toggle sortmode.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  ESC to write component file.  "b" to blink! ',
+            )
+        )
+
+
 from pyqtgraph import GraphicsLayoutWidget

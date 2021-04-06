@@ -127,7 +127,7 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>Right and left arrows step through components. Up and down arrows toggle sortmode.  &quot;a&quot;, &quot;c&quot;, and &quot;s&quot; select axial, coronal, or sagittal views.  ESC to write component file.  &quot;b&quot; to blink! </string>
+       <string>Right and left arrows step through components. Up and down arrows toggle sortmode.  &quot;r&quot; to reset component.  &quot;a&quot;, &quot;c&quot;, and &quot;s&quot; select axial, coronal, or sagittal views.  ESC to write component file.  &quot;b&quot; to blink! </string>
       </property>
      </widget>
     </item>
