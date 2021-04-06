@@ -7,11 +7,46 @@ what relates to what. These tools each only do one thing, but they do them
 quickly and easily using only keyboard input. Current programs are
 PICAchooser, melodicomp, and grader.
 
+Full documentation is here: https://picachooser.readthedocs.io/en/latest/introduction.html
+
+What's in here?
+===============
+
+PICAchooser
+-----------
+Lets you step through the components in an ICA analysis (from many sources), and select which components you
+want to retain.  In addition to showing the spatial ICs, it also displays the componnent timecourses, 
+motion traces, and the correlation between them, to help with your decision making.
+
+Once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as possible, so
+you aren't waiting around for things.
+
 .. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/picachooser_screenshot2.png
    :alt: PICAchooser screenshot
 
    PICAchooser screenshot
 
+
+melodicomp
+----------
+Puts up two melodic IC files side by side.  In order to make the comparison meaningful, it first calculates the
+spatial crosscorrelation between each IC in the first file and each IC in the second.  As you step through components
+in the first file, on the right you see the component with the highest crosscorrelation in the second file.  You can
+sort either by IC order in the first file (i.e. in order of descending variance explained), or in descending 
+correlation coefficient (i.e. best matched components first). When you quit (or hit the escape key), it writes out
+a file listing the best matched ICs along with their correlation coefficients.
+
+I'm especially proud of the "blink" feature.  When you hit the "b" key, the right and left window swap, 
+instantaneously.  This lets you see what changes between the two sets of networks in a very natural way.  This
+is inspired by blink microsopes, a cool old piece of tech probably long forgotten by most.
+
+Again, once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as 
+possible, so you aren't waiting around for things.
+
+.. figure:: https://github.com/bbfrederick/picachooser/blob/master/images/melodicomp_screenshot.png
+   :alt: PICAchooser screenshot
+
+   melodicomp screenshot
 
 Support
 =======
