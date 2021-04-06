@@ -41,7 +41,7 @@ a file listing the best matched ICs along with their correlation coefficients.
 
 I'm especially proud of the "blink" feature.  When you hit the "b" key, the right and left window swap, 
 instantaneously.  This lets you see what changes between the two sets of networks in a very natural way.  This
-is inspired by blink microsopes, a cool old piece of tech probably long forgotten by most.
+is inspired by blink comparators, a cool old piece of tech probably long forgotten by most.
 
 Again, once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as 
 possible, so you aren't waiting around for things.
