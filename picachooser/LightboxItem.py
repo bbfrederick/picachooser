@@ -113,6 +113,7 @@ class imagedataset:
         isaMask=False,
         geommask=None,
         funcmask=None,
+        flipx = True,
         xlims=[0, -1],
         ylims=[0, -1],
         zlims=[0, -1],
@@ -138,6 +139,7 @@ class imagedataset:
         self.theRedyellowLUT = None
         self.theBluelightblueLUT = None
         self.setLUT(self.lut_state)
+        self.flipx = flipx
         self.xlims = xlims
         self.ylims = ylims
         self.zlims = zlims
@@ -290,18 +292,33 @@ class imagedataset:
         self.xdim, self.ydim, self.zdim, self.tdim = io.parseniftidims(self.dims)
         self.xsize, self.ysize, self.zsize, self.tr = io.parseniftisizes(self.sizes)
         if self.tdim > 1:
-            self.data = indata[
-                self.xlims[0] : self.xlims[1],
-                self.ylims[0] : self.ylims[1],
-                self.zlims[0] : self.zlims[1],
-                :,
-            ]
+            if self.flipx:
+                self.data = np.flip(indata[
+                    self.xlims[0] : self.xlims[1],
+                    self.ylims[0] : self.ylims[1],
+                    self.zlims[0] : self.zlims[1],
+                    :,
+                ], axis=0)
+            else:
+                self.data = indata[
+                    self.xlims[0]: self.xlims[1],
+                    self.ylims[0]: self.ylims[1],
+                    self.zlims[0]: self.zlims[1],
+                    :,
+                ]
         else:
-            self.data = indata[
-                self.xlims[0] : self.xlims[1],
-                self.ylims[0] : self.ylims[1],
-                self.zlims[0] : self.zlims[1],
-            ]
+            if self.flipx:
+                self.data = np.flip(indata[
+                    self.xlims[0] : self.xlims[1],
+                    self.ylims[0] : self.ylims[1],
+                    self.zlims[0] : self.zlims[1],
+                ], axis=0)
+            else:
+                self.data = indata[
+                    self.xlims[0] : self.xlims[1],
+                    self.ylims[0] : self.ylims[1],
+                    self.zlims[0] : self.zlims[1],
+                ]
         self.xdim, self.ydim, self.zdim = (
             self.data.shape[0],
             self.data.shape[1],
