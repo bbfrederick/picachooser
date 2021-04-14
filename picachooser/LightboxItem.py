@@ -113,7 +113,7 @@ class imagedataset:
         isaMask=False,
         geommask=None,
         funcmask=None,
-        flipx = True,
+        flipx=True,
         xlims=[0, -1],
         ylims=[0, -1],
         zlims=[0, -1],
@@ -293,26 +293,32 @@ class imagedataset:
         self.xsize, self.ysize, self.zsize, self.tr = io.parseniftisizes(self.sizes)
         if self.tdim > 1:
             if self.flipx:
-                self.data = np.flip(indata[
+                self.data = np.flip(
+                    indata[
+                        self.xlims[0] : self.xlims[1],
+                        self.ylims[0] : self.ylims[1],
+                        self.zlims[0] : self.zlims[1],
+                        :,
+                    ],
+                    axis=0,
+                )
+            else:
+                self.data = indata[
                     self.xlims[0] : self.xlims[1],
                     self.ylims[0] : self.ylims[1],
                     self.zlims[0] : self.zlims[1],
-                    :,
-                ], axis=0)
-            else:
-                self.data = indata[
-                    self.xlims[0]: self.xlims[1],
-                    self.ylims[0]: self.ylims[1],
-                    self.zlims[0]: self.zlims[1],
                     :,
                 ]
         else:
             if self.flipx:
-                self.data = np.flip(indata[
-                    self.xlims[0] : self.xlims[1],
-                    self.ylims[0] : self.ylims[1],
-                    self.zlims[0] : self.zlims[1],
-                ], axis=0)
+                self.data = np.flip(
+                    indata[
+                        self.xlims[0] : self.xlims[1],
+                        self.ylims[0] : self.ylims[1],
+                        self.zlims[0] : self.zlims[1],
+                    ],
+                    axis=0,
+                )
             else:
                 self.data = indata[
                     self.xlims[0] : self.xlims[1],
@@ -522,11 +528,18 @@ class LightboxItem(QtGui.QWidget):
         self.updateAllViews()
 
     def getviewinfo(self):
-        return self.thisview, self.thisviewposwin, self.thisviewnegwin, self.thisviewbgwin, self.thislabel, self.thisviewbox
+        return (
+            self.thisview,
+            self.thisviewposwin,
+            self.thisviewnegwin,
+            self.thisviewbgwin,
+            self.thislabel,
+            self.thisviewbox,
+        )
 
     def setviewinfo(self, theinfo):
         self.thisview = theinfo[0]
-        self.thisviewposwin  = theinfo[1]
+        self.thisviewposwin = theinfo[1]
         self.thisviewnegwin = theinfo[2]
         self.thisviewbgwin = theinfo[3]
         self.thislabel = theinfo[4]
