@@ -18,7 +18,7 @@ What's in here?
 PICAchooser
 -----------
 Lets you step through the components in an ICA analysis (from many sources), and select which components you
-want to retain.  In addition to showing the spatial ICs, it also displays the componnent timecourses, 
+want to retain.  In addition to showing the spatial ICs, it also displays the componnent timecourses,
 motion traces, and the correlation between them, to help with your decision making.
 
 Once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as possible, so
@@ -35,21 +35,33 @@ melodicomp
 Puts up two melodic IC files side by side.  In order to make the comparison meaningful, it first calculates the
 spatial crosscorrelation between each IC in the first file and each IC in the second.  As you step through components
 in the first file, on the right you see the component with the highest crosscorrelation in the second file.  You can
-sort either by IC order in the first file (i.e. in order of descending variance explained), or in descending 
+sort either by IC order in the first file (i.e. in order of descending variance explained), or in descending
 correlation coefficient (i.e. best matched components first). When you quit (or hit the escape key), it writes out
 a file listing the best matched ICs along with their correlation coefficients.
 
-I'm especially proud of the "blink" feature.  When you hit the "b" key, the right and left window swap, 
+I'm especially proud of the "blink" feature.  When you hit the "b" key, the right and left window swap,
 instantaneously.  This lets you see what changes between the two sets of networks in a very natural way.  This
 is inspired by blink comparators, a cool old piece of tech probably long forgotten by most.
 
-Again, once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as 
+Again, once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as
 possible, so you aren't waiting around for things.
 
 .. figure:: https://raw.githubusercontent.com/bbfrederick/picachooser/master/images/melodicomp_screenshot_small.png
    :alt: PICAchooser screenshot
 
    melodicomp screenshot
+
+
+
+ A note on component numbering
+ =============================
+ Astute users will notice that components are numbered differently in different contexts.  This is actually intentional.
+ In the GUI, and in any files that work directly with FSL tools, I use whatever convention FSL uses.  So for displayed
+ components, the first component is IC1.  Output files that will be used by fsl_regfilt also use this convention.  However,
+ for any informational output on the terminal that you might use when looking at components in FSLeyes directly, or operating
+ on them with fslmaths or your own python code, the component numbering starts at 0.  As the universe intended.  If you use matlab,
+ add 1 in your head.
+
 
 Support
 =======
