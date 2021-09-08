@@ -53,14 +53,14 @@ possible, so you aren't waiting around for things.
 
 
 
- A note on component numbering
- =============================
- Astute users will notice that components are numbered differently in different contexts.  This is actually intentional.
- In the GUI, and in any files that work directly with FSL tools, I use whatever convention FSL uses.  So for displayed
- components, the first component is IC1.  Output files that will be used by fsl_regfilt also use this convention.  However,
- for any informational output on the terminal that you might use when looking at components in FSLeyes directly, or operating
- on them with fslmaths or your own python code, the component numbering starts at 0.  As the universe intended.  If you use matlab,
- add 1 in your head.
+A note on component numbering
+=============================
+Astute users will notice that components are numbered differently in different contexts.  This is actually intentional.
+In the GUI, and in any files that work directly with FSL tools, I use whatever convention FSL uses.  So for displayed
+components, the first component is IC1.  Output files that will be used by fsl_regfilt also use this convention.  However,
+for any informational output on the terminal that you might use when looking at components in FSLeyes directly, or operating
+on them with fslmaths or your own python code, the component numbering starts at 0.  As the universe intended.  If you use matlab,
+add 1 in your head.
 
 
 Support
