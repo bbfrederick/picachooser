@@ -19,16 +19,14 @@
 # $Date: 2016/07/12 13:50:29 $
 # $Id: tide_funcs.py,v 1.4 2016/07/12 13:50:29 frederic Exp $
 #
-from __future__ import print_function, division
+from __future__ import division, print_function
 
 import numpy as np
 import scipy as sp
-
-
 from scipy.stats import johnsonsb, kurtosis, kurtosistest
 
-import picachooser.io as io
 import picachooser.fit as fit
+import picachooser.io as io
 
 # ---------------------------------------- Global constants -------------------------------------------
 defaultbutterorder = 6
@@ -650,8 +648,6 @@ def makemask(image, threshpct=25.0, verbose=False, nozero=False):
     threshval = pct2 + (threshpct / 100.0) * (pct98 - pct2)
     if verbose:
         print(
-            "fracval:",
-            fracval,
             " threshpct:",
             threshpct,
             " mask threshhold:",

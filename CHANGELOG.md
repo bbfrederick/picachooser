@@ -1,5 +1,11 @@
 # History of changes
 
+## Version 1.3.0 (9/8/21)
+* Reformatted with black and isort.
+* Flipped x axis to display radiological coordinates.
+* Harmonized Dockerfile and automated container building methods with rapidtide.
+* Fixed some formatting in documentation (thank you DMD!)
+
 ## Version 1.2.3 (4/6/20)
 * Major documentation improvements.
 * Finally fixed picachooser.readthedocs.org.

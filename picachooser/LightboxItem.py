@@ -26,13 +26,14 @@
 A widget for displaying 3 and 4 dimensional data in a lightbox
 """
 
-from __future__ import print_function, division
+from __future__ import division, print_function
 
-from pyqtgraph.Qt import QtGui, QtCore
-import pyqtgraph as pg
-import numpy as np
 import os
+
+import numpy as np
+import pyqtgraph as pg
 from nibabel.affines import apply_affine
+from pyqtgraph.Qt import QtCore, QtGui
 
 try:
     from PIL import Image
@@ -42,9 +43,9 @@ except ImportError:
     PILexists = False
 
 
+import picachooser.colormaps as cm
 import picachooser.io as io
 import picachooser.stats as stats
-import picachooser.colormaps as cm
 
 
 def newColorbar(view, left, top, impixpervoxx, impixpervoxy, imgsize):

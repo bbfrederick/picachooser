@@ -26,21 +26,20 @@
 A simple GUI for rating timecoursese by whatever metric you want
 """
 
-from __future__ import print_function, division
+from __future__ import division, print_function
 
-from pyqtgraph.Qt import QtGui, QtCore
-
-import pyqtgraph as pg
-import numpy as np
-import glob
-
-import sys
-import os
 import argparse
-import pandas as pd
-from scipy import fftpack
-import picachooser.LightboxItem as lb
+import glob
+import os
+import sys
 
+import numpy as np
+import pandas as pd
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtGui
+from scipy import fftpack
+
+import picachooser.LightboxItem as lb
 
 hammingwindows = {}
 
