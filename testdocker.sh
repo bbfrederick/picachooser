@@ -18,6 +18,6 @@ docker run \
     -u picachooser fredericklab/picachooser:latest \
     PICAchooser \
         fix \
-        --featdir /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat \
-        --melodicdir /Users/frederic/Documents/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
+        --featdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat \
+        --melodicdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
         --scalemotiontodata
