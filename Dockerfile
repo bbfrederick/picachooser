@@ -1,5 +1,5 @@
-# Use Ubuntu 18.04 LTS
-FROM ubuntu:18.04
+# Use Ubuntu 20.04 LTS
+FROM ubuntu:20.04
 
 # Prepare environment
 RUN df -h
@@ -42,15 +42,19 @@ ENV PATH="/usr/local/miniconda/bin:$PATH" \
     LC_ALL="C.UTF-8" \
     PYTHONNOUSERSITE=1
 
+
+# Update to the newest version of conda
+RUN conda config --add channels conda-forge
+RUN conda update -n base -c defaults conda
+
+
+# Install mamba so we can install packages before the heat death of the universe
+RUN conda install -y mamba
+RUN conda clean --all
 RUN conda install conda-build
 
 # Installing precomputed python packages
-RUN df -h
-RUN conda config --add channels conda-forge
-RUN df -h
-RUN conda build purge-all
-RUN df -h
-RUN conda install -y python=3.8 \
+RUN mamba install -y python=3.9.6 \
                      pip \
                      scipy \
                      numpy \
@@ -58,7 +62,8 @@ RUN conda install -y python=3.8 \
                      nibabel \
                      pandas \
                      pyqt \
-                     pyqtgraph; sync && \
+                     pyqtgraph \
+                     versioneer; sync && \
     chmod -R a+rX /usr/local/miniconda; sync && \
     chmod +x /usr/local/miniconda/bin/*; sync && \
     conda build purge-all; sync && \
@@ -80,6 +85,7 @@ RUN cd /src/picachooser && \
 
 
 ENV IS_DOCKER_8395080871=1
+RUN apt-get install -y --reinstall libxcb-xinerama0
 
 RUN ldconfig
 WORKDIR /tmp/
@@ -88,14 +94,14 @@ ENTRYPOINT ["/usr/local/miniconda/bin/PICAchooser_dispatcher"]
 # set a non-root user
 USER picachooser
 
+ARG VERSION
 ARG BUILD_DATE
 ARG VCS_REF
-ARG VERSION
+
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.name="picachooser" \
       org.label-schema.description="PICAchooser - a lightweight GUI tool for sorting MELODIC ICA components" \
       org.label-schema.url="http://nirs-fmri.net" \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/bbfrederick/picachooser" \
-      org.label-schema.version=$VERSION \
-      org.label-schema.schema-version="1.2.3"
+      org.label-schema.version=$VERSION 
