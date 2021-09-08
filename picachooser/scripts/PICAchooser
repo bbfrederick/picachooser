@@ -1160,7 +1160,7 @@ def main():
     numelements = 0
     alltcs = io.readvecs(Mixfile)
     numelements = alltcs.shape[0]
-    grades = np.ones(numelements, dtype=np.int)
+    grades = np.ones(numelements, dtype=np.int16)
     if initfileexists:
         print("reading initfile...")
         with open(Removefile, "r") as thefile:
