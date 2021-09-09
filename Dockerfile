@@ -19,13 +19,19 @@ RUN apt-get install -y --no-install-recommends \
                     libx11-xcb1 \
                     lsb-release \
                     git
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
+RUN apt-get install -y tzdata
 RUN apt-get install -y --reinstall libqt5dbus5 
 RUN apt-get install -y --reinstall libqt5widgets5 
 RUN apt-get install -y --reinstall libqt5network5 
+RUN apt-get remove qtchooser
 RUN apt-get install -y --reinstall libqt5gui5 
 RUN apt-get install -y --reinstall libqt5core5a 
-RUN apt-get install -y --reinstall libdouble-conversion1 
+RUN apt-get install -y --reinstall libxkbcommon-x11-0
 RUN apt-get install -y --reinstall libxcb-xinerama0
+
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
@@ -51,7 +57,6 @@ RUN conda update -n base -c defaults conda
 # Install mamba so we can install packages before the heat death of the universe
 RUN conda install -y mamba
 RUN conda clean --all
-RUN conda install conda-build
 
 # Installing precomputed python packages
 RUN mamba install -y python=3.9.6 \
