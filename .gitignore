@@ -1,0 +1,34 @@
+# notes to self
+#newrelease_todo
+VERSION
+
+default.profraw 
+
+venv
+
+__pycache__
+picachooser/__pycache__
+
+*.key
+#picalogo.png
+Thumbs.db
+
+*.swp
+
+.idea
+
+# build directories
+build
+dist
+docs/_build
+*.egg-info
+
+# random info files lying around
+*.csv
+*.xlsx
+
+testrun*
+
+safezone
+
+newdocs
