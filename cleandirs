@@ -1,3 +1,6 @@
 #!/bin/bash
 
 rm -r build dist picachooser.egg-info __pycache__ docs/_build
+pip uninstall -y picachooser
+pip uninstall -y picachooser
+pip uninstall -y picachooser
