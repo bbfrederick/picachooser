@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.abspath("../picachooser"))
 
 from github_link import make_linkcode_resolve
 
-import rapidtide
+import picachooser
 
 # -- General configuration ------------------------------------------------
 
@@ -91,9 +91,9 @@ author = "Blaise Frederick"
 # built documents.
 #
 # The short X.Y version.
-import rapidtide.util as tide_util
+import picachooser.util as pica_util
 
-version = tide_util.version()[0].replace("v", "").split("+")[0]
+version = pica_util.version()[0].replace("v", "").split("+")[0]
 # The full version, including alpha/beta/rc tags.
 release = version
 
