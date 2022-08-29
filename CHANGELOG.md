@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.3.1 (8/19/22)
+* Tweaked pyproject.ml file to hopefully fix documentation build.
+
 ## Version 1.3.0 (9/8/21)
 * Reformatted with black and isort.
 * Flipped x axis to display radiological coordinates.
