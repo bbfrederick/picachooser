@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.3.1.1 (8/19/22)
+* Updated versioneer.
+
 ## Version 1.3.1 (8/19/22)
 * Tweaked pyproject.ml file to hopefully fix documentation build.
 
