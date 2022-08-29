@@ -2,23 +2,10 @@
 
 + Sync everything to GitHub
 
-+ Create and push a new tag (instructions from https://git-scm.com/book/en/v2/Git-Basics-Tagging):
++ Create a new release
     git tag -a vX.Y.Z -m "vX.Y.Z"
     git push origin vX.Y.Z
+    
++ Edit new tag on GitHub
 
-+ Edit the release notes on github
-
-+ Build picachooser
-
-    python setup.py install
-
-+ Build and sync the dist files to pypi
-
-    python -m build
-    python -m twine upload --repository picachooser_test dist/* --verbose
-
-+ Rebuild Docker container and push
-
-    builddocker.sh
-    testdocker.sh
-
++ Check the DockerHub and PyPi deployment Actions
