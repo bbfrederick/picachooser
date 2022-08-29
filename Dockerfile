@@ -36,9 +36,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
 # Installing and setting up miniconda
-RUN curl -sSLO https://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
-    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -b -p /usr/local/miniconda && \
-    rm Miniconda3-4.7.12.1-Linux-x86_64.sh
+RUN curl -sSLO https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh && \
+    bash Miniconda3-py39_4.12.0-Linux-x86_64.sh -b -p /usr/local/miniconda && \
+    rm Miniconda3-py39_4.12.0-Linux-x86_64.sh
 
 
 # Set CPATH for packages relying on compiled libs (e.g. indexed_gzip)
@@ -49,17 +49,19 @@ ENV PATH="/usr/local/miniconda/bin:$PATH" \
     PYTHONNOUSERSITE=1
 
 
-# Update to the newest version of conda
+# add the conda-forge channel
 RUN conda config --add channels conda-forge
-RUN conda update -n base -c defaults conda
-
 
 # Install mamba so we can install packages before the heat death of the universe
-RUN conda install -y mamba
+RUN conda install -c conda-forge -y mamba
 RUN conda clean --all
 
+# install conda-build
+RUN conda install -y conda-build
+
+
 # Installing precomputed python packages
-RUN mamba install -y python=3.9.6 \
+RUN mamba install -y python \
                      pip \
                      scipy \
                      numpy \
@@ -71,7 +73,7 @@ RUN mamba install -y python=3.9.6 \
                      versioneer; sync && \
     chmod -R a+rX /usr/local/miniconda; sync && \
     chmod +x /usr/local/miniconda/bin/*; sync && \
-    conda build purge-all; sync && \
+    conda-build purge-all; sync && \
     conda clean -tipsy && sync
 RUN df -h
 
