@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.3.1.2 (8/19/22)
+* Updated Dockerfile for a newer python distribution.
+
 ## Version 1.3.1.1 (8/19/22)
 * Updated versioneer.
 
