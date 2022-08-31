@@ -1,6 +1,17 @@
 #!/bin/bash
 
-rm -r build dist picachooser.egg-info __pycache__ docs/_build
-pip uninstall -y picachooser
-pip uninstall -y picachooser
-pip uninstall -y picachooser
+rm -r build dist *.egg-info __pycache__ */__pycache__ */*/__pycache__
+
+pipresult="True"
+
+while [ -n "$pipresult" ]
+do
+    pipresult=`pip uninstall -y picachooser | grep "Found existing"`
+    if [[ -z $pipresult ]]
+    then
+        echo No installations found - quitting.
+        break
+    else
+        echo "$pipresult" - removing.
+    fi
+done
