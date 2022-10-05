@@ -7,11 +7,11 @@ RUN mamba install -y pillow \
                      nibabel \
                      pyqt \
                      pyqtgraph \
-                     versioneer; sync && \
-    chmod -R a+rX /usr/local/miniconda; sync && \
+                     versioneer; sync
+RUN chmod -R a+rX /usr/local/miniconda; sync && \
     chmod +x /usr/local/miniconda/bin/*; sync && \
-    conda-build purge-all; sync && \
-    conda clean -tipsy && sync
+    conda-build purge-all; sync
+RUN mamba clean -y --all; sync
 RUN df -h
 
 
