@@ -3,8 +3,8 @@ FROM fredericklab/basecontainer:latest
 
 # Installing precomputed python packages
 RUN mamba install -y pillow \
-                     nibabel \
                      pandas \
+                     nibabel \
                      pyqt \
                      pyqtgraph \
                      versioneer; sync && \
