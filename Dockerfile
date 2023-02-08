@@ -1,12 +1,9 @@
 # Start from the fredericklab base container
-FROM fredericklab/basecontainer:v0.0.7
+FROM fredericklab/basecontainer:latest
 
 # Installing precomputed python packages
 RUN mamba install -y pillow \
-                     pandas \
                      nibabel \
-                     pyqt \
-                     pyqtgraph \
                      versioneer
 RUN chmod -R a+rX /usr/local/miniconda
 RUN chmod +x /usr/local/miniconda/bin/*
