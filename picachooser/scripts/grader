@@ -36,10 +36,11 @@ import sys
 import numpy as np
 import pandas as pd
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph.Qt import QtCore, QtWidgets
 from scipy import fftpack
 
 import picachooser.LightboxItem as lb
+import picachooser.util as pica_util
 
 hammingwindows = {}
 
@@ -178,7 +179,7 @@ def spectrum(inputdata, Fs=1.0, mode="power", trim=True):
     return specaxis, specvals
 
 
-class KeyPressWindow(QtGui.QMainWindow):
+class KeyPressWindow(QtWidgets.QMainWindow):
     sigKeyPress = QtCore.pyqtSignal(object)
     sigResize = QtCore.pyqtSignal(object)
 
@@ -417,10 +418,22 @@ def main():
         default="auto",
     )
 
+    misc = parser.add_argument_group("Miscellaneous arguments")
+    misc.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {pica_util.version()[0]}",
+    )
+    misc.add_argument(
+        "--detailedversion",
+        action="version",
+        version=f"%(prog)s {pica_util.version()}",
+    )
+
     try:
         args = parser.parse_args()
     except SystemExit:
-        parser.print_help()
+        print("Use --help option for detailed informtion on options.")
         raise
 
     runmode = "aroma"
@@ -505,7 +518,7 @@ def main():
         print("illegal runmode")
         sys.exit()
 
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     print("setting up output window")
     # win = QtGui.QMainWindow()
     win = KeyPressWindow()
@@ -569,7 +582,7 @@ def main():
 
     # wire up keystrokes to control interface
 
-    QtGui.QApplication.instance().exec_()
+    QtWidgets.QApplication.instance().exec_()
 
 
 if __name__ == "__main__":

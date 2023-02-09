@@ -1,5 +1,12 @@
 # History of changes
 
+## Version 1.4.0 (2/9/23)
+* Added --version and --detailedversion command line flags to PICAchooser, melodicomp, and grader.
+* Accepted several PR's from dependabot for build scripts.
+* Updated versioneer.
+* Renamed master branch to main.
+* Adapted to the new basecontainer.
+
 ## Version 1.3.1.2 (8/19/22)
 * Updated Dockerfile for a newer python distribution.
 

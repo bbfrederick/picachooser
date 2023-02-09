@@ -33,12 +33,13 @@ import os
 import sys
 
 import numpy as np
-from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph.Qt import QtCore, QtWidgets
 from scipy.stats import pearsonr
 
 import picachooser.colormaps as cm
 import picachooser.io as io
 import picachooser.LightboxItem as lb
+import picachooser.util as pica_util
 
 # fix for Big Sur on macOS
 os.environ["QT_MAC_WANTS_LAYER"] = "1"
@@ -123,7 +124,7 @@ def calccorrs(file1, file2, mask, debug=False):
         return None, None
 
 
-class KeyPressWindow(QtGui.QMainWindow):
+class KeyPressWindow(QtWidgets.QMainWindow):
     sigKeyPress = QtCore.pyqtSignal(object)
     sigResize = QtCore.pyqtSignal(object)
 
@@ -468,6 +469,18 @@ def main():
         default="File 2",
     )
 
+    misc = parser.add_argument_group("Miscellaneous arguments")
+    misc.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {pica_util.version()[0]}",
+    )
+    misc.add_argument(
+        "--detailedversion",
+        action="version",
+        version=f"%(prog)s {pica_util.version()}",
+    )
+
     debugging = parser.add_argument_group("Debugging arguments")
     debugging.add_argument(
         "--verbose",
@@ -482,7 +495,7 @@ def main():
     try:
         args = parser.parse_args()
     except SystemExit:
-        parser.print_help()
+        print("Use --help option for detailed informtion on options.")
         raise
 
     # make sure we can find the required input files
@@ -617,7 +630,7 @@ def main():
     # make the main window
     import picachooser.melodicompTemplate as uiTemplate
 
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     print("setting up output window")
     win = KeyPressWindow()
     win.sigKeyPress.connect(keyPressed)
@@ -680,7 +693,7 @@ def main():
     updateTCinfo()
     updateLightboxes()
 
-    QtGui.QApplication.instance().exec_()
+    QtWidgets.QApplication.instance().exec_()
 
 
 if __name__ == "__main__":
