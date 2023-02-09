@@ -520,7 +520,6 @@ def main():
 
     app = QtWidgets.QApplication([])
     print("setting up output window")
-    # win = QtGui.QMainWindow()
     win = KeyPressWindow()
     win.sigKeyPress.connect(keyPressed)
     win.sigResize.connect(windowResized)
