@@ -2,14 +2,11 @@
 FROM fredericklab/basecontainer:latest
 
 # Installing precomputed python packages
-RUN mamba install -y pillow \
-                     nibabel \
-                     versioneer
+RUN mamba install -y pillow 
 RUN chmod -R a+rX /usr/local/miniconda
 RUN chmod +x /usr/local/miniconda/bin/*
 RUN conda-build purge-all
 RUN mamba clean -y --all
-RUN df -h
 
 
 # Create a shared $HOME directory
