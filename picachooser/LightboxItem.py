@@ -33,7 +33,7 @@ import os
 import numpy as np
 import pyqtgraph as pg
 from nibabel.affines import apply_affine
-from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph.Qt import QtCore, QtWidgets
 
 try:
     from PIL import Image
@@ -437,7 +437,7 @@ class imagedataset:
             print("    overall mask is set")
 
 
-class LightboxItem(QtGui.QWidget):
+class LightboxItem(QtWidgets.QWidget):
     updated = QtCore.pyqtSignal()
 
     def __init__(
@@ -452,7 +452,7 @@ class LightboxItem(QtGui.QWidget):
         bgmap=None,
         verbose=False,
     ):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.fgmap = fgmap
         self.bgmap = bgmap
         self.thisview = thisview
@@ -964,7 +964,7 @@ class LightboxItem(QtGui.QWidget):
             bg_img.save(os.path.join(savedir, name + "_bg.png"))
 
     def saveDisp(self):
-        mydialog = QtGui.QFileDialog()
+        mydialog = QtWidgets.QFileDialog()
         options = mydialog.Options()
         thedir = str(
             mydialog.getExistingDirectory(options=options, caption="Image output directory")
