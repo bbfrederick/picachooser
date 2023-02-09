@@ -924,7 +924,7 @@ def main():
     try:
         args = parser.parse_args()
     except SystemExit:
-        # parser.print_help()
+        print("Use --help option for detailed informtion on options.")
         raise
 
     runmode = args.runmode
