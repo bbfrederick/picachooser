@@ -34,13 +34,14 @@ import sys
 
 import numpy as np
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtGui
+from pyqtgraph.Qt import QtCore, QtWidgets
 from scipy import fftpack
 from scipy.stats import pearsonr
 
 import picachooser.colormaps as cm
 import picachooser.io as io
 import picachooser.LightboxItem as lb
+import picachooser.util as pica_util
 
 hammingwindows = {}
 
@@ -266,7 +267,7 @@ def spectrum(inputdata, Fs=1.0, mode="power", trim=True):
     return specaxis, specvals
 
 
-class KeyPressWindow(QtGui.QMainWindow):
+class KeyPressWindow(QtWidgets.QMainWindow):
     sigKeyPress = QtCore.pyqtSignal(object)
     sigResize = QtCore.pyqtSignal(object)
 
@@ -659,7 +660,7 @@ def main():
     parser = argparse.ArgumentParser(
         prog="PICAchooser",
         description="A program to review (and alter) melodic component selections.",
-        usage="%(prog)s runmode [options]",
+        allow_abbrev=False,
     )
 
     # Required arguments
@@ -897,6 +898,18 @@ def main():
         default=None,
     )
 
+    misc = parser.add_argument_group("Miscellaneous arguments")
+    misc.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {pica_util.version()[0]}",
+    )
+    misc.add_argument(
+        "--detailedversion",
+        action="version",
+        version=f"%(prog)s {pica_util.version()}",
+    )
+
     debugging = parser.add_argument_group("Debugging arguments")
     debugging.add_argument(
         "--verbose",
@@ -911,7 +924,7 @@ def main():
     try:
         args = parser.parse_args()
     except SystemExit:
-        parser.print_help()
+        # parser.print_help()
         raise
 
     runmode = args.runmode
@@ -1305,9 +1318,8 @@ def main():
     else:
         import picachooser.picachooser_imonlyTemplate as uiTemplate
 
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     print("setting up output window")
-    # win = QtGui.QMainWindow()
     win = KeyPressWindow()
     win.sigKeyPress.connect(keyPressed)
     win.sigResize.connect(windowResized)
@@ -1394,7 +1406,7 @@ def main():
         updateMotion()
     updateLightbox()
 
-    QtGui.QApplication.instance().exec_()
+    QtWidgets.QApplication.instance().exec_()
 
 
 if __name__ == "__main__":
