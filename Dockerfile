@@ -23,7 +23,7 @@ RUN cd /src/picachooser && \
 
 
 ENV IS_DOCKER_8395080871=1
-RUN apt-get install -y --reinstall libxcb-xinerama0
+
 
 RUN ldconfig
 WORKDIR /tmp/
