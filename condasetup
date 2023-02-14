@@ -2,5 +2,14 @@
 
 conda create --name picachooser
 conda activate picachooser
-conda install pip=19.3.1 scipy=1.4.1 numpy=1.17.3 pillow=7.0.0 nibabel=2.5.1 pandas=0.25.3 pyqtgraph=0.10.0
+mamba install \
+    pip \
+    scipy \
+    numpy \
+    pillow \
+    nibabel \
+    pandas \
+    pyqt \
+    pyqt5-sip \
+    "pyqtgraph<0.13"
 
