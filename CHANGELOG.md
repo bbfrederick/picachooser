@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.4.1 (2/14/23)
+* Upgraded pyqtgraph calls to handle deprecations.  NOTE: this only handles versions of pyqtgraph<0.13.
+* Made substantial changes to the Dockerfile to handle changes in basecontainer.
+
 ## Version 1.4.0 (2/9/23)
 * Added --version and --detailedversion command line flags to PICAchooser, melodicomp, and grader.
 * Accepted several PR's from dependabot for build scripts.
