@@ -624,7 +624,7 @@ class LightboxItem(QtWidgets.QWidget):
 
     def optmatrix(self, horizontalmm, verticalmm, targetaspectratio, verbose=False):
         # first find all the combinations of x and y that will minimally hold all the images
-        numrows = np.arange(2, int(self.numslices // 2), 1, dtype=np.int)
+        numrows = np.arange(2, int(self.numslices // 2), 1, dtype=np.int16)
         numcols = numrows * 0
         for i in range(len(numcols)):
             numcols[i] = int(np.ceil(self.numslices / numrows[i]))
