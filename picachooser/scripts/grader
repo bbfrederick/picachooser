@@ -26,8 +26,6 @@
 A simple GUI for rating timecoursese by whatever metric you want
 """
 
-from __future__ import division, print_function
-
 import argparse
 import glob
 import os

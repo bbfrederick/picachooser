@@ -26,8 +26,6 @@
 A widget for displaying 3 and 4 dimensional data in a lightbox
 """
 
-from __future__ import division, print_function
-
 import os
 
 import numpy as np
