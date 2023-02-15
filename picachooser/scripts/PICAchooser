@@ -919,6 +919,14 @@ def main():
         ),
         default=False,
     )
+    debugging.add_argument(
+        "--debug",
+        action="store_true",
+        help=(
+            "Turn on debugging output."
+        ),
+        default=False,
+    )
 
     try:
         args = parser.parse_args()
@@ -1170,7 +1178,7 @@ def main():
     # read in the timecourses and their current labels
     alldata = {}
     numelements = 0
-    alltcs = io.readvecs(Mixfile)
+    alltcs = io.readvecs(Mixfile, debug=args.debug)
     numelements = alltcs.shape[0]
     grades = np.ones(numelements, dtype=np.int16)
     if initfileexists:
@@ -1190,7 +1198,7 @@ def main():
         print("reading motion timecourses...")
         filebase, extension = os.path.splitext(Motionfile)
         if extension == ".par":
-            allmotion = io.readvecs(Motionfile)
+            allmotion = io.readvecs(Motionfile, debug=args.debug)
             motion = {}
             motion["xtrans"] = allmotion[3, :] * 1.0
             motion["ytrans"] = allmotion[4, :] * 1.0
@@ -1253,7 +1261,7 @@ def main():
         motionlen = motion["xtrans"].shape[0]
 
     # read in the variance percents
-    melodicICstats = io.readvecs(melodicICstatsfile)
+    melodicICstats = io.readvecs(melodicICstatsfile, debug=args.debug)
 
     namelist = []
     print("reading timecourses...")

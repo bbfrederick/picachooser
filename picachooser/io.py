@@ -73,7 +73,6 @@ if nibabelexists:
         thesizes = nim_hdr["pixdim"].copy()
         return nim, nim_data, nim_hdr, thedims, thesizes
 
-    # dims are the array dimensions along each axis
     def parseniftidims(thedims):
         r"""Split the dims array into individual elements
 
@@ -967,7 +966,7 @@ def readcolfromtextfile(inputfilename):
         return inputdata[:, 0]
 
 
-def readvecs(inputfilename, colspec=None, numskip=0):
+def readvecs(inputfilename, colspec=None, numskip=0, debug=False):
     r"""
 
     Parameters
@@ -980,6 +979,8 @@ def readvecs(inputfilename, colspec=None, numskip=0):
     """
     with open(inputfilename, "r") as thefile:
         lines = thefile.readlines()
+    if debug:
+        print(f"readvecs: {inputfilename} has lines: {len(lines)}")
     if colspec is None:
         numvecs = len(lines[0].split())
         collist = range(0, numvecs)
