@@ -1,6 +1,6 @@
 #!/bin/bash
 
-conda create --name picachooser
+conda create --name picachooser python=3.10
 conda activate picachooser
 mamba install \
     pip \
@@ -12,4 +12,3 @@ mamba install \
     pyqt \
     pyqt5-sip \
     "pyqtgraph<0.13"
-

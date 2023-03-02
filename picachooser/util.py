@@ -45,5 +45,3 @@ def version():
     if isdirty is None:
         isdirty = "UNKNOWN"
     return version, longgittag, thedate, isdirty
-
-
