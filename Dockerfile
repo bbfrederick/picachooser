@@ -1,5 +1,5 @@
 # Start from the fredericklab base container
-FROM fredericklab/basecontainer:latest
+FROM fredericklab/basecontainer:v0.1.6
 
 # Installing precomputed python packages
 RUN mamba install -y pillow 
