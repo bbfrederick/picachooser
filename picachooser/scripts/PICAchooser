@@ -1180,10 +1180,13 @@ def main():
     numelements = alltcs.shape[0]
     grades = np.ones(numelements, dtype=np.int16)
     if initfileexists:
-        print("reading initfile...")
+        print(f"reading initfile {Removefile}...")
         with open(Removefile, "r") as thefile:
             inline = thefile.readline().replace("[", "").replace("]", "")
-        inlist = inline.split(",")
+        if inline.find(",") > -1:
+            inlist = inline.split(",")
+        else:
+            inlist = inline.split()
         print(inlist)
         for component in inlist:
             print(component)
