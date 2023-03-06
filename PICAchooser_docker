@@ -21,19 +21,23 @@
 #       $Id: resamp1tc,v 1.12 2016/07/11 14:50:43 frederic Exp $
 #
 
-import sys
 import subprocess
+import sys
 
 
 def main():
     # get the command line parameters
     thePICAchoosercmd = sys.argv[1:]
-    thewrappercmd = ['docker', 'run',
-                        '-m', '8g',
-                        '--volume=/Users/frederic:/data',
-                        'picachooser:latest']
+    thewrappercmd = [
+        "docker",
+        "run",
+        "-m",
+        "8g",
+        "--volume=/Users/frederic:/data",
+        "picachooser:latest",
+    ]
     subprocess.call(thewrappercmd + thePICAchoosercmd)
-    
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

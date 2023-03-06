@@ -18,6 +18,7 @@
 
 import picachooser._version as pica_versioneer
 
+
 # ------------------------------------------ Version function ----------------------------------
 def version():
     """

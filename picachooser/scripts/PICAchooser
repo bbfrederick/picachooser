@@ -922,9 +922,7 @@ def main():
     debugging.add_argument(
         "--debug",
         action="store_true",
-        help=(
-            "Turn on debugging output."
-        ),
+        help=("Turn on debugging output."),
         default=False,
     )
 
