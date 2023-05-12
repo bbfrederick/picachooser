@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 1.4.2 (5/11/23)
+* (Docker) Updated to python 3.11 basecontainer.
+* (package) Modernized install procedure.
+
 ## Version 1.4.1 (2/14/23)
 * Upgraded pyqtgraph calls to handle deprecations.  NOTE: this only handles versions of pyqtgraph<0.13.
 * Made substantial changes to the Dockerfile to handle changes in basecontainer.
