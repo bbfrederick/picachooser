@@ -48,54 +48,6 @@ hammingwindows = {}
 os.environ["QT_MAC_WANTS_LAYER"] = "1"
 
 
-def is_valid_dir(parser, arg):
-    """
-    Check if argument is existing file.
-    """
-    if not os.path.isdir(arg) and arg is not None:
-        parser.error("The directory {0} does not exist!".format(arg))
-
-    return arg
-
-
-def is_valid_file(parser, arg):
-    """
-    Check if argument is existing file.
-    """
-    if not os.path.isfile(arg) and arg is not None:
-        parser.error("The file {0} does not exist!".format(arg))
-
-    return arg
-
-
-def invert_float(parser, arg):
-    """
-    Check if argument is float or auto.
-    """
-    if arg != "auto":
-        try:
-            arg = float(arg)
-        except parser.error:
-            parser.error('Value {0} is not a float or "auto"'.format(arg))
-
-    if arg != "auto":
-        arg = 1.0 / arg
-    return arg
-
-
-def is_float(parser, arg):
-    """
-    Check if argument is float or auto.
-    """
-    if arg != "auto":
-        try:
-            arg = float(arg)
-        except parser.error:
-            parser.error('Value {0} is not a float or "auto"'.format(arg))
-
-    return arg
-
-
 def findfromfeatdir(featdir, initBGfile, initFuncfile, initMotionfile):
     if initBGfile is None:
         bgfile = os.path.join(featdir, "reg", "example_func.nii.gz")
@@ -687,7 +639,7 @@ def main():
     hlfilespec.add_argument(
         "--featdir",
         dest="featdir",
-        type=lambda x: is_valid_dir(parser, x),
+        type=lambda x: pica_util.is_valid_dir(parser, x),
         help="The FEAT directory associated with this MELODIC run.",
         default=None,
     )
@@ -695,7 +647,7 @@ def main():
     hlfilespec.add_argument(
         "--melodicdir",
         dest="melodicdir",
-        type=lambda x: is_valid_dir(parser, x),
+        type=lambda x: pica_util.is_valid_dir(parser, x),
         help="The .ica directory for this MELODIC run.",
         default=None,
     )
@@ -707,7 +659,7 @@ def main():
         "--backgroundfile",
         dest="specBGfile",
         metavar="BGFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The anatomic file on which to display the ICs (usually found in FEATDIR/reg/example_func.nii.gz),"
         ),
@@ -718,7 +670,7 @@ def main():
         "--funcfile",
         dest="specFuncfile",
         metavar="FUNCFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The functional file to be filtered (usually found in FEATDIR/filtered_func_data.nii.gz),"
         ),
@@ -729,7 +681,7 @@ def main():
         "--motionfile",
         dest="specMotionfile",
         metavar="MOTIONFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The anatomic file on which to display the ICs (usually found in FEATDIR/mc/prefiltered_func_data_mcf.par). "
             "If the file has a .tsv extension, assume it is an fmriprep confounds file."
@@ -741,7 +693,7 @@ def main():
         "--ICfile",
         dest="specICfile",
         metavar="ICFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help="The independent component file produced by MELODIC (usually found in MELODICDIR/melodic_IC.nii.gz).",
         default=None,
     )
@@ -750,7 +702,7 @@ def main():
         "--ICmask",
         dest="specICmask",
         metavar="ICMASK",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The independent component mask file produced by MELODIC (usually found in MELODICDIR/mask.nii.gz)."
         ),
@@ -761,7 +713,7 @@ def main():
         "--timecoursefile",
         dest="specMixfile",
         metavar="MIXFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The timecourses of the independant components (usually found in MELODICDIR/melodic_mix),"
         ),
@@ -772,8 +724,19 @@ def main():
         "--ICstatsfile",
         dest="melodicICstatsfile",
         metavar="STATSFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=("The melodic stats file (usually found in MELODICDIR/melodic_ICstats),"),
+        default=None,
+    )
+
+    llfilespec.add_argument(
+        "--ICreffile",
+        dest="referenceICfile",
+        metavar="ICFILE",
+        type=lambda x: pica_util.is_valid_file(parser, x),
+        help=(
+            "The reference file to check for 'real' networks.  Default is the Smith D50 reference file."
+        ),
         default=None,
     )
 
@@ -781,7 +744,7 @@ def main():
     other = parser.add_argument_group("Other arguments")
     other.add_argument(
         "--initfile",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help="The name of an initial bad component file (in aroma mode, this overrides the default input file for AROMA).",
         default=None,
     )
@@ -802,7 +765,7 @@ def main():
     )
     other.add_argument(
         "--displaythresh",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         help="z threshold for the displayed ICA components.  Default is 2.3.",
         default=2.3,
     )
@@ -835,7 +798,7 @@ def main():
         "--transmotlimits",
         action="store",
         nargs=2,
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LOWERLIM", "UPPERLIM"),
         help=(
             'Override the "normal" limits of translational motion from the values in the configuration '
@@ -847,7 +810,7 @@ def main():
         "--rotmotlimits",
         action="store",
         nargs=2,
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LOWERLIM", "UPPERLIM"),
         help=(
             'Override the "normal" limits of rotations motion from the values in the configuration '
@@ -866,7 +829,7 @@ def main():
     configuration.add_argument(
         "--componentlinewidth",
         action="store",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LINEWIDTH"),
         help=(
             "Override the component line width (in pixels) in the configuration "
@@ -877,7 +840,7 @@ def main():
     configuration.add_argument(
         "--motionlinewidth",
         action="store",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LINEWIDTH"),
         help=(
             "Override the motion timecourse line widths (in pixels) in the configuration "
@@ -888,7 +851,7 @@ def main():
     configuration.add_argument(
         "--motionlimitlinewidth",
         action="store",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LINEWIDTH"),
         help=(
             "Override the line widths of the motion limit lines (in pixels) in the configuration "
@@ -944,6 +907,7 @@ def main():
     Mixfile = args.specMixfile
     ICmask = args.specICmask
     melodicICstatsfile = args.melodicICstatsfile
+    ICreffile = args.referenceICfile
 
     if args.featdir is not None:
         BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir, BGfile, Funcfile, Motionfile)
@@ -985,6 +949,9 @@ def main():
             "Cannot set timecourse file.  Use either the --melodicdir or --timecoursefile option."
         )
         sys.exit()
+
+    if ICreffile is None:
+        ICreffile = os.path.join(pica_util.getrefdir(), "Smith_D50_Subset_ICs.nii.gz")
 
     # there are 4 modes at the moment - groupmelodic, melodic, aroma, and fix
     if runmode == "melodic":
@@ -1087,6 +1054,7 @@ def main():
 
     if verbose:
         print(f"ICfile: {ICfile}")
+        print(f"ICreffile: {ICreffile}")
         print(f"ICmask: {ICmask}")
         print(f"BGfile: {BGfile}")
         print(f"Funcfile: {Funcfile}")
