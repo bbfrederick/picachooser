@@ -366,7 +366,13 @@ def updateTCinfo():
     thiscomponent = alldata[namelist[whichcomponent]]
     if thiscomponent["grade"] is not None:
         if thiscomponent["grade"] <= 0:
-            windowtitle = windowtitle + " - marked for removal"
+            windowtitle += windowtitle + " - marked for removal"
+
+    if thiscomponent["closestref"] is not None:
+        windowtitle += ". R={0:.2f} with reference component {1}.".format(
+            thiscomponent["closestrefR"], thiscomponent["closestref"] + 1
+        )
+
     win.setWindowTitle(windowtitle)
 
 
@@ -1372,6 +1378,21 @@ def main():
         zlims=args.spatialroi[4:6],
         lut_state=cm.gray_state,
     )
+
+    refnim, refdata, refheader, refdims, refsizes = io.readfromnifti(ICreffile)
+    if io.checkspacematch(refheader, fgimage.header):
+        print(f"Matching ICs to maps in {ICreffile}")
+        thecorrs, thebestmatches = pica_util.calccorrs(ICfile, ICreffile, ICmask, debug=True)
+        for idx in range(numelements):
+            theIC = str(idx + 1)
+            alldata[theIC]["closestref"] = thebestmatches[idx]
+            alldata[theIC]["closestrefR"] = thecorrs[idx, thebestmatches[idx]]
+    else:
+        print("No matching reference IC file found")
+        for idx in range(numelements):
+            theIC = str(idx + 1)
+            alldata[theIC]["closestref"] = None
+
     mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
 
     # initialize everything
