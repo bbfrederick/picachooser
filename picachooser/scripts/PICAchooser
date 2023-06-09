@@ -43,6 +43,7 @@ import picachooser.LightboxItem as lb
 import picachooser.util as pica_util
 
 hammingwindows = {}
+DEFAULT_RETAINTHRESH = 0.5
 
 # fix for Big Sur on macOS
 os.environ["QT_MAC_WANTS_LAYER"] = "1"
@@ -235,16 +236,29 @@ class KeyPressWindow(QtWidgets.QMainWindow):
         self.sigResize.emit(ev)
 
 
+def checkgrade(whichcomponent):
+    global alldata, namelist, retainthresh
+
+    if alldata[namelist[whichcomponent]]["closestrefR"] > retainthresh:
+        refmatch = alldata[namelist[whichcomponent]]["closestref"]
+        print(f"component match to reference IC {refmatch} exceeds threshold - retaining.")
+        alldata[namelist[whichcomponent]]["grade"] = 1
+
+
 def incrementgrade(whichcomponent):
-    global alldata, namelist
+    global alldata, namelist, usereferencefile
 
     alldata[namelist[whichcomponent]]["grade"] *= -1
+    if usereferencefile:
+        checkgrade(whichcomponent)
 
 
 def decrementgrade(whichcomponent):
-    global alldata, namelist
+    global alldata, namelist, usereferencefile
 
     alldata[namelist[whichcomponent]]["grade"] *= -1
+    if usereferencefile:
+        checkgrade(whichcomponent)
 
 
 def writegrades():
@@ -350,7 +364,7 @@ def keyPressed(evt):
 
 
 def updateTCinfo():
-    global whichcomponent, alldata, namelist, win, numelements, verbose
+    global whichcomponent, alldata, namelist, win, numelements, usereferencefile, verbose
 
     if verbose:
         print("entering updateTCinfo")
@@ -366,12 +380,12 @@ def updateTCinfo():
     thiscomponent = alldata[namelist[whichcomponent]]
     if thiscomponent["grade"] is not None:
         if thiscomponent["grade"] <= 0:
-            windowtitle += windowtitle + " - marked for removal"
-
-    if thiscomponent["closestref"] is not None:
-        windowtitle += ". R={0:.2f} with reference component {1}.".format(
-            thiscomponent["closestrefR"], thiscomponent["closestref"] + 1
-        )
+            windowtitle += " - marked for removal"
+    if usereferencefile:
+        if thiscomponent["closestref"] is not None:
+            windowtitle += ". R={0:.2f} with reference component {1}.".format(
+                thiscomponent["closestrefR"], thiscomponent["closestref"] + 1
+            )
 
     win.setWindowTitle(windowtitle)
 
@@ -605,14 +619,17 @@ def main():
     global ui, win, mainwin
     global namelist, outputfile, alldata, motion, whichcomponent, numelements, runmode
     global mainwin, verbose
+    global usereferencefile, retainthresh
     global config
     global Funcfile, Mixfile, filteredfile
     global domotion, dotimecourse
 
     mainwin = None
     verbose = False
+    usereferencefile = False
     domotion = True
     dotimecourse = True
+    retainthresh = DEFAULT_RETAINTHRESH
 
     parser = argparse.ArgumentParser(
         prog="PICAchooser",
@@ -735,7 +752,25 @@ def main():
         default=None,
     )
 
-    llfilespec.add_argument(
+    referencefile = parser.add_argument_group("Reference file arguments")
+    referencefile.add_argument(
+        "--usereferencefile",
+        action="store_true",
+        help=("Compare ICs to those in a reference file to flag 'real' components."),
+        default=False,
+    )
+    referencefile.add_argument(
+        "--retainthresh",
+        action="store",
+        type=lambda x: pica_util.is_float(parser, x),
+        metavar=("THRESH"),
+        help=(
+            "If an IC is correlated by more than THRESH with any reference IC, it will be retained. "
+            f"Default is {DEFAULT_RETAINTHRESH}"
+        ),
+        default=DEFAULT_RETAINTHRESH,
+    )
+    referencefile.add_argument(
         "--ICreffile",
         dest="referenceICfile",
         metavar="ICFILE",
@@ -898,11 +933,13 @@ def main():
     try:
         args = parser.parse_args()
     except SystemExit:
-        print("Use --help option for detailed informtion on options.")
+        print("Use --help option for detailed information on options.")
         raise
 
     runmode = args.runmode
     verbose = args.verbose
+    usereferencefile = args.usereferencefile
+    retainthresh = args.retainthresh
 
     # make sure we can find the required input files
     # first see if there are specific overrides
@@ -1060,7 +1097,8 @@ def main():
 
     if verbose:
         print(f"ICfile: {ICfile}")
-        print(f"ICreffile: {ICreffile}")
+        if args.usereferencefile:
+            print(f"ICreffile: {ICreffile}")
         print(f"ICmask: {ICmask}")
         print(f"BGfile: {BGfile}")
         print(f"Funcfile: {Funcfile}")
@@ -1379,19 +1417,23 @@ def main():
         lut_state=cm.gray_state,
     )
 
-    refnim, refdata, refheader, refdims, refsizes = io.readfromnifti(ICreffile)
-    if io.checkspacematch(refheader, fgimage.header):
-        print(f"Matching ICs to maps in {ICreffile}")
-        thecorrs, thebestmatches = pica_util.calccorrs(ICfile, ICreffile, ICmask, debug=True)
-        for idx in range(numelements):
-            theIC = str(idx + 1)
-            alldata[theIC]["closestref"] = thebestmatches[idx]
-            alldata[theIC]["closestrefR"] = thecorrs[idx, thebestmatches[idx]]
-    else:
-        print("No matching reference IC file found")
-        for idx in range(numelements):
-            theIC = str(idx + 1)
-            alldata[theIC]["closestref"] = None
+    if usereferencefile:
+        refnim, refdata, refheader, refdims, refsizes = io.readfromnifti(ICreffile)
+        if io.checkspacematch(refheader, fgimage.header):
+            print(f"Matching ICs to maps in {ICreffile}")
+            thecorrs, thebestmatches = pica_util.calccorrs(ICfile, ICreffile, ICmask, debug=True)
+            for idx in range(numelements):
+                theIC = str(idx + 1)
+                alldata[theIC]["closestref"] = thebestmatches[idx]
+                alldata[theIC]["closestrefR"] = thecorrs[idx, thebestmatches[idx]]
+            for idx in range(numelements):
+                checkgrade(idx)
+        else:
+            print("No matching reference IC file found")
+            usereferencefile = False
+            for idx in range(numelements):
+                theIC = str(idx + 1)
+                alldata[theIC]["closestref"] = None
 
     mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
 
