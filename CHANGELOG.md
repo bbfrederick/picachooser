@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.4.3 (6/9/23)
+* Added reference file matching - if you specify a set of reference components, any IC with a spatial correlation with any reference component above a threshold is retained.
+
 ## Version 1.4.2 (5/11/23)
 * (Docker) Updated to python 3.11 basecontainer.
 * (package) Modernized install procedure.
