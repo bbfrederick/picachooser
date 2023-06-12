@@ -20,4 +20,6 @@ docker run \
 	melodic \
 	--featdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat \
 	--melodicdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
+        --usereferencefile \
+        --retainthresh 1.1 \
 	--ICreffile /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica/melodic_IC.nii.gz
