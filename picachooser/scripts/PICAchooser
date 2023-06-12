@@ -318,6 +318,8 @@ def windowResized(evt):
 
 def keyPressed(evt):
     global whichcomponent, numelements, mainwin, verbose, domotion, dotimecourse
+    global maininfo, altinfo, blinkstatus
+    global usereferencefile
 
     if verbose:
         print("processing keypress event")
@@ -347,6 +349,16 @@ def keyPressed(evt):
     elif evt.key() == QtCore.Qt.Key_D:
         print("Dumping main window information")
         mainwin.printWinProps()
+    elif evt.key() == QtCore.Qt.Key_B:
+        if usereferencefile:
+            print("Blinking")
+            blinkstatus = not blinkstatus
+            if blinkstatus:
+                mainwin.setviewinfo(altinfo)
+            else:
+                mainwin.setviewinfo(maininfo)
+        else:
+            pass
     elif evt.key() == QtCore.Qt.Key_R:
         whichcomponent = 0
     elif evt.key() == QtCore.Qt.Key_Escape:
@@ -623,6 +635,7 @@ def main():
     global config
     global Funcfile, Mixfile, filteredfile
     global domotion, dotimecourse
+    global maininfo, altinfo, blinkstatus
 
     mainwin = None
     verbose = False
@@ -760,6 +773,13 @@ def main():
         default=False,
     )
     referencefile.add_argument(
+        "--refdisplaythresh",
+        type=lambda x: pica_util.is_float(parser, x),
+        metavar=("THRESH"),
+        help="z threshold for the displayed reference ICA components.  Default is 2.3.",
+        default=2.3,
+    )
+    referencefile.add_argument(
         "--retainthresh",
         action="store",
         type=lambda x: pica_util.is_float(parser, x),
@@ -807,6 +827,7 @@ def main():
     other.add_argument(
         "--displaythresh",
         type=lambda x: pica_util.is_float(parser, x),
+        metavar=("THRESH"),
         help="z threshold for the displayed ICA components.  Default is 2.3.",
         default=2.3,
     )
@@ -1334,9 +1355,9 @@ def main():
 
     # make the main window
     if domotion:
-        import picachooser.picachooserTemplate as uiTemplate
+        import picachooser.picachooseraltTemplate as uiTemplate
     else:
-        import picachooser.picachooser_imonlyTemplate as uiTemplate
+        import picachooser.picachooser_altimonlyTemplate as uiTemplate
 
     app = QtWidgets.QApplication([])
     print("setting up output window")
@@ -1419,6 +1440,18 @@ def main():
 
     if usereferencefile:
         refnim, refdata, refheader, refdims, refsizes = io.readfromnifti(ICreffile)
+        refimage = lb.imagedataset(
+            "Reference",
+            ICreffile,
+            "Reference",
+            xlims=args.spatialroi[0:2],
+            ylims=args.spatialroi[2:4],
+            zlims=args.spatialroi[4:6],
+            lut_state=cm.redyellow_state,
+            geommask=geommaskimage.data,
+        )
+        refimage.setFuncMaskByThresh(threshval=args.refdisplaythresh)
+
         if io.checkspacematch(refheader, fgimage.header):
             print(f"Matching ICs to maps in {ICreffile}")
             thecorrs, thebestmatches = pica_util.calccorrs(ICfile, ICreffile, ICmask, debug=True)
@@ -1436,7 +1469,12 @@ def main():
                 alldata[theIC]["closestref"] = None
 
     mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
+    maininfo = mainwin.getviewinfo()
+    if usereferencefile:
+        altwin = lb.LightboxItem(refimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
+        altinfo = altwin.getviewinfo()
 
+    blinkstatus = False
     # initialize everything
     updateTCinfo()
     if dotimecourse:
