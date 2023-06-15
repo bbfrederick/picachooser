@@ -32,8 +32,6 @@ docs/_build
 *.csv
 *.xlsx
 
-testrun*
-
 safezone
 
 newdocs
