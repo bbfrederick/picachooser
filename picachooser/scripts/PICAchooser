@@ -623,8 +623,14 @@ def updateLightbox():
     else:
         thelabel = "Discarding IC {0}".format(whichcomponent + 1)
         thecolor = config["discardcolor"]
-    for thewin in winlist:
-        thewin.setLabel(thelabel, thecolor)
+    for idx, thewin in enumerate(winlist):
+        if idx == 0:
+            if len(winlist) > 1:
+                thewin.setLabel("Data view: " + thelabel, thecolor)
+            else:
+                thewin.setLabel(thelabel, thecolor)
+        else:
+            thewin.setLabel("Reference view: " + thelabel, thecolor)
         thewin.setTpos(whichcomponent)
         thewin.getWinProps()
         thewin.resetWinProps()
@@ -1481,7 +1487,9 @@ def main():
     maininfo = mainwin.getviewinfo()
     winlist = [mainwin]
     if usereferencefile:
-        altwin = lb.LightboxItem(refimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
+        altwin = lb.LightboxItem(
+            refimage, ui.image_altgraphicsView, bgmap=bgimage, verbose=verbose
+        )
         altinfo = altwin.getviewinfo()
         winlist.append(altwin)
     else:
