@@ -1459,6 +1459,8 @@ def main():
             lut_state=cm.redyellow_state,
             geommask=geommaskimage.data,
         )
+        if args.debug:
+            print(f"{(refimage.data).shape=}")
         refimage.setFuncMaskByThresh(threshval=args.refdisplaythresh)
 
         if io.checkspacematch(refheader, fgimage.header):
@@ -1468,6 +1470,8 @@ def main():
             sortedrefmask = refimage.mask * 0.0
             for idx in range(numelements):
                 theIC = str(idx + 1)
+                if args.debug:
+                    print(f"{idx=}, {thebestmatches[idx]=}")
                 alldata[theIC]["closestref"] = thebestmatches[idx]
                 alldata[theIC]["closestrefR"] = thecorrs[idx, thebestmatches[idx]]
                 sortedrefdata[:, :, :, idx] = refimage.data[:, :, :, thebestmatches[idx]]
