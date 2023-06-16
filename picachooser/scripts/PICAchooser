@@ -337,18 +337,30 @@ def keyPressed(evt):
     elif evt.key() == QtCore.Qt.Key_A:
         mainwin.setorient("ax")
         mainwin.resetWinProps()
+        if usereferencefile:
+            altwin.setorient("ax")
+            altwin.resetWinProps()
         print("Setting orientation to axial")
     elif evt.key() == QtCore.Qt.Key_C:
         mainwin.setorient("cor")
         mainwin.resetWinProps()
+        if usereferencefile:
+            altwin.setorient("cor")
+            altwin.resetWinProps()
         print("Setting orientation to coronal")
     elif evt.key() == QtCore.Qt.Key_S:
         mainwin.setorient("sag")
         mainwin.resetWinProps()
+        if usereferencefile:
+            altwin.setorient("sag")
+            altwin.resetWinProps()
         print("Setting orientation to sagittal")
     elif evt.key() == QtCore.Qt.Key_D:
         print("Dumping main window information")
         mainwin.printWinProps()
+        if usereferencefile:
+            print("Dumping reference window information")
+            altwin.printWinProps()
     elif evt.key() == QtCore.Qt.Key_B:
         if usereferencefile:
             print("Blinking")
