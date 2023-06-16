@@ -852,7 +852,7 @@ class LightboxItem(QtWidgets.QWidget):
         self.tdim = self.fgmap.tdim
 
     def settmapping(self, thenewmapping):
-        if np.max <= self.tdim - 1:
+        if np.max(thenewmapping) <= self.tdim - 1:
             self.tmapping = thenewmapping + 0
         else:
             print(f"New mapping references indices outside of data range")
