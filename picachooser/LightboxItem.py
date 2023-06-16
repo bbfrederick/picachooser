@@ -27,6 +27,7 @@ A widget for displaying 3 and 4 dimensional data in a lightbox
 """
 
 import os
+import sys
 
 import numpy as np
 import pyqtgraph as pg
@@ -851,10 +852,11 @@ class LightboxItem(QtWidgets.QWidget):
         self.tdim = self.fgmap.tdim
 
     def settmapping(self, thenewmapping):
-        if len(thenewmapping) == len(self.tmapping):
+        if np.max <= self.tdim - 1:
             self.tmapping = thenewmapping + 0
         else:
-            raise (f"{len(thenewmapping)} does not match existing length")
+            print(f"New mapping references indices outside of data range")
+            sys.exit()
 
     def enableView(self):
         if self.button is not None:
