@@ -473,7 +473,7 @@ class LightboxItem(QtWidgets.QWidget):
         self.tpos = int(0)
         self.orientation = orientation
         self.forcerecalc = False
-        self.tmapping = np.arange(self.tpos)
+        self.tmapping = np.arange(self.tdim)
 
         self.thresh = 2.3
         self.windowaspectpix = 0.0
@@ -852,7 +852,7 @@ class LightboxItem(QtWidgets.QWidget):
 
     def settmapping(self, thenewmapping):
         if len(thenewmapping) == len(self.tmapping):
-            self.tmapping = thenewmapping
+            self.tmapping = thenewmapping + 0
         else:
             raise (f"{len(thenewmapping)} does not match existing length")
 
