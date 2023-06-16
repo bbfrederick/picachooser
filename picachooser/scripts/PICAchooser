@@ -1451,7 +1451,7 @@ def main():
         refnim, refdata, refheader, refdims, refsizes = io.readfromnifti(ICreffile)
         refimage = lb.imagedataset(
             "Reference",
-            ICfile,
+            ICreffile,
             "Reference",
             xlims=args.spatialroi[0:2],
             ylims=args.spatialroi[2:4],
