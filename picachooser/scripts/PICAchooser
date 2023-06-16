@@ -1465,18 +1465,14 @@ def main():
         if io.checkspacematch(refheader, fgimage.header):
             print(f"Matching ICs to maps in {ICreffile}")
             thecorrs, thebestmatches = pica_util.calccorrs(ICfile, ICreffile, ICmask, debug=True)
-            sortedrefdata = refimage.data * 0.0
             for idx in range(numelements):
                 theIC = str(idx + 1)
                 if args.debug:
                     print(f"{idx=}, {thebestmatches[idx]=}")
                 alldata[theIC]["closestref"] = thebestmatches[idx]
                 alldata[theIC]["closestrefR"] = thecorrs[idx, thebestmatches[idx]]
-                sortedrefdata[:, :, :, idx] = refdata[:, :, :, thebestmatches[idx]]
             for idx in range(numelements):
                 checkgrade(idx)
-            refimage.setData(sortedrefdata)
-            refimage.setFuncMaskByThresh(threshval=args.refdisplaythresh)
         else:
             print("No matching reference IC file found")
             usereferencefile = False
@@ -1491,6 +1487,7 @@ def main():
         altwin = lb.LightboxItem(
             refimage, ui.image_altgraphicsView, bgmap=bgimage, verbose=verbose
         )
+        altwin.settmapping(thebestmatches)
         altinfo = altwin.getviewinfo()
         ui.label.setText(
             'Right and left arrows step through components. Up and down arrows toggle component retention.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  "b" to blink.  ESC to write component file.'
