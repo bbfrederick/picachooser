@@ -1364,9 +1364,9 @@ def main():
 
     # make the main window
     if domotion:
-        import picachooser.picachooseraltTemplate as uiTemplate
+        import picachooser.picachooserTemplate as uiTemplate
     else:
-        import picachooser.picachooser_altimonlyTemplate as uiTemplate
+        import picachooser.picachooser_imonlyTemplate as uiTemplate
 
     app = QtWidgets.QApplication([])
     print("setting up output window")
@@ -1491,6 +1491,9 @@ def main():
             refimage, ui.image_altgraphicsView, bgmap=bgimage, verbose=verbose
         )
         altinfo = altwin.getviewinfo()
+        ui.label.setText(
+            'Right and left arrows step through components. Up and down arrows toggle component retention.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  "b" to blink.  ESC to write component file.'
+        )
         winlist.append(altwin)
     else:
         altwin = None

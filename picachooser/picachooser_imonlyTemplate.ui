@@ -6,16 +6,29 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1746</width>
+    <width>1896</width>
     <height>839</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="1" column="1">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Right and left arrows step through components. Up and down arrows toggle component retention.  &quot;r&quot; to reset component.  &quot;a&quot;, &quot;c&quot;, and &quot;s&quot; select axial, coronal, or sagittal views.  ESC to write component file.</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="sizeConstraint">
        <enum>QLayout::SetNoConstraint</enum>
@@ -95,9 +108,9 @@
          <widget class="QWidget" name="horizontalLayoutWidget_2">
           <property name="geometry">
            <rect>
-            <x>-350</x>
-            <y>-100</y>
-            <width>2111</width>
+            <x>-9</x>
+            <y>1</y>
+            <width>2002</width>
             <height>1202</height>
            </rect>
           </property>
@@ -143,13 +156,6 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Right and left arrows step through components. Up and down arrows toggle component retention.  &quot;r&quot; to reset component.  &quot;a&quot;, &quot;c&quot;, and &quot;s&quot; select axial, coronal, or sagittal views.  ESC to write component file.</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -157,7 +163,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1746</width>
+     <width>1896</width>
      <height>24</height>
     </rect>
    </property>
