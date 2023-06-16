@@ -797,8 +797,8 @@ def main():
         "--refdisplaythresh",
         type=lambda x: pica_util.is_float(parser, x),
         metavar=("THRESH"),
-        help="z threshold for the displayed reference ICA components.  Default is 2.3.",
-        default=2.3,
+        help="z threshold for the displayed reference ICA components.  Default is 7.",
+        default=7,
     )
     referencefile.add_argument(
         "--retainthresh",
@@ -1471,6 +1471,7 @@ def main():
             lut_state=cm.redyellow_state,
             geommask=geommaskimage.data,
         )
+        refimage.setFuncMaskByThresh(threshval=args.refdisplaythresh)
         if args.debug:
             print(f"{(refimage.data).shape=}")
 
