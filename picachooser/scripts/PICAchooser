@@ -1186,10 +1186,7 @@ def main():
         if inline.find(",") > -1:
             inlist = inline.split(",")
         else:
-            inlist = inline.split()
-        print(inlist)
-        for component in inlist:
-            print(component)
+            inlist = inline.split()5
             grades[int(component) - 1] = -1
     else:
         grades = None
