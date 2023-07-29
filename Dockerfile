@@ -1,5 +1,5 @@
 # Start from the fredericklab base container
-FROM fredericklab/basecontainer:v0.1.6
+FROM fredericklab/basecontainer:v0.1.9
 
 # Installing precomputed python packages
 RUN mamba install -y pillow 
@@ -18,7 +18,7 @@ ENV HOME="/home/picachooser"
 # Installing PICAchooser
 COPY . /src/picachooser
 RUN cd /src/picachooser && \
-    python setup.py install && \
+    pip install . && \
     rm -rf /src/picachooser/build /src/picachooser/dist
 
 

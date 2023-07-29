@@ -364,7 +364,8 @@ if nibabelexists:
         """
         dimmatch = checkspaceresmatch(hdr1["pixdim"], hdr2["pixdim"])
         resmatch = checkspacedimmatch(hdr1["dim"], hdr2["dim"])
-        return dimmatch and resmatch
+        qformmatch = hdr1["qform_code"] == hdr2["qform_code"]
+        return dimmatch and resmatch and qformmatch
 
     def checkspaceresmatch(sizes1, sizes2):
         r"""Check the spatial pixdims of two nifti files to determine if they have the same resolution
@@ -694,7 +695,7 @@ def readfmriprepconfounds(inputfilename):
     """
     confounddict = {}
     df = pd.read_csv(inputfilename + ".tsv", sep="\t", quotechar='"')
-    for thecolname, theseries in df.iteritems():
+    for thecolname, theseries in df.items():
         confounddict[thecolname] = theseries.values
     return confounddict
 

@@ -43,44 +43,6 @@ import picachooser.util as pica_util
 hammingwindows = {}
 
 
-def is_valid_file(parser, arg):
-    """
-    Check if argument is existing file.
-    """
-    if not os.path.isfile(arg) and arg is not None:
-        parser.error("The file {0} does not exist!".format(arg))
-
-    return arg
-
-
-def invert_float(parser, arg):
-    """
-    Check if argument is float or auto.
-    """
-    if arg != "auto":
-        try:
-            arg = float(arg)
-        except parser.error:
-            parser.error('Value {0} is not a float or "auto"'.format(arg))
-
-    if arg != "auto":
-        arg = 1.0 / arg
-    return arg
-
-
-def is_float(parser, arg):
-    """
-    Check if argument is float or auto.
-    """
-    if arg != "auto":
-        try:
-            arg = float(arg)
-        except parser.error:
-            parser.error('Value {0} is not a float or "auto"'.format(arg))
-
-    return arg
-
-
 def hamming(length, debug=False):
     #   return 0.54 - 0.46 * np.cos((np.arange(0.0, float(length), 1.0) / float(length)) * 2.0 * np.pi)
     r"""Returns a Hamming window function of the specified length.  Once calculated, windows
@@ -383,7 +345,7 @@ def main():
     )
     datasource.add_argument(
         "--reopen",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help="Reopen a previously opened grader session output file.",
         default=None,
     )
@@ -396,7 +358,7 @@ def main():
         dest="samplerate",
         action="store",
         metavar="FREQ",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         help=(
             "Set the sample rate of the data file to FREQ. "
             "If neither samplerate or sampletime is specified, sample rate is 1.0."
@@ -408,7 +370,7 @@ def main():
         dest="samplerate",
         action="store",
         metavar="TSTEP",
-        type=lambda x: invert_float(parser, x),
+        type=lambda x: pica_util.invert_float(parser, x),
         help=(
             "Set the sample rate of the data file to 1.0/TSTEP. "
             "If neither samplerate or sampletime is specified, sample rate is 1.0."

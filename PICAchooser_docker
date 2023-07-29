@@ -34,7 +34,7 @@ def main():
         "-m",
         "8g",
         "--volume=/Users/frederic:/data",
-        "picachooser:latest",
+        "fredericklab/picachooser:latest",
     ]
     subprocess.call(thewrappercmd + thePICAchoosercmd)
 

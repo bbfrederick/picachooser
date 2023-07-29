@@ -43,57 +43,10 @@ import picachooser.LightboxItem as lb
 import picachooser.util as pica_util
 
 hammingwindows = {}
+DEFAULT_RETAINTHRESH = 0.5
 
 # fix for Big Sur on macOS
 os.environ["QT_MAC_WANTS_LAYER"] = "1"
-
-
-def is_valid_dir(parser, arg):
-    """
-    Check if argument is existing file.
-    """
-    if not os.path.isdir(arg) and arg is not None:
-        parser.error("The directory {0} does not exist!".format(arg))
-
-    return arg
-
-
-def is_valid_file(parser, arg):
-    """
-    Check if argument is existing file.
-    """
-    if not os.path.isfile(arg) and arg is not None:
-        parser.error("The file {0} does not exist!".format(arg))
-
-    return arg
-
-
-def invert_float(parser, arg):
-    """
-    Check if argument is float or auto.
-    """
-    if arg != "auto":
-        try:
-            arg = float(arg)
-        except parser.error:
-            parser.error('Value {0} is not a float or "auto"'.format(arg))
-
-    if arg != "auto":
-        arg = 1.0 / arg
-    return arg
-
-
-def is_float(parser, arg):
-    """
-    Check if argument is float or auto.
-    """
-    if arg != "auto":
-        try:
-            arg = float(arg)
-        except parser.error:
-            parser.error('Value {0} is not a float or "auto"'.format(arg))
-
-    return arg
 
 
 def findfromfeatdir(featdir, initBGfile, initFuncfile, initMotionfile):
@@ -283,16 +236,29 @@ class KeyPressWindow(QtWidgets.QMainWindow):
         self.sigResize.emit(ev)
 
 
+def checkgrade(whichcomponent):
+    global alldata, namelist, retainthresh
+
+    if alldata[namelist[whichcomponent]]["closestrefR"] > retainthresh:
+        refmatch = alldata[namelist[whichcomponent]]["closestref"]
+        print(f"component match to reference IC {refmatch} exceeds threshold - retaining.")
+        alldata[namelist[whichcomponent]]["grade"] = 1
+
+
 def incrementgrade(whichcomponent):
-    global alldata, namelist
+    global alldata, namelist, usereferencefile
 
     alldata[namelist[whichcomponent]]["grade"] *= -1
+    if usereferencefile:
+        checkgrade(whichcomponent)
 
 
 def decrementgrade(whichcomponent):
-    global alldata, namelist
+    global alldata, namelist, usereferencefile
 
     alldata[namelist[whichcomponent]]["grade"] *= -1
+    if usereferencefile:
+        checkgrade(whichcomponent)
 
 
 def writegrades():
@@ -352,6 +318,8 @@ def windowResized(evt):
 
 def keyPressed(evt):
     global whichcomponent, numelements, mainwin, verbose, domotion, dotimecourse
+    global maininfo, altwin, altinfo, blinkstatus
+    global usereferencefile
 
     if verbose:
         print("processing keypress event")
@@ -369,18 +337,42 @@ def keyPressed(evt):
     elif evt.key() == QtCore.Qt.Key_A:
         mainwin.setorient("ax")
         mainwin.resetWinProps()
+        if usereferencefile:
+            altwin.setorient("ax")
+            altwin.resetWinProps()
         print("Setting orientation to axial")
     elif evt.key() == QtCore.Qt.Key_C:
         mainwin.setorient("cor")
         mainwin.resetWinProps()
+        if usereferencefile:
+            altwin.setorient("cor")
+            altwin.resetWinProps()
         print("Setting orientation to coronal")
     elif evt.key() == QtCore.Qt.Key_S:
         mainwin.setorient("sag")
         mainwin.resetWinProps()
+        if usereferencefile:
+            altwin.setorient("sag")
+            altwin.resetWinProps()
         print("Setting orientation to sagittal")
     elif evt.key() == QtCore.Qt.Key_D:
         print("Dumping main window information")
         mainwin.printWinProps()
+        if usereferencefile:
+            print("Dumping reference window information")
+            altwin.printWinProps()
+    elif evt.key() == QtCore.Qt.Key_B:
+        if usereferencefile:
+            print("Blinking")
+            blinkstatus = not blinkstatus
+            if blinkstatus:
+                mainwin.setviewinfo(altinfo)
+                altwin.setviewinfo(maininfo)
+            else:
+                mainwin.setviewinfo(maininfo)
+                altwin.setviewinfo(altinfo)
+        else:
+            pass
     elif evt.key() == QtCore.Qt.Key_R:
         whichcomponent = 0
     elif evt.key() == QtCore.Qt.Key_Escape:
@@ -398,7 +390,7 @@ def keyPressed(evt):
 
 
 def updateTCinfo():
-    global whichcomponent, alldata, namelist, win, numelements, verbose
+    global whichcomponent, alldata, namelist, win, numelements, usereferencefile, verbose
 
     if verbose:
         print("entering updateTCinfo")
@@ -414,7 +406,13 @@ def updateTCinfo():
     thiscomponent = alldata[namelist[whichcomponent]]
     if thiscomponent["grade"] is not None:
         if thiscomponent["grade"] <= 0:
-            windowtitle = windowtitle + " - marked for removal"
+            windowtitle += " - marked for removal"
+    if usereferencefile:
+        if thiscomponent["closestref"] is not None:
+            windowtitle += ". R={0:.2f} with reference component {1}.".format(
+                thiscomponent["closestrefR"], thiscomponent["closestref"] + 1
+            )
+
     win.setWindowTitle(windowtitle)
 
 
@@ -624,7 +622,7 @@ def updateMotion():
 
 
 def updateLightbox():
-    global mainwin, whichcomponent, verbose, alldata, namelist
+    global mainwin, winlist, whichcomponent, verbose, alldata, namelist
     global keepcolor, discardcolor
 
     if verbose:
@@ -637,24 +635,35 @@ def updateLightbox():
     else:
         thelabel = "Discarding IC {0}".format(whichcomponent + 1)
         thecolor = config["discardcolor"]
-    mainwin.setLabel(thelabel, thecolor)
-    mainwin.setTpos(whichcomponent)
-    mainwin.getWinProps()
-    mainwin.resetWinProps()
+    for idx, thewin in enumerate(winlist):
+        if idx == 0:
+            if len(winlist) > 1:
+                thewin.setLabel("Data view: " + thelabel, thecolor)
+            else:
+                thewin.setLabel(thelabel, thecolor)
+        else:
+            thewin.setLabel("Reference view: " + thelabel, thecolor)
+        thewin.setTpos(whichcomponent)
+        thewin.getWinProps()
+        thewin.resetWinProps()
 
 
 def main():
-    global ui, win, mainwin
+    global ui, win, mainwin, winlist
     global namelist, outputfile, alldata, motion, whichcomponent, numelements, runmode
     global mainwin, verbose
+    global usereferencefile, retainthresh
     global config
     global Funcfile, Mixfile, filteredfile
     global domotion, dotimecourse
+    global maininfo, altwin, altinfo, blinkstatus
 
     mainwin = None
     verbose = False
+    usereferencefile = False
     domotion = True
     dotimecourse = True
+    retainthresh = DEFAULT_RETAINTHRESH
 
     parser = argparse.ArgumentParser(
         prog="PICAchooser",
@@ -687,7 +696,7 @@ def main():
     hlfilespec.add_argument(
         "--featdir",
         dest="featdir",
-        type=lambda x: is_valid_dir(parser, x),
+        type=lambda x: pica_util.is_valid_dir(parser, x),
         help="The FEAT directory associated with this MELODIC run.",
         default=None,
     )
@@ -695,7 +704,7 @@ def main():
     hlfilespec.add_argument(
         "--melodicdir",
         dest="melodicdir",
-        type=lambda x: is_valid_dir(parser, x),
+        type=lambda x: pica_util.is_valid_dir(parser, x),
         help="The .ica directory for this MELODIC run.",
         default=None,
     )
@@ -707,7 +716,7 @@ def main():
         "--backgroundfile",
         dest="specBGfile",
         metavar="BGFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The anatomic file on which to display the ICs (usually found in FEATDIR/reg/example_func.nii.gz),"
         ),
@@ -718,7 +727,7 @@ def main():
         "--funcfile",
         dest="specFuncfile",
         metavar="FUNCFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The functional file to be filtered (usually found in FEATDIR/filtered_func_data.nii.gz),"
         ),
@@ -729,7 +738,7 @@ def main():
         "--motionfile",
         dest="specMotionfile",
         metavar="MOTIONFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The anatomic file on which to display the ICs (usually found in FEATDIR/mc/prefiltered_func_data_mcf.par). "
             "If the file has a .tsv extension, assume it is an fmriprep confounds file."
@@ -741,7 +750,7 @@ def main():
         "--ICfile",
         dest="specICfile",
         metavar="ICFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help="The independent component file produced by MELODIC (usually found in MELODICDIR/melodic_IC.nii.gz).",
         default=None,
     )
@@ -750,7 +759,7 @@ def main():
         "--ICmask",
         dest="specICmask",
         metavar="ICMASK",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The independent component mask file produced by MELODIC (usually found in MELODICDIR/mask.nii.gz)."
         ),
@@ -761,7 +770,7 @@ def main():
         "--timecoursefile",
         dest="specMixfile",
         metavar="MIXFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
             "The timecourses of the independant components (usually found in MELODICDIR/melodic_mix),"
         ),
@@ -772,8 +781,44 @@ def main():
         "--ICstatsfile",
         dest="melodicICstatsfile",
         metavar="STATSFILE",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help=("The melodic stats file (usually found in MELODICDIR/melodic_ICstats),"),
+        default=None,
+    )
+
+    referencefile = parser.add_argument_group("Reference file arguments")
+    referencefile.add_argument(
+        "--usereferencefile",
+        action="store_true",
+        help=("Compare ICs to those in a reference file to flag 'real' components."),
+        default=False,
+    )
+    referencefile.add_argument(
+        "--refdisplaythresh",
+        type=lambda x: pica_util.is_float(parser, x),
+        metavar=("THRESH"),
+        help="z threshold for the displayed reference ICA components.  Default is 7.",
+        default=7,
+    )
+    referencefile.add_argument(
+        "--retainthresh",
+        action="store",
+        type=lambda x: pica_util.is_float(parser, x),
+        metavar=("THRESH"),
+        help=(
+            "If an IC is correlated by more than THRESH with any reference IC, it will be retained. "
+            f"Default is {DEFAULT_RETAINTHRESH}"
+        ),
+        default=DEFAULT_RETAINTHRESH,
+    )
+    referencefile.add_argument(
+        "--ICreffile",
+        dest="referenceICfile",
+        metavar="ICFILE",
+        type=lambda x: pica_util.is_valid_file(parser, x),
+        help=(
+            "The reference file to check for 'real' networks.  Default is the Smith D50 reference file."
+        ),
         default=None,
     )
 
@@ -781,7 +826,7 @@ def main():
     other = parser.add_argument_group("Other arguments")
     other.add_argument(
         "--initfile",
-        type=lambda x: is_valid_file(parser, x),
+        type=lambda x: pica_util.is_valid_file(parser, x),
         help="The name of an initial bad component file (in aroma mode, this overrides the default input file for AROMA).",
         default=None,
     )
@@ -802,7 +847,8 @@ def main():
     )
     other.add_argument(
         "--displaythresh",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
+        metavar=("THRESH"),
         help="z threshold for the displayed ICA components.  Default is 2.3.",
         default=2.3,
     )
@@ -835,7 +881,7 @@ def main():
         "--transmotlimits",
         action="store",
         nargs=2,
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LOWERLIM", "UPPERLIM"),
         help=(
             'Override the "normal" limits of translational motion from the values in the configuration '
@@ -847,7 +893,7 @@ def main():
         "--rotmotlimits",
         action="store",
         nargs=2,
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LOWERLIM", "UPPERLIM"),
         help=(
             'Override the "normal" limits of rotations motion from the values in the configuration '
@@ -866,7 +912,7 @@ def main():
     configuration.add_argument(
         "--componentlinewidth",
         action="store",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LINEWIDTH"),
         help=(
             "Override the component line width (in pixels) in the configuration "
@@ -877,7 +923,7 @@ def main():
     configuration.add_argument(
         "--motionlinewidth",
         action="store",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LINEWIDTH"),
         help=(
             "Override the motion timecourse line widths (in pixels) in the configuration "
@@ -888,7 +934,7 @@ def main():
     configuration.add_argument(
         "--motionlimitlinewidth",
         action="store",
-        type=lambda x: is_float(parser, x),
+        type=lambda x: pica_util.is_float(parser, x),
         metavar=("LINEWIDTH"),
         help=(
             "Override the line widths of the motion limit lines (in pixels) in the configuration "
@@ -929,11 +975,13 @@ def main():
     try:
         args = parser.parse_args()
     except SystemExit:
-        print("Use --help option for detailed informtion on options.")
+        print("Use --help option for detailed information on options.")
         raise
 
     runmode = args.runmode
     verbose = args.verbose
+    usereferencefile = args.usereferencefile
+    retainthresh = args.retainthresh
 
     # make sure we can find the required input files
     # first see if there are specific overrides
@@ -944,6 +992,7 @@ def main():
     Mixfile = args.specMixfile
     ICmask = args.specICmask
     melodicICstatsfile = args.melodicICstatsfile
+    ICreffile = args.referenceICfile
 
     if args.featdir is not None:
         BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir, BGfile, Funcfile, Motionfile)
@@ -985,6 +1034,9 @@ def main():
             "Cannot set timecourse file.  Use either the --melodicdir or --timecoursefile option."
         )
         sys.exit()
+
+    if ICreffile is None:
+        ICreffile = os.path.join(pica_util.getrefdir(), "Smith_D50_Subset_ICs.nii.gz")
 
     # there are 4 modes at the moment - groupmelodic, melodic, aroma, and fix
     if runmode == "melodic":
@@ -1087,6 +1139,8 @@ def main():
 
     if verbose:
         print(f"ICfile: {ICfile}")
+        if args.usereferencefile:
+            print(f"ICreffile: {ICreffile}")
         print(f"ICmask: {ICmask}")
         print(f"BGfile: {BGfile}")
         print(f"Funcfile: {Funcfile}")
@@ -1401,8 +1455,58 @@ def main():
         zlims=args.spatialroi[4:6],
         lut_state=cm.gray_state,
     )
-    mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
 
+    if usereferencefile:
+        refnim, refdata, refheader, refdims, refsizes = io.readfromnifti(ICreffile)
+        refimage = lb.imagedataset(
+            "Reference",
+            ICreffile,
+            "Reference",
+            xlims=args.spatialroi[0:2],
+            ylims=args.spatialroi[2:4],
+            zlims=args.spatialroi[4:6],
+            lut_state=cm.redyellow_state,
+            geommask=geommaskimage.data,
+        )
+        refimage.setFuncMaskByThresh(threshval=args.refdisplaythresh)
+        if args.debug:
+            print(f"{(refimage.data).shape=}")
+
+        if io.checkspacematch(refheader, fgimage.header):
+            print(f"Matching ICs to maps in {ICreffile}")
+            thecorrs, thebestmatches = pica_util.calccorrs(ICfile, ICreffile, ICmask, debug=True)
+            for idx in range(numelements):
+                theIC = str(idx + 1)
+                if args.debug:
+                    print(f"{idx=}, {thebestmatches[idx]=}")
+                alldata[theIC]["closestref"] = thebestmatches[idx]
+                alldata[theIC]["closestrefR"] = thecorrs[idx, thebestmatches[idx]]
+            for idx in range(numelements):
+                checkgrade(idx)
+        else:
+            print("No matching reference IC file found")
+            usereferencefile = False
+            for idx in range(numelements):
+                theIC = str(idx + 1)
+                alldata[theIC]["closestref"] = None
+
+    mainwin = lb.LightboxItem(fgimage, ui.image_graphicsView, bgmap=bgimage, verbose=verbose)
+    maininfo = mainwin.getviewinfo()
+    winlist = [mainwin]
+    if usereferencefile:
+        altwin = lb.LightboxItem(
+            refimage, ui.image_altgraphicsView, bgmap=bgimage, verbose=verbose
+        )
+        altwin.settmapping(thebestmatches)
+        altinfo = altwin.getviewinfo()
+        ui.label.setText(
+            'Right and left arrows step through components. Up and down arrows toggle component retention.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  "b" to blink.  ESC to write component file.'
+        )
+        winlist.append(altwin)
+    else:
+        altwin = None
+
+    blinkstatus = False
     # initialize everything
     updateTCinfo()
     if dotimecourse:

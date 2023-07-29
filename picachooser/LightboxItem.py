@@ -27,6 +27,7 @@ A widget for displaying 3 and 4 dimensional data in a lightbox
 """
 
 import os
+import sys
 
 import numpy as np
 import pyqtgraph as pg
@@ -473,6 +474,7 @@ class LightboxItem(QtWidgets.QWidget):
         self.tpos = int(0)
         self.orientation = orientation
         self.forcerecalc = False
+        self.tmapping = np.arange(self.tdim)
 
         self.thresh = 2.3
         self.windowaspectpix = 0.0
@@ -779,16 +781,16 @@ class LightboxItem(QtWidgets.QWidget):
         if self.aspectchanged:
             self.resetWinProps()
         try:
-            thisviewdata = self.tiledforegrounds[str(self.tpos)]
+            thisviewdata = self.tiledforegrounds[str(self.tmapping[self.tpos])]
             if self.verbose:
                 print("using precached tiled foreground image")
         except KeyError:
             if self.verbose:
                 print("tiling foreground image")
-            self.tiledforegrounds[str(self.tpos)] = self.tileSlices(
-                self.fgmap.maskeddata[:, :, :, self.tpos]
+            self.tiledforegrounds[str(self.tmapping[self.tpos])] = self.tileSlices(
+                self.fgmap.maskeddata[:, :, :, self.tmapping[self.tpos]]
             )
-            thisviewdata = self.tiledforegrounds[str(self.tpos)]
+            thisviewdata = self.tiledforegrounds[str(self.tmapping[self.tpos])]
 
         if self.bgmap is None:
             thisviewbg = None
@@ -848,6 +850,13 @@ class LightboxItem(QtWidgets.QWidget):
     def setMap(self, themap):
         self.fgmap = themap
         self.tdim = self.fgmap.tdim
+
+    def settmapping(self, thenewmapping):
+        if np.max(thenewmapping) <= self.tdim - 1:
+            self.tmapping = thenewmapping + 0
+        else:
+            print(f"New mapping references indices outside of data range")
+            sys.exit()
 
     def enableView(self):
         if self.button is not None:
@@ -928,7 +937,7 @@ class LightboxItem(QtWidgets.QWidget):
 
     def getFocusVal(self):
         if self.tdim > 1:
-            return self.fgmap.maskeddata[self.xpos, self.ypos, self.zpos, self.tpos]
+            return self.fgmap.maskeddata[self.xpos, self.ypos, self.zpos, self.tmapping[self.tpos]]
         else:
             return self.fgmap.maskeddata[self.xpos, self.ypos, self.zpos]
 
