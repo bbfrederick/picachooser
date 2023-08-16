@@ -4,11 +4,6 @@ FROM fredericklab/basecontainer:v0.2.1
 # Installing precomputed python packages
 RUN mamba install -y pillow 
 
-# Create a shared $HOME directory
-RUN useradd -m -s /bin/bash -G users picachooser
-WORKDIR /home/picachooser
-ENV HOME="/home/picachooser"
-
 # Install PICAchooser
 COPY . /src/picachooser
 RUN cd /src/picachooser && \
@@ -17,8 +12,12 @@ RUN cd /src/picachooser && \
 
 # clean up
 RUN mamba clean -y --all
-#RUN pip cache purge
+RUN pip cache purge
 
+# Create a shared $HOME directory
+RUN useradd -m -s /bin/bash -G users picachooser
+WORKDIR /home/picachooser
+ENV HOME="/home/picachooser"
 
 ENV IS_DOCKER_8395080871=1
 
