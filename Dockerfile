@@ -9,7 +9,6 @@ RUN useradd -m -s /bin/bash -G users picachooser
 WORKDIR /home/picachooser
 ENV HOME="/home/picachooser"
 
-
 # Install PICAchooser
 COPY . /src/picachooser
 RUN cd /src/picachooser && \
@@ -18,7 +17,7 @@ RUN cd /src/picachooser && \
 
 # clean up
 RUN mamba clean -y --all
-RUN pip cache purge
+#RUN pip cache purge
 
 
 ENV IS_DOCKER_8395080871=1
