@@ -3,11 +3,6 @@ FROM fredericklab/basecontainer:v0.2.1
 
 # Installing precomputed python packages
 RUN mamba install -y pillow 
-RUN chmod -R a+rX /usr/local/miniconda
-RUN chmod +x /usr/local/miniconda/bin/*
-RUN conda-build purge-all
-RUN mamba clean -y --all
-
 
 # Create a shared $HOME directory
 RUN useradd -m -s /bin/bash -G users picachooser
