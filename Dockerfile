@@ -1,5 +1,5 @@
 # Start from the fredericklab base container
-FROM fredericklab/basecontainer:v0.1.9
+FROM fredericklab/basecontainer:v0.2.1
 
 # Installing precomputed python packages
 RUN mamba install -y pillow 
@@ -15,15 +15,18 @@ WORKDIR /home/picachooser
 ENV HOME="/home/picachooser"
 
 
-# Installing PICAchooser
+# Install PICAchooser
 COPY . /src/picachooser
 RUN cd /src/picachooser && \
     pip install . && \
     rm -rf /src/picachooser/build /src/picachooser/dist
 
+# clean up
+RUN mamba clean -y --all
+RUN pip cache purge
+
 
 ENV IS_DOCKER_8395080871=1
-
 
 RUN ldconfig
 WORKDIR /tmp/
