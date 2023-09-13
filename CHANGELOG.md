@@ -2,6 +2,7 @@
 
 ## Version 1.4.5 (9/13/23)
 * Mass merge of a bunch of dependabot PRs.
+* (Docker) Updated to basecontainer 0.2.3.
 
 ## Version 1.4.4 (6/29/23)
 * Fixed image pane resizing.
