@@ -1,5 +1,8 @@
 # History of changes
 
+## Version 1.4.5 (9/13/23)
+* Mass merge of a bunch of dependabot PRs.
+
 ## Version 1.4.4 (6/29/23)
 * Fixed image pane resizing.
 
