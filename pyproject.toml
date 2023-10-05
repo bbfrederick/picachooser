@@ -1,18 +1,84 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ['setuptools', 'wheel', 'versioneer[toml]']
+build-backend = 'setuptools.build_meta'
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "picachooser/_version.py"
-versionfile_build = "picachooser/_version.py"
-tag_prefix = ""
-parentdir_prefix = "picachooser-"
+[project]
+name = 'picachooser'
+description = 'Lightweight GUI for sorting, classifying, and matching MELODIC ICA components.'
+authors = [
+  { name='Blaise Frederick', email='blaise.frederick@gmail.com' },
+]
+readme = 'README.rst'
+classifiers = [
+    'Operating System :: OS Independent',
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering :: Image Recognition',
+    'License :: OSI Approved :: Apache Software License',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+]
+requires-python = '>=3.8'
+dependencies = [
+  'numpy>=1.16',
+  'pillow',
+  'scipy',
+  'pandas',
+  'nibabel',
+  'pyqtgraph',
+]
+dynamic = ['version', 'license', 'keywords']
 
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
+[project.urls]
+'Homepage' = 'https://github.com/bbfrederick/picachooser'
+'Bug Tracker' = 'https://github.com/bbfrederick/picachooser/issues'
+'Repository' = 'https://github.com/bbfrederick/picachooser.git'
+'Documentation' = 'https://picachooser.readthedocs.io'
+'Changelog' = 'https://github.com/bbfrederick/picachooser/blob/main/CHANGELOG.md'
+
+
+[project.optional-dependencies]
+test = [
+  'codecov',
+  'coverage',
+  'coveralls',
+  'flake8-black',
+  'pytest',
+  'pytest-cov',
+]
+doc = [
+  'sphinx',
+  'sphinx_rtd_theme',
+  'sphinx-argparse',
+  'sphinx-gallery',
+  'm2r',
+  'numpydoc',
+  'recommonmark',
+  'mistune',
+]
+
+[tool.setuptools]
+include-package-data = true 
+
+[tool.setuptools.packages.find]
+include = ['picachooser', 'cloud']
+
+[tool.setuptools.package-data]
+picachooser = ['picachooser/*.py', 'picachooser/scripts/*']
+
+[tool.setuptools.dynamic]
+version = {attr = "picachooser.__version__"}
+
+[tool.setuptools.exclude-package-data]
+picachooser = ['.eggs', '.git', '.github', '.pytest_cache']
+
+# Aliases
+docs = ['picachooser[doc]']
+tests = ['picachooser[test]']
+all = ['picachooser[docs,tests]']
 
 
 [tool.black]
@@ -36,3 +102,16 @@ exclude = '''
   | picachooser/_version.py
 )
 '''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "picachooser/_version.py"
+versionfile_build = "picachooser/_version.py"
+tag_prefix = "v"
+parentdir_prefix = "picachooser-"
+
