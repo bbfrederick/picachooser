@@ -44,7 +44,7 @@ ENV IS_DOCKER_8395080871=1
 
 RUN ldconfig
 WORKDIR /tmp/
-ENTRYPOINT ["/usr/local/miniconda/bin/PICAchooser_dispatcher"]
+ENTRYPOINT ["PICAchooser_dispatcher"]
 
 # set a non-root user
 USER picachooser
