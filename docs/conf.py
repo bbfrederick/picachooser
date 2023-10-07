@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# picachooser documentation build configuration file, 
+# picachooser documentation build configuration file,
 # copied from rapidtide
 #
 # This file is execfile()d with the current directory set to its
