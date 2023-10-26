@@ -72,7 +72,7 @@ def findfromfeatdir(featdir, initBGfile, initFuncfile, initMotionfile):
         motionfile = initMotionfile
     if not os.path.isfile(motionfile):
         print("cannot find motion parameter file at", motionfile)
-        sys.exit()
+        # sys.exit()
 
     return bgfile, Funcfile, motionfile
 
@@ -661,7 +661,6 @@ def main():
     mainwin = None
     verbose = False
     usereferencefile = False
-    domotion = True
     dotimecourse = True
     retainthresh = DEFAULT_RETAINTHRESH
 
@@ -957,6 +956,13 @@ def main():
 
     debugging = parser.add_argument_group("Debugging arguments")
     debugging.add_argument(
+        "--nomotion",
+        dest="domotion",
+        action="store_false",
+        help=("Turn off motion timecourse tracking."),
+        default=True,
+    )
+    debugging.add_argument(
         "--verbose",
         action="store_true",
         help=(
@@ -982,6 +988,7 @@ def main():
     verbose = args.verbose
     usereferencefile = args.usereferencefile
     retainthresh = args.retainthresh
+    domotion = args.domotion
 
     # make sure we can find the required input files
     # first see if there are specific overrides
@@ -1010,7 +1017,7 @@ def main():
         print("Cannot set functional file.  Use either the --featdir or --Funcfile option.")
         sys.exit()
 
-    if Motionfile is None and runmode != "groupmelodic":
+    if Motionfile is None and domotion and runmode != "groupmelodic":
         print(
             "Cannot set motion timecourse file.  Use either the --featdir or --motionfile option."
         )
@@ -1373,7 +1380,7 @@ def main():
     whichcomponent = 0
 
     # make the main window
-    if domotion:
+    if dotimecourse:
         import picachooser.picachooserTemplate as uiTemplate
     else:
         import picachooser.picachooser_imonlyTemplate as uiTemplate
