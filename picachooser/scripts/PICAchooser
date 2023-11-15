@@ -1161,17 +1161,17 @@ def main():
     def initconfig():
         print("initializing preferences")
         config = {
-            "prefsversion": 3,
+            "prefsversion": 4,
             "componentlinewidth": 2,
             "keepcolor": "g",
             "discardcolor": "r",
-            "motionxcolor": "ff8888",
-            "motionycolor": "88ff88",
-            "motionzcolor": "8888ff",
+            "motionxcolor": "#ff8888",
+            "motionycolor": "#88ff88",
+            "motionzcolor": "#8888ff",
             "motionlinewidth": 2,
             "transmotlimits": (-2.5, 2.5),
             "rotmotlimits": (-0.04, 0.04),
-            "motionlimitcolor": "cccccc",
+            "motionlimitcolor": "#cccccc",
             "motionlimitlinewidth": 4,
             "motionplotstyle": 1,
             "scalemotiontodata": False,
@@ -1188,7 +1188,7 @@ def main():
             prefsversion = config["prefsversion"]
         except KeyError:
             prefsversion = 0
-        if prefsversion < 3:
+        if prefsversion < 4:
             config = initconfig()
             io.writedicttojson(config, configfile)
 
