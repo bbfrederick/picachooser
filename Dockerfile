@@ -32,7 +32,7 @@ RUN cd /src/picachooser && \
     rm -rf /src/picachooser/build /src/picachooser/dist
 
 # clean up
-RUN mamba clean -y --all
+#RUN mamba clean -y --all
 RUN pip cache purge
 
 # Create a shared $HOME directory
