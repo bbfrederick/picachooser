@@ -1,5 +1,8 @@
  History of changes
 
+## Version 1.4.6 (12/11/23)
+* (Docker) Added caching to build.
+
 ## Version 1.4.5 (9/13/23)
 * Mass merge of a bunch of dependabot PRs.
 * (Docker) Updated to basecontainer 0.2.3.
