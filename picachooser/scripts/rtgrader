@@ -210,7 +210,7 @@ def updateTCinfo():
         ui.pane1_label.setText(pane1title)
         ui.pane2_label.setText(pane2title)
 
-    win.setWindowTitle(f"melodicomp: sorting by {sortnames[sorttype]}")
+    win.setWindowTitle(f"rtgrader: sorting by {sortnames[sorttype]}")
 
 
 def updateLightboxes():
@@ -260,32 +260,46 @@ def main():
     dotimecourse = True
 
     parser = argparse.ArgumentParser(
-        prog="melodicomp",
-        description="A program to compare two sets of melodic components.",
-        usage="%(prog)s ICfile1 ICfile2 [options]",
+        prog="rtgrader",
+        description="A program to rate sets of rapidtide runs.",
+        usage="%(prog)s lagtimes strengths regressors labels",
     )
 
     # Required arguments
     parser.add_argument(
-        "ICfile1",
+        "lagtimes",
         action="store",
         type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
-            "The first IC component file.  This will be the exemplar, and for each component, the closest component in ICfile2 will be "
-            "selected for comparison. "
+            "The 4D NIFTI of the concatenated lag time maps for all subjects.  Maps need to be in the same order as the label file."
         ),
         default=None,
     )
     parser.add_argument(
-        "ICfile2",
+        "strengths",
         action="store",
         type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
-            "The second IC component file.  Components in this file will be selected to match components in ICfile1. "
+            "The 4D NIFTI of the concatenated correlation strength maps for all subjects.  Maps need to be in the same order as the label file."
         ),
         default=None,
     )
-
+    parser.add_argument(
+        "regressors",
+        action="store",
+        type=lambda x: pica_util.is_valid_file(parser, x),
+        help=(
+            "The json/tsv.gz file containing the concatenated sLFO regressors for all subjects.  Columns to be in the same order as the label file."
+        ),
+        default=None,
+    )
+    parser.add_argument(
+        "labels",
+        action="store",
+        type=lambda x: pica_util.is_valid_file(parser, x),
+        help=("The text file containing the labels for all subjects, one per line."),
+        default=None,
+    )
     llfilespec = parser.add_argument_group(
         "Nonstandard input file location specification.  Setting these overrides the locations assumed from ICfile1."
     )
@@ -349,15 +363,6 @@ def main():
         ),
         default=None,
     )
-    # other.add_argument(
-    #    "--sortedfile",
-    #    metavar="SORTEDFILE",
-    #    type=str,
-    #    help=(
-    #        "Save the components in ICfile2, sorted to match the components of ICfile1, in the file SORTEDFILE."
-    #    ),
-    #    default=None,
-    # )
     other.add_argument(
         "--spatialroi",
         dest="spatialroi",
@@ -405,7 +410,7 @@ def main():
         "--verbose",
         action="store_true",
         help=(
-            "Output exhaustive amounts of information about the internal workings of melodicomp. "
+            "Output exhaustive amounts of information about the internal workings of rtgrader. "
             "You almost certainly don't want this."
         ),
         default=False,
@@ -420,36 +425,16 @@ def main():
     # make sure we can find the required input files
     # first see if there are specific overrides
     BGfile = args.specBGfile
-    ICmask = args.specICmask
-    melodicICstatsfile1 = args.melodicICstatsfile1
-    melodicICstatsfile2 = args.melodicICstatsfile2
-
-    melodicdir1 = os.path.dirname(args.ICfile1)
-    melodicdir2 = os.path.dirname(args.ICfile2)
-
-    thecorrthresh = args.corrthresh
+    lagtimefile = args.lagtimes
+    strengthsfile = args.strengths
+    regressorsfile = args.regressors
+    labelfile = args.labels
 
     if BGfile is None:
-        BGfile = os.path.join(melodicdir1, "mean.nii.gz")
+        BGfile = os.path.join(os.environ("FSLDIR"), "data", "standard", "MNI152_2mm_brain.nii.gz")
     if not os.path.isfile(BGfile):
         print("cannot find background file at", BGfile)
         sys.exit()
-
-    if ICmask is None:
-        ICmask = os.path.join(melodicdir1, "mask.nii.gz")
-    if not os.path.isfile(ICmask):
-        print("cannot find independent component mask file at", ICmask)
-        sys.exit()
-
-    if melodicICstatsfile1 is None:
-        melodicICstatsfile1 = os.path.join(melodicdir1, "melodic_ICstats")
-    else:
-        melodicICstatsfile1 = melodicICstatsfile1
-
-    if melodicICstatsfile2 is None:
-        melodicICstatsfile2 = os.path.join(melodicdir2, "melodic_ICstats")
-    else:
-        melodicICstatsfile2 = melodicICstatsfile2
 
     if BGfile is None:
         print("Cannot set background file. ")
@@ -460,20 +445,20 @@ def main():
         sys.exit()
 
     if args.outputfile is not None:
-        Correspondancefile = args.outputfile
+        gradefile = args.outputfile
     else:
-        Correspondancefile = os.path.join(melodicdir1, "correspondingcomponents.txt")
-    if not os.path.isfile(Correspondancefile):
+        gradefile = "rtgraderrankings.txt"
+    if not os.path.isfile(gradfile):
         initfileexists = True
     else:
         initfileexists = False
 
     if verbose:
-        print(f"ICfile1: {args.ICfile1}")
-        print(f"ICfile2: {args.ICfile2}")
-        print(f"ICmask: {ICmask}")
-        print(f"BGfile: {BGfile}")
-        print(f"Correspondancefile: {Correspondancefile}")
+        print(f"lagtimes: {lagtimefile}")
+        print(f"strengths: {strengthsfile}")
+        print(f"regressors: {regressorsfile}")
+        print(f"labels: {labelfile}")
+        print(f"gradefile: {gradefile}")
 
     # set the configurable options
     def initconfig():
@@ -485,7 +470,7 @@ def main():
         }
         return config
 
-    configfile = os.path.join(os.environ["HOME"], ".melodicomp.json")
+    configfile = os.path.join(os.environ["HOME"], ".rtgrader.json")
     if not os.path.isfile(configfile):
         config = initconfig()
         io.writedicttojson(config, configfile, sort_keys=False)
@@ -500,9 +485,8 @@ def main():
             io.writedicttojson(config, configfile)
 
     # read in the information for both datasets
-    alldata1 = {}
-    alldata2 = {}
-    alldata1["filelabel"] = args.label1
+    alldata = {}
+    alldata["filelabel"] = args.label1
     alldata2["filelabel"] = args.label2
 
     dummy, numelements1 = io.fmritimeinfo(args.ICfile1)
@@ -549,7 +533,7 @@ def main():
     sortnames = ["file 1 order", "correlation coefficient"]
 
     # make the main window
-    import picachooser.melodicompTemplate as uiTemplate
+    import picachooser.rtgraderTemplate as uiTemplate
 
     app = QtWidgets.QApplication([])
     print("setting up output window")
@@ -560,7 +544,7 @@ def main():
     ui = uiTemplate.Ui_MainWindow()
     ui.setupUi(win)
     win.show()
-    win.setWindowTitle("melodicomp")
+    win.setWindowTitle("rtgrader")
 
     print("setting up image windows")
     geommaskimage = lb.imagedataset(
