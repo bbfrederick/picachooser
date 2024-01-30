@@ -34,6 +34,7 @@ modules_list = [
     "picachooser/melodicompTemplate",
     "picachooser/picachooserTemplate",
     "picachooser/picachooseraltTemplate",
+    "picachooser/rtgraderTemplate",
     "picachooser/io",
     "picachooser/fit",
     "picachooser/stats",
@@ -47,6 +48,7 @@ script_list = [
     "picachooser/scripts/grader",
     "picachooser/scripts/melodicomp",
     "picachooser/scripts/PICAchooser",
+    "picachooser/scripts/rtgrader",
 ]
 
 setup(
