@@ -102,6 +102,18 @@ def is_float(parser, arg):
     return arg
 
 
+def is_range(parser, arg):
+    """
+    Check if argument is min/max pair.
+    """
+    if arg is not None and len(arg) != 2:
+        parser.error("Argument must be min/max pair.")
+    elif arg is not None and float(arg[0]) > float(arg[1]):
+        parser.error("Argument min must be lower than max.")
+
+    return arg
+
+
 def getrefdir():
     return os.path.join(
         os.path.split(os.path.split(__file__)[0])[0],

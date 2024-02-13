@@ -42,6 +42,12 @@ import picachooser.util as pica_util
 # fix for Big Sur on macOS
 os.environ["QT_MAC_WANTS_LAYER"] = "1"
 
+# global defaults
+DEFAULT_LAG_MIN = -5.0
+DEFAULT_LAG_MAX = 10.0
+DEFAULT_STRENGTH_MIN = 0.0
+DEFAULT_STRENGTH_MAX = 0.75
+
 
 class KeyPressWindow(QtWidgets.QMainWindow):
     sigKeyPress = QtCore.pyqtSignal(object)
@@ -300,69 +306,16 @@ def main():
         help=("The text file containing the labels for all subjects, one per line."),
         default=None,
     )
-    llfilespec = parser.add_argument_group(
-        "Nonstandard input file location specification.  Setting these overrides the locations assumed from ICfile1."
-    )
-    llfilespec.add_argument(
-        "--backgroundfile",
-        dest="specBGfile",
-        metavar="BGFILE",
-        type=lambda x: pica_util.is_valid_file(parser, x),
-        help=(
-            "The anatomic file on which to display the ICs (by default assumes a file called 'mean.nii.gz' in the "
-            "same directory as ICfile1.))"
-        ),
-        default=None,
-    )
-    llfilespec.add_argument(
-        "--maskfile",
-        dest="specICmask",
-        metavar="ICMASK",
-        type=lambda x: pica_util.is_valid_file(parser, x),
-        help=(
-            "The independent component mask file produced by MELODIC (by default assumes a file called 'mask.nii.gz' "
-            "in the same directory as ICfile1.)"
-        ),
-        default=None,
-    )
-    llfilespec.add_argument(
-        "--ICstatsfile1",
-        dest="melodicICstatsfile1",
-        metavar="STATSFILE",
-        type=lambda x: pica_util.is_valid_file(parser, x),
-        help=(
-            "The melodic stats file (by default called 'melodic_ICstats' in the same directory as ICfile1),"
-        ),
-        default=None,
-    )
-    llfilespec.add_argument(
-        "--ICstatsfile2",
-        dest="melodicICstatsfile2",
-        metavar="STATSFILE",
-        type=lambda x: pica_util.is_valid_file(parser, x),
-        help=(
-            "The melodic stats file (by default called 'melodic_ICstats' in the same directory as ICfile2),"
-        ),
-        default=None,
-    )
-
     # optional arguments
     other = parser.add_argument_group("Other arguments")
     other.add_argument(
-        "--corrthresh",
-        type=lambda x: pica_util.is_float(parser, x),
-        help="z threshold for the displayed ICA components.  Default is 2.3.",
-        default=0.5,
-    )
-    other.add_argument(
-        "--outputfile",
-        type=str,
-        help=(
-            "Where to write the list of corresponding components (default is 'correspondingcomponents.txt' "
-            "in the same directory as ICfile1"
-        ),
+        "mapmask",
+        action="store",
+        type=lambda x: pica_util.is_valid_file(parser, x),
+        help=("The 3D or 4D NIFTI to mask all maps."),
         default=None,
     )
+
     other.add_argument(
         "--spatialroi",
         dest="spatialroi",
@@ -374,23 +327,27 @@ def main():
         ),
         default=(0, -1, 0, -1, 0, -1),
     )
+
     other.add_argument(
-        "--displaythresh",
-        type=lambda x: pica_util.is_float(parser, x),
-        help="z threshold for the displayed ICA components.  Default is 2.3.",
-        default=2.3,
+        "--outputfile",
+        type=str,
+        help=(
+            "Where to write the list of corresponding components (default is 'correspondingcomponents.txt' "
+            "in the same directory as the lagtimes file"
+        ),
+        default=None,
     )
     other.add_argument(
-        "--label1",
-        type=str,
-        help="Label to give to file 1 components in display.  Default is 'File 1'.",
-        default="File 1",
+        "--lagrange",
+        type=lambda x: pica_util.is_range(parser, x),
+        help=f"Lag time range to display.  Default is {DEFAULT_LAG_MIN} to {DEFAULT_LAG_MAX}.",
+        default=(DEFAULT_LAG_MIN, DEFAULT_LAG_MAX),
     )
     other.add_argument(
-        "--label2",
-        type=str,
-        help="Label to give to file 2 components in display.  Default is 'File 2'.",
-        default="File 2",
+        "--strengthrange",
+        type=lambda x: pica_util.is_range(parser, x),
+        help=f"Strength range to display.  Default is {DEFAULT_STRENGTH_MIN} to {DEFAULT_STRENGTH_MAX}.",
+        default=(DEFAULT_STRENGTH_MIN, DEFAULT_STRENGTH_MAX),
     )
 
     misc = parser.add_argument_group("Miscellaneous arguments")
@@ -424,31 +381,21 @@ def main():
 
     # make sure we can find the required input files
     # first see if there are specific overrides
-    BGfile = args.specBGfile
     lagtimefile = args.lagtimes
     strengthsfile = args.strengths
     regressorsfile = args.regressors
     labelfile = args.labels
+    mapmask = args.mapmask
 
-    if BGfile is None:
-        BGfile = os.path.join(os.environ("FSLDIR"), "data", "standard", "MNI152_2mm_brain.nii.gz")
-    if not os.path.isfile(BGfile):
-        print("cannot find background file at", BGfile)
-        sys.exit()
-
-    if BGfile is None:
-        print("Cannot set background file. ")
-        sys.exit()
-
-    if ICmask is None:
-        print("Cannot set IC mask. ")
+    if mapmask is None:
+        print("No mask provided. ")
         sys.exit()
 
     if args.outputfile is not None:
         gradefile = args.outputfile
     else:
         gradefile = "rtgraderrankings.txt"
-    if not os.path.isfile(gradfile):
+    if not os.path.isfile(gradefile):
         initfileexists = True
     else:
         initfileexists = False
@@ -486,19 +433,15 @@ def main():
 
     # read in the information for both datasets
     alldata = {}
-    alldata["filelabel"] = args.label1
-    alldata2["filelabel"] = args.label2
+    alldata["filelabel"] = "Lag times"
+    alldata2["filelabel"] = "Correlation coefficients"
 
-    dummy, numelements1 = io.fmritimeinfo(args.ICfile1)
-    dummy, numelements2 = io.fmritimeinfo(args.ICfile2)
-
-    # read in the variance percents
-    melodicICstats1 = io.readvecs(melodicICstatsfile1)
-    melodicICstats2 = io.readvecs(melodicICstatsfile2)
+    dummy, numelements1 = io.fmritimeinfo(args.lagtimes)
+    dummy, numelements2 = io.fmritimeinfo(args.strengths)
 
     # calculate the correlations and pick the best matches
     thecorrelations, thebestmatches = pica_util.calccorrs(
-        args.ICfile1, args.ICfile2, ICmask, debug=True
+        args.ICfile1, args.ICfile2, mapmask, debug=True
     )
     if thecorrelations is None:
         sys.exit()
@@ -510,12 +453,9 @@ def main():
         theIC = str(idx + 1)
         namelist1.append(theIC)
         alldata1[theIC] = {}
-
-        alldata1[theIC]["totalvar"] = melodicICstats1[1, idx]
-        alldata1[theIC]["explainedvar"] = melodicICstats1[0, idx]
-        alldata1[theIC]["bestmatch"] = thebestmatches[idx]
-        alldata1[theIC]["bestcorr"] = thecorrelations[idx, thebestmatches[idx]]
-        thecorrcoeffs[idx] = thecorrelations[idx, thebestmatches[idx]]
+        alldata1[theIC]["bestmatch"] = idx
+        alldata1[theIC]["bestcorr"] = 0.0
+        thecorrcoeffs[idx] = 1.0
     print("Read in", numelements1, "ICs")
     namelist2 = []
     print("reading info on ICfile2...")
@@ -523,9 +463,6 @@ def main():
         theIC = str(idx + 1)
         namelist2.append(theIC)
         alldata2[theIC] = {}
-
-        alldata2[theIC]["totalvar"] = melodicICstats2[1, idx]
-        alldata2[theIC]["explainedvar"] = melodicICstats2[0, idx]
     print("Read in", numelements2, "ICs")
     whichcomponent = 0
     indexmap = np.arange(0, numelements1, dtype=int)
@@ -548,9 +485,9 @@ def main():
 
     print("setting up image windows")
     geommaskimage = lb.imagedataset(
-        "ICmask",
-        ICmask,
-        "ICmask",
+        "mapmask",
+        mapmask,
+        "mapmask",
         xlims=args.spatialroi[0:2],
         ylims=args.spatialroi[2:4],
         zlims=args.spatialroi[4:6],
@@ -579,18 +516,9 @@ def main():
     )
     fgimage2.setFuncMaskByThresh(threshval=args.displaythresh)
 
-    bgimage = lb.imagedataset(
-        "BG",
-        BGfile,
-        "background",
-        xlims=args.spatialroi[0:2],
-        ylims=args.spatialroi[2:4],
-        zlims=args.spatialroi[4:6],
-        lut_state=cm.gray_state,
-    )
-    lbwin1 = lb.LightboxItem(fgimage1, ui.image_graphicsView_1, bgmap=bgimage, verbose=verbose)
+    lbwin1 = lb.LightboxItem(fgimage1, ui.image_graphicsView_1, verbose=verbose)
     leftinfo = lbwin1.getviewinfo()
-    lbwin2 = lb.LightboxItem(fgimage2, ui.image_graphicsView_2, bgmap=bgimage, verbose=verbose)
+    lbwin2 = lb.LightboxItem(fgimage2, ui.image_graphicsView_2, verbose=verbose)
     rightinfo = lbwin2.getviewinfo()
     blinkstatus = False
 
