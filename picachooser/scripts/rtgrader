@@ -172,7 +172,11 @@ def keyPressed(evt):
         print(f"{badindices=}")
         print(f"{goodlabels=}")
         print(f"{badlabels=}")
-        print("correspondance file written")
+        io.writevec(goodindices, "goodindices")
+        io.writevec(badindices, "badindices")
+        io.writevec(goodlabels, "goodlabels")
+        io.writevec(badlabels, "badlabels")
+        print("grade files written")
     else:
         print(evt.key())
 
@@ -315,13 +319,21 @@ def main():
     )
     other.add_argument(
         "--lagrange",
-        type=lambda x: pica_util.is_range(parser, x),
+        dest="lagrange",
+        action="store",
+        nargs=2,
+        type=float,
+        metavar=("MINLAG", "MAXLAG"),
         help=f"Lag time range to display.  Default is {DEFAULT_LAG_MIN} to {DEFAULT_LAG_MAX}.",
         default=(DEFAULT_LAG_MIN, DEFAULT_LAG_MAX),
     )
     other.add_argument(
         "--strengthrange",
-        type=lambda x: pica_util.is_range(parser, x),
+        dest="strengthrange",
+        action="store",
+        nargs=2,
+        type=float,
+        metavar=("MINSTRENGTH", "MAXSTRENGTH"),
         help=f"Strength range to display.  Default is {DEFAULT_STRENGTH_MIN} to {DEFAULT_STRENGTH_MAX}.",
         default=(DEFAULT_STRENGTH_MIN, DEFAULT_STRENGTH_MAX),
     )
@@ -475,7 +487,7 @@ def main():
         lut_state=cm.viridis_state,
         geommask=geommaskimage.data,
     )
-    fgimage1.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
+    fgimage1.setFuncMask(geommaskimage.data)
     fgimage2 = lb.imagedataset(
         "CorrelationStrengths",
         args.strengths,
@@ -487,7 +499,8 @@ def main():
         geommask=geommaskimage.data,
     )
     # geommask = geommaskimage.data,
-    fgimage2.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
+    # fgimage2.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
+    fgimage2.setFuncMask(geommaskimage.data)
 
     lbwin1 = lb.LightboxItem(
         fgimage1,
