@@ -468,15 +468,20 @@ def main():
     win.setWindowTitle("rtgrader")
 
     print("setting up image windows")
-    geommaskimage = lb.imagedataset(
-        "mapmask",
-        mapmask,
-        "mapmask",
-        xlims=args.spatialroi[0:2],
-        ylims=args.spatialroi[2:4],
-        zlims=args.spatialroi[4:6],
-        lut_state=cm.mask_state,
-    )
+    if mapmask is not None:
+        geommaskimage = lb.imagedataset(
+            "mapmask",
+            mapmask,
+            "mapmask",
+            xlims=args.spatialroi[0:2],
+            ylims=args.spatialroi[2:4],
+            zlims=args.spatialroi[4:6],
+            lut_state=cm.mask_state,
+        )
+        thegeommask = geommaskimage.data
+
+    # make a bias mask
+    biasmaskimage = np.where(geommaskimage.data > 0, 1, -1000)
     fgimage1 = lb.imagedataset(
         "Lagtimes",
         args.lagtimes,
@@ -485,9 +490,10 @@ def main():
         ylims=args.spatialroi[2:4],
         zlims=args.spatialroi[4:6],
         lut_state=cm.viridis_state,
-        geommask=geommaskimage.data,
+        geommask=thegeommask,
     )
-    fgimage1.setFuncMask(geommaskimage.data)
+    fgimage1.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
+    #fgimage1.setFuncMask(geommaskimage.data)
     fgimage2 = lb.imagedataset(
         "CorrelationStrengths",
         args.strengths,
@@ -496,11 +502,10 @@ def main():
         ylims=args.spatialroi[2:4],
         zlims=args.spatialroi[4:6],
         lut_state=cm.thermal_state,
-        geommask=geommaskimage.data,
+        geommask=thegeommask,
     )
-    # geommask = geommaskimage.data,
-    # fgimage2.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
-    fgimage2.setFuncMask(geommaskimage.data)
+    fgimage2.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
+    #fgimage2.setFuncMask(geommaskimage.data)
 
     lbwin1 = lb.LightboxItem(
         fgimage1,
