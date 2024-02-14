@@ -449,6 +449,9 @@ class LightboxItem(QtWidgets.QWidget):
         winwidth=64,
         winheight=64,
         bgmap=None,
+        lowerthresh=2.3,
+        upperthresh=None,
+        bidirectional=True,
         verbose=False,
     ):
         QtWidgets.QWidget.__init__(self)
@@ -475,8 +478,10 @@ class LightboxItem(QtWidgets.QWidget):
         self.orientation = orientation
         self.forcerecalc = False
         self.tmapping = np.arange(self.tdim)
+        self.bidirectional = bidirectional
 
-        self.thresh = 2.3
+        self.lowerthresh = lowerthresh
+        self.upperthresh = upperthresh
         self.windowaspectpix = 0.0
         self.winwidth = winwidth
         self.winheight = winheight
@@ -822,22 +827,32 @@ class LightboxItem(QtWidgets.QWidget):
                 self.fgmap.numstatvoxels,
                 ")",
             )
-        impos = self.applyLUT(
-            data,
-            np.where(data >= self.thresh, 1, 0),
-            self.fgmap.theRedyellowLUT,
-            self.thresh,
-            self.fgmap.dispmaxmag,
-        )
-        thefgposwin.setImage(impos.astype("float"))
-        imneg = self.applyLUT(
-            data,
-            np.where(data <= -self.thresh, 1, 0),
-            self.fgmap.theBluelightblueLUT,
-            self.thresh,
-            self.fgmap.dispmaxmag,
-        )
-        thefgnegwin.setImage(imneg.astype("float"))
+        if self.bidirectional:
+            impos = self.applyLUT(
+                data,
+                np.where(data >= self.lowerthresh, 1, 0),
+                self.fgmap.theRedyellowLUT,
+                self.lowerthresh,
+                self.fgmap.dispmaxmag,
+            )
+            thefgposwin.setImage(impos.astype("float"))
+            imneg = self.applyLUT(
+                data,
+                np.where(data <= -self.lowerthresh, 1, 0),
+                self.fgmap.theBluelightblueLUT,
+                self.lowerthresh,
+                self.fgmap.dispmaxmag,
+            )
+            thefgnegwin.setImage(imneg.astype("float"))
+        else:
+            impos = self.applyLUT(
+                data,
+                np.where(data >= self.lowerthresh, 1, 0),
+                self.fgmap.theLUT,
+                self.lowerthresh,
+                self.fgmap.dispmaxmag,
+            )
+            thefgposwin.setImage(impos.astype("float"))
         if background is not None:
             thebgwin.setImage(background.astype("float"), autoLevels=True)
 
