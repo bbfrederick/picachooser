@@ -110,7 +110,7 @@ def windowResized(evt):
 def keyPressed(evt):
     global whichcomponent, numelements, lbwin1, lbwin2, verbose, domotion, dotimecourse
     global leftinfo, rightinfo, blinkstatus
-    global namelist
+    global datasetlabels, grades
 
     if verbose:
         print("processing keypress event")
@@ -121,10 +121,10 @@ def keyPressed(evt):
         decrementgrade()
     elif evt.key() == QtCore.Qt.Key_Left:
         whichcomponent = (whichcomponent - 1) % numelements
-        print("File set to:", namelist[whichcomponent])
+        print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
     elif evt.key() == QtCore.Qt.Key_Right:
         whichcomponent = (whichcomponent + 1) % numelements
-        print("File set to:", namelist[whichcomponent])
+        print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
     elif evt.key() == QtCore.Qt.Key_A:
         for thewin in [lbwin1, lbwin2]:
             thewin.setorient("ax")
@@ -155,16 +155,23 @@ def keyPressed(evt):
             lbwin2.setviewinfo(rightinfo)
     elif evt.key() == QtCore.Qt.Key_R:
         whichcomponent = 0
+        print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
     elif evt.key() == QtCore.Qt.Key_Escape:
-        goodlist = []
-        badlist = []
+        goodindices = []
+        goodlabels = []
+        badindices = []
+        badlabels = []
         for idx in range(numelements):
             if grades[idx]:
-                goodlist.append(namelist[idx])
+                goodindices.append(idx)
+                goodlabels.append(datasetlabels[idx])
             else:
-                badlist.append(namelist[idx])
-        print(f"{goodlist=}")
-        print(f"{badlist=}")
+                badindices.append(idx)
+                badlabels.append(datasetlabels[idx])
+        print(f"{goodindices=}")
+        print(f"{badindices=}")
+        print(f"{goodlabels=}")
+        print(f"{badlabels=}")
         print("correspondance file written")
     else:
         print(evt.key())
@@ -175,14 +182,12 @@ def keyPressed(evt):
 
 def updateTCinfo():
     global whichcomponent, indexmap, sorttype, sortnames, blinkstatus
-    global alldata1, alldata2, namelist, win, numelements, verbose
+    global alldata1, alldata2, namelist, datasetlabels, win, numelements, verbose
 
     if verbose:
         print("entering updateTCinfo")
-    thiscomponent1 = alldata1[namelist[whichcomponent]]
-    thiscomponent2 = alldata2[namelist[whichcomponent]]
-    pane1title = alldata1["filelabel"] + ": " + thiscomponent1["datasetlabel"]
-    pane2title = alldata2["filelabel"] + ": " + thiscomponent2["datasetlabel"]
+    pane1title = alldata1["filelabel"] + ": " + datasetlabels[whichcomponent]
+    pane2title = alldata2["filelabel"] + ": " + datasetlabels[whichcomponent]
 
     if blinkstatus:
         ui.pane1_label.setText(pane2title)
@@ -195,14 +200,14 @@ def updateTCinfo():
 
 
 def updateLightboxes():
-    global lbwin1, lbwin2, whichcomponent, indexmap, verbose, alldata1, alldata2, namelist, grades
+    global lbwin1, lbwin2, whichcomponent, indexmap, verbose, alldata1, alldata2, namelist, grades, datasetlabels
     global keepcolor, discardcolor
 
     if verbose:
         print("entering updateLightboxes")
 
-    thelabel1 = f"{alldata1['filelabel']} IC {namelist[whichcomponent]}"
-    thelabel2 = f"{alldata2['filelabel']} IC {namelist[whichcomponent]}"
+    thelabel1 = f"{alldata1['filelabel']} {datasetlabels[whichcomponent]}"
+    thelabel2 = f"{alldata2['filelabel']} {datasetlabels[whichcomponent]}"
     if grades[whichcomponent]:
         thecolor = config["keepcolor"]
     else:
@@ -220,7 +225,7 @@ def updateLightboxes():
 
 def main():
     global ui, win, lbwin1, lbwin2
-    global namelist, grades, Correspondancefile, alldata1, alldata2, motion, whichcomponent
+    global namelist, grades, datasetlabels, Correspondancefile, alldata1, alldata2, motion, whichcomponent
     global indexmap, sorttype, sortnames, thecorrcoeffs, numelements
     global verbose
     global config
@@ -415,24 +420,21 @@ def main():
 
     thecorrcoeffs = np.ones((numelements), dtype=np.float64)
 
-    thedatasetlabels = io.readlabels(args.labels)
-
+    datasetlabels = io.readlabels(args.labels)
     namelist = []
     grades = []
-    print("reading info on ICfile1...")
+    print("reading info on lag time file...")
     for idx in range(numelements):
         theIC = str(idx + 1)
         namelist.append(theIC)
         grades.append(True)
         alldata1[theIC] = {}
-        alldata1[theIC]["datasetlabel"] = thedatasetlabels[idx]
         thecorrcoeffs[idx] = 1.0
     print("Read in", numelements, "lag time maps")
-    print("reading info on ICfile2...")
+    print("reading info on strengths file...")
     for idx in range(numelements):
         theIC = str(idx + 1)
         alldata2[theIC] = {}
-        alldata2[theIC]["datasetlabel"] = thedatasetlabels[idx]
     print("Read in", numelements, "strength maps")
     whichcomponent = 0
     indexmap = np.arange(0, numelements, dtype=int)
