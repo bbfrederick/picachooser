@@ -115,7 +115,7 @@ def keyPressed(evt):
     if verbose:
         print("processing keypress event")
 
-    modifiers = QtWidgets.QApplication.keyboardModifiers()
+    modifiers = QtWidgets.QMainWindow.keyboardModifiers()
     keymods = None
     if modifiers == QtCore.Qt.ShiftModifier:
         keymods = "shift"
@@ -123,6 +123,7 @@ def keyPressed(evt):
         keymods = "ctrl"
 
     print(f"processing keypress event with {keymods}")
+    print(modifiers)
 
     if evt.key() == QtCore.Qt.Key_Up:
         incrementgrade()
