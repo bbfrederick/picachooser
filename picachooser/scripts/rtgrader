@@ -110,7 +110,7 @@ def windowResized(evt):
 def keyPressed(evt):
     global whichcomponent, numelements, lbwin1, lbwin2, verbose, domotion, dotimecourse
     global leftinfo, rightinfo, blinkstatus
-    global datasetlabels, grades
+    global datasetlabels, grades, gradefile
 
     if verbose:
         print("processing keypress event")
@@ -168,14 +168,14 @@ def keyPressed(evt):
             else:
                 badindices.append(idx)
                 badlabels.append(datasetlabels[idx])
-        print(f"{goodindices=}")
-        print(f"{badindices=}")
-        print(f"{goodlabels=}")
-        print(f"{badlabels=}")
-        io.writevec(goodindices, "goodindices")
-        io.writevec(badindices, "badindices")
-        io.writevec(goodlabels, "goodlabels")
-        io.writevec(badlabels, "badlabels")
+        badindexfilename = gradefile
+        goodindexfilename = gradefile.replace("badindices", "goodindices")
+        badlabelfile = badindexfilename.replace("badindices", "badlabels")
+        goodlabelfile = goodindexfilename.replace("goodindices", "goodlabels")
+        io.writevec(goodindices, goodindexfilename)
+        io.writevec(badindices, badindexfilename)
+        io.writevec(goodlabels, goodlabelfile)
+        io.writevec(badlabels, badlabelfile)
         print("grade files written")
     else:
         print(evt.key())
@@ -229,7 +229,7 @@ def updateLightboxes():
 
 def main():
     global ui, win, lbwin1, lbwin2
-    global namelist, grades, datasetlabels, Correspondancefile, alldata1, alldata2, motion, whichcomponent
+    global namelist, grades, datasetlabels, gradefile, alldata1, alldata2, motion, whichcomponent
     global indexmap, sorttype, sortnames, thecorrcoeffs, numelements
     global verbose
     global config
@@ -255,7 +255,7 @@ def main():
         action="store",
         type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
-            "The 4D NIFTI of the concatenated lag time maps for all subjects.  Maps need to be in the same order as the label file."
+            "The 4D NIFTI of the concatenated lag time or timepercentile maps for all subjects.  Maps need to be in the same order as the label file."
         ),
         default=None,
     )
@@ -281,11 +281,20 @@ def main():
         "labels",
         action="store",
         type=lambda x: pica_util.is_valid_file(parser, x),
-        help=("The text file containing the labels for all subjects, one per line."),
+        help=("The text file containing the labels for all scans, one per line."),
         default=None,
     )
     # optional arguments
     other = parser.add_argument_group("Other arguments")
+    other.add_argument(
+        "--startindex",
+        dest="startindex",
+        action="store",
+        metavar="INDEX",
+        type=lambda x: pica_util.is_int(parser, x),
+        help=("The index to start at (0-based)."),
+        default=0,
+    )
     other.add_argument(
         "--mapmask",
         dest="mapmask",
@@ -295,7 +304,6 @@ def main():
         help=("The 3D or 4D NIFTI to mask all maps."),
         default=None,
     )
-
     other.add_argument(
         "--spatialroi",
         dest="spatialroi",
@@ -309,13 +317,14 @@ def main():
     )
 
     other.add_argument(
-        "--outputfile",
+        "--outputroot",
         type=str,
         help=(
-            "Where to write the list of corresponding components (default is 'correspondingcomponents.txt' "
-            "in the same directory as the lagtimes file"
+            "Root name for reading and writing the lists of good and bad component indices "
+            "(default is 'rtgrader', resulting in 'rtgrader_goodindices.txt' and 'rtgrader_badindices.txt')"
+            "in the current working directory."
         ),
-        default=None,
+        default="rtgrader",
     )
     other.add_argument(
         "--lagrange",
@@ -378,14 +387,19 @@ def main():
     if mapmask is None:
         print("No mask provided. ")
 
-    if args.outputfile is not None:
-        gradefile = args.outputfile
+    if args.outputroot is not None:
+        gradefile = f"{args.outputroot}_badindices.txt"
     else:
-        gradefile = "rtgraderrankings.txt"
-    if not os.path.isfile(gradefile):
+        gradefile = "rtgrader_badindices.txt"
+    if os.path.isfile(gradefile):
         initfileexists = True
+        print(f"gradfile {gradefile} exists - reading initial grade file")
+        badindices = io.readvec(gradefile, isint=True)
+        if args.verbose:
+            print(badindices)
     else:
         initfileexists = False
+        print(f"gradfile {gradefile} does not exist - will initialize.")
 
     if verbose:
         print(f"lagtimes: {lagtimefile}")
@@ -448,10 +462,15 @@ def main():
         theIC = str(idx + 1)
         alldata2[theIC] = {}
     print("Read in", numelements, "strength maps")
-    whichcomponent = 0
+    whichcomponent = args.startindex
+    print(f"starting with index set to {whichcomponent}")
     indexmap = np.arange(0, numelements, dtype=int)
     sorttype = 0
     sortnames = ["file 1 order", "correlation coefficient"]
+
+    if initfileexists:
+        for idx in badindices:
+            grades[idx] = False
 
     # make the main window
     import picachooser.rtgraderTemplate as uiTemplate
@@ -469,6 +488,7 @@ def main():
 
     print("setting up image windows")
     if mapmask is not None:
+        print("reading in masks")
         geommaskimage = lb.imagedataset(
             "mapmask",
             mapmask,
@@ -480,8 +500,7 @@ def main():
         )
         thegeommask = geommaskimage.data
 
-    # make a bias mask
-    biasmaskimage = np.where(geommaskimage.data > 0, 1, -1000)
+    print("reading in lags")
     fgimage1 = lb.imagedataset(
         "Lagtimes",
         args.lagtimes,
@@ -493,7 +512,9 @@ def main():
         geommask=thegeommask,
     )
     fgimage1.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
-    #fgimage1.setFuncMask(geommaskimage.data)
+    # fgimage1.setFuncMask(geommaskimage.data)
+
+    print("reading in strengths")
     fgimage2 = lb.imagedataset(
         "CorrelationStrengths",
         args.strengths,
@@ -505,7 +526,7 @@ def main():
         geommask=thegeommask,
     )
     fgimage2.setFuncMaskByThresh(threshval=-100.0, maskdata=False)
-    #fgimage2.setFuncMask(geommaskimage.data)
+    # fgimage2.setFuncMask(geommaskimage.data)
 
     lbwin1 = lb.LightboxItem(
         fgimage1,

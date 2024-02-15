@@ -102,6 +102,19 @@ def is_float(parser, arg):
     return arg
 
 
+def is_int(parser, arg):
+    """
+    Check if argument is float or auto.
+    """
+    if arg != "auto":
+        try:
+            arg = int(arg)
+        except parser.error:
+            parser.error('Value {0} is not an int or "auto"'.format(arg))
+
+    return arg
+
+
 def is_range(parser, arg):
     """
     Check if argument is min/max pair.

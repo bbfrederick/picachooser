@@ -1008,7 +1008,7 @@ def readvecs(inputfilename, colspec=None, numskip=0, debug=False):
     return 1.0 * inputvec[:, 0:numvals]
 
 
-def readvec(inputfilename, numskip=0):
+def readvec(inputfilename, numskip=0, isint=False):
     r"""Read an array of floats in from a text file.
 
     Parameters
@@ -1022,15 +1022,24 @@ def readvec(inputfilename, numskip=0):
         The data from the file
 
     """
-    inputvec = np.zeros(MAXLINES, dtype="float64")
+    if isint:
+        inputvec = np.zeros(MAXLINES, dtype="int")
+    else:
+        inputvec = np.zeros(MAXLINES, dtype="float64")
     numvals = 0
     with open(inputfilename, "r") as thefile:
         lines = thefile.readlines()
         for line in lines[numskip:]:
             if len(line) > 1:
                 numvals += 1
-                inputvec[numvals - 1] = np.float64(line)
-    return 1.0 * inputvec[0:numvals]
+                if isint:
+                    inputvec[numvals - 1] = int(line)
+                else:
+                    inputvec[numvals - 1] = np.float64(line)
+    if isint:
+        return inputvec[0:numvals]
+    else:
+        return 1.0 * inputvec[0:numvals]
 
 
 def readtc(inputfilename, colnum=None, colname=None, debug=False):
