@@ -115,25 +115,34 @@ def keyPressed(evt):
     if verbose:
         print("processing keypress event")
 
-    modifiers = QtWidgets.QMainWindow.keyboardModifiers()
     keymods = None
-    if modifiers == QtCore.Qt.ShiftModifier:
+    if evt.modifiers() & QtCore.Qt.ShiftModifier:
         keymods = "shift"
-    elif modifiers == QtCore.Qt.ControlModifier:
+    elif evt.modifiers() & QtCore.Qt.ControlModifier:
         keymods = "ctrl"
 
-    print(f"processing keypress event with {keymods}")
-    print(modifiers)
+    badindices = np.where(grades == False)[0]
+    goodindices = np.where(grades == True)[0]
 
     if evt.key() == QtCore.Qt.Key_Up:
         incrementgrade()
     elif evt.key() == QtCore.Qt.Key_Down:
         decrementgrade()
     elif evt.key() == QtCore.Qt.Key_Left:
-        whichcomponent = (whichcomponent - 1) % numelements
+        if keymods == "shift":
+            whichcomponent = pica_util.nextmatch(whichcomponent, badindices, backwards=True)
+        elif keymods == "ctrl":
+            whichcomponent = pica_util.nextmatch(whichcomponent, goodindices, backwards=True)
+        else:
+            whichcomponent = (whichcomponent - 1) % numelements
         print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
     elif evt.key() == QtCore.Qt.Key_Right:
-        whichcomponent = (whichcomponent + 1) % numelements
+        if keymods == "shift":
+            whichcomponent = pica_util.nextmatch(whichcomponent, badindices, backwards=False)
+        elif keymods == "ctrl":
+            whichcomponent = pica_util.nextmatch(whichcomponent, goodindices, backwards=False)
+        else:
+            whichcomponent = (whichcomponent + 1) % numelements
         print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
     elif evt.key() == QtCore.Qt.Key_A:
         for thewin in [lbwin1, lbwin2]:
@@ -188,7 +197,7 @@ def keyPressed(evt):
         io.writevec(badlabels, badlabelfile)
         print("grade files written")
     else:
-        print(evt.key())
+        pass
 
     updateTCinfo()
     updateLightboxes()
@@ -458,14 +467,13 @@ def main():
 
     datasetlabels = io.readlabels(args.labels)
     namelist = []
-    grades = []
     print("reading info on lag time file...")
     for idx in range(numelements):
         theIC = str(idx + 1)
         namelist.append(theIC)
-        grades.append(True)
         alldata1[theIC] = {}
         thecorrcoeffs[idx] = 1.0
+    grades = np.ones((numelements), dtype=bool)
     print("Read in", numelements, "lag time maps")
     print("reading info on strengths file...")
     for idx in range(numelements):

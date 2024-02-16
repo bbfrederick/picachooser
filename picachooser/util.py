@@ -165,3 +165,29 @@ def calccorrs(file1, file2, mask, debug=False):
     else:
         print("data or mask dimensions do not match")
         return None, None
+
+
+def nextmatch(currentvalue, values, backwards=False, debug=False):
+    if debug:
+        print(f"currentvalue: {currentvalue}")
+        print(f"values: {values}")
+        print(f"backwards: {backwards}")
+        print(f"debug: {debug}")
+    if len(values) == 0:
+        returnvalue = currentvalue
+    else:
+        if backwards:
+            ltloc = np.argmax(values[::-1] < currentvalue)
+            if ltloc >= 0:
+                returnvalue = values[::-1][ltloc]
+            else:
+                returnvalue = values[-1]
+        else:
+            gtloc = np.argmax(values > currentvalue)
+            if gtloc >= 0:
+                returnvalue = values[gtloc]
+            else:
+                returnvalue = values[0]
+    if debug:
+        print(f"returnvalue: {returnvalue}")
+    return returnvalue
