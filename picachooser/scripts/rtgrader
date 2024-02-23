@@ -287,7 +287,7 @@ def main():
         ),
         default=None,
     )
-    parser.add_argument(
+    """parser.add_argument(
         "regressors",
         action="store",
         type=lambda x: pica_util.is_valid_file(parser, x),
@@ -295,7 +295,7 @@ def main():
             "The json/tsv.gz file containing the concatenated sLFO regressors for all subjects.  Columns to be in the same order as the label file."
         ),
         default=None,
-    )
+    )"""
     parser.add_argument(
         "labels",
         action="store",
@@ -399,7 +399,7 @@ def main():
     # first see if there are specific overrides
     lagtimefile = args.lagtimes
     strengthsfile = args.strengths
-    regressorsfile = args.regressors
+    #regressorsfile = args.regressors
     labelfile = args.labels
     mapmask = args.mapmask
 
@@ -423,7 +423,7 @@ def main():
     if verbose:
         print(f"lagtimes: {lagtimefile}")
         print(f"strengths: {strengthsfile}")
-        print(f"regressors: {regressorsfile}")
+        #print(f"regressors: {regressorsfile}")
         print(f"labels: {labelfile}")
         print(f"gradefile: {gradefile}")
 
