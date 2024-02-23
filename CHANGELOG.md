@@ -1,8 +1,10 @@
  History of changes
 
-## Version 1.4.6 (12/11/23)
-* (Docker) Updated to basecontainer 0.3.0.
+## Version 1.4.6 (2/23/24)
+* (rtgrader) Added new program - rtgrader - to do quality assessment of rapidtide datasets.
+* (Docker) Updated to basecontainer 0.3.2.
 * (Docker) Added caching to build.
+* Merged of a bunch of dependabot PRs.
 
 ## Version 1.4.5 (9/13/23)
 * Mass merge of a bunch of dependabot PRs.
