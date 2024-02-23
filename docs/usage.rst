@@ -405,3 +405,70 @@ with the component of the first melodic file , the matching component
 from the second file, and the correlation coefficient between them on
 each line. Component numbers start from 0. The order of lines in the
 file is the same as the current sort order in the GUI.
+
+
+rtgrader
+========
+
+rtgrader is my attempt at letting you quickly run through a bunch of rapidtide 
+analyses and see which ones worked and which did not.  This requires you  
+to have a pretty good sense of what you're looking for (which, as far as I 
+can tell, means you have to be me, but whatever.  I wrote it for me).
+
+
+Usage
+-----
+
+usage: rtgrader lagtimes strengths labels [options]
+
+A program to review (and rate) rapidtide analyses.
+
+positional arguments:
+  lagtimes              A 4D NIFTI file of concatenated maxtime_map.nii.gz
+                        files from a group of rapidtide analyses.  These
+                        obviously all have to be at the same resolution, orentation,
+                        and coordinate system (e.g. MNI152NLin6Asm).
+
+
+  strengths             A 4D NIFTI file of concatenated maxcorr_map.nii.gz
+                        files from a group of rapidtide analyses.  These
+                        have to match the lagtimes file in resolution, orientation,
+                        coordinate system, and order.
+
+  labels                A text file, one entry per line, of unique descriptions
+                        of the datasets in the lagtimes and strengths files so you
+                        know which dataset is which.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Other arguments:
+  --startindex INDEX    The index to start at (0-based).
+
+  --mapmask MASKFILE    The 3D or 4D NIFTI to mask all maps.
+
+  --spatialroi XMIN XMAX YMIN YMAX ZMIN ZMAX
+                        Only read in image data within the specified ROI. 
+                        Set MAX to -1 to go to the end of that dimension.
+
+  --outputroot OUTPUTROOT
+                        Root name for reading and writing the lists of good 
+                        and bad component indices (default is 'rtgrader', 
+                        resulting in 'rtgrader_goodindices.txt' and 
+                        'rtgrader_badindices.txt')in the current working directory.
+
+  --lagrange MINLAG MAXLAG
+                        Lag time range to display. Default is -5.0 to 10.0.
+
+  --strengthrange MINSTRENGTH MAXSTRENGTH
+                        Strength range to display. Default is 0.0 to 0.75.
+
+Miscellaneous arguments:
+  --version             show program's version number and exit
+  --detailedversion     show program's version number and exit
+
+Debugging arguments:
+  --verbose             Output exhaustive amounts of information about 
+                        the internal workings of rtgrader. You almost 
+                        certainly don't want this.
+
