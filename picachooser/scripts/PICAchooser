@@ -676,9 +676,11 @@ def main():
         action="store",
         type=str,
         help=(
-            'Analysis mode.  Valid choices are "melodic", "groupmelodic" "aroma", and "fix".  '
+            'Analysis mode.  Valid choices are "melodic", "melodic_dataex", "groupmelodic" "aroma", and "fix".  '
             'In melodic mode, the default output file is named "badcomponents.txt" and will be written to MELODICDIR '
-            'as comma separated integers. In groupmelodic mode, the default output file is named "goodcomponents.txt" '
+            'as comma separated integers. In melodic_dataex mode, we assume this is a feat run with "melodic data "'
+            'exploration" selected - if you specify the featdir, it should find everything.  Otherwise it acts like '
+            'melodic mode.  In groupmelodic mode, the default output file is named "goodcomponents.txt" '
             "(you are more interested in which components should be retained) and will be written to MELODICDIR as newline "
             'separated integers (starting from 0). In aroma mode, the file "classified_motion_ICs.txt" must exist in the parent of '
             'MELODICDIR; by default the output will be written to "classified_motion_ICs_revised.txt" in the same '
@@ -1003,6 +1005,10 @@ def main():
 
     if args.featdir is not None:
         BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir, BGfile, Funcfile, Motionfile)
+        if runmode == "melodic_dataex":
+            BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile = findfrommelodicdir(
+                os.path.join(args.featdir, "filtered_func_data.ica"), BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile
+            )
 
     if args.melodicdir is not None:
         BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile = findfrommelodicdir(
@@ -1045,8 +1051,8 @@ def main():
     if ICreffile is None:
         ICreffile = os.path.join(pica_util.getrefdir(), "Smith_D50_Subset_ICs.nii.gz")
 
-    # there are 4 modes at the moment - groupmelodic, melodic, aroma, and fix
-    if runmode == "melodic":
+    # there are 5 modes at the moment - groupmelodic, melodic, melodic_dataex, aroma, and fix
+    if runmode == "melodic" or runmode == "melodic_dataex":
         if args.initfile is not None:
             Removefile = args.initfile
         else:
@@ -1138,7 +1144,7 @@ def main():
         print(
             "Illegal runmode",
             runmode,
-            '.  Legal runmodes are "melodic", "groupmelodic", "aroma", and "fix".  Exiting',
+            '.  Legal runmodes are "melodic", "melodic_dataex", "groupmelodic", "aroma", and "fix".  Exiting',
         )
         sys.exit()
 
