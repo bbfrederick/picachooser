@@ -260,10 +260,17 @@ def decrementgrade(whichcomponent):
     if usereferencefile:
         checkgrade(whichcomponent)
 
+def filterdata():
+    denoisingcmd = makefiltercommand()
+    if denoisingcmd is not None:
+        print()
+        print()
+        print(denoisingcmd)
+        print()
+        print()
 
-def writegrades():
-    global alldata, namelist, numelements, outputfile, runmode
-    global Funcfile, Mixfile, filteredfile
+def makegradelists():
+    global alldata, namelist
 
     badlist = []
     goodlist = []
@@ -272,19 +279,15 @@ def writegrades():
             badlist.append(str(i + 1))
         else:
             goodlist.append(str(i))
-    if runmode == "groupmelodic":
-        outputstring = "\n".join(goodlist)
-    else:
-        outputstring = ",".join(badlist)
-    if runmode == "fix":
-        outputstring = "[" + outputstring + "]"
-    with open(outputfile, "w") as thefile:
-        thefile.write(outputstring + "\n")
+    return badlist, goodlist
+
+def makefiltercommand():
+    global Funcfile, Mixfile, filteredfile
+
+    badlist, dummy = makegradelists()
 
     # Non-aggressive denoising of the data using fsl_regfilt (partial regression), if requested
     if filteredfile is not None:
-        print()
-        print()
         if len(badlist) > 0:
             fslDir = os.path.join(os.environ["FSLDIR"], "bin")
             if fslDir is None:
@@ -300,9 +303,38 @@ def writegrades():
                     "--out=" + filteredfile,
                 ]
             )
-            print(denoisingcmd)
         else:
-            print("There are no components flagged for removal, so there is nothing to do.")
+            denoisingcmd = " ".join(
+                [
+                    "cp",
+                    Funcfile,
+                    filteredfile,
+                ]
+            )
+        return denoisingcmd
+    else:
+        return None
+
+def writegrades():
+    global outputfile, runmode
+    global Funcfile, Mixfile, filteredfile
+
+    badlist, goodlist = makegradelists()
+
+    if runmode == "groupmelodic":
+        outputstring = "\n".join(goodlist)
+    else:
+        outputstring = ",".join(badlist)
+    if runmode == "fix":
+        outputstring = "[" + outputstring + "]"
+    with open(outputfile, "w") as thefile:
+        thefile.write(outputstring + "\n")
+
+    denoisingcmd = makefiltercommand()
+    if denoisingcmd is not None:
+        print()
+        print()
+        print(denoisingcmd)
         print()
         print()
 
@@ -378,6 +410,9 @@ def keyPressed(evt):
     elif evt.key() == QtCore.Qt.Key_Escape:
         writegrades()
         print("bad component file written")
+    elif evt.key() == QtCore.Qt.Key_F:
+        filterdata()
+        print("ran glm filter")
     else:
         print(evt.key())
 
