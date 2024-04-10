@@ -307,8 +307,8 @@ def makefiltercommand():
             denoisingcmd = " ".join(
                 [
                     "cp",
-                    Funcfile,
-                    filteredfile,
+                    os.path.abspath(Funcfile),
+                    os.path.abspath(filteredfile),
                 ]
             )
         return denoisingcmd
