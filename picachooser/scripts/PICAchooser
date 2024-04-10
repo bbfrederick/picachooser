@@ -297,10 +297,10 @@ def makefiltercommand():
             denoisingcmd = " ".join(
                 [
                     fslregfiltcmd,
-                    "--in=" + Funcfile,
-                    "--design=" + Mixfile,
-                    '--filter="' + ",".join(badlist) + '"',
-                    "--out=" + filteredfile,
+                    "-i", os.path.abspath(Funcfile),
+                    "-d", os.path.abspath(Mixfile),
+                    "-f", '"' + ','.join(badlist) + '"',
+                    "-o", os.path.abspath(filteredfile),
                 ]
             )
         else:
