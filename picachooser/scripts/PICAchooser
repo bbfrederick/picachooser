@@ -261,17 +261,20 @@ def decrementgrade(whichcomponent):
         checkgrade(whichcomponent)
 
 
-def filterdata(execute=False):
+def filterdata(glmtype=None):
     denoisingcmd = makefiltercommand()
     if denoisingcmd is not None:
-        if execute:
-            subprocess.Popen(denoisingcmd, shell=False, stdin=None, stdout=None, stderr=None)
-        else:
+        if glmtype is None:
             print()
             print()
             print(" ".join(denoisingcmd))
             print()
             print()
+        elif glmtype == "fsl":
+            subprocess.Popen(" ".join(denoisingcmd), shell=True)
+            print("process started")
+        else:
+            raise (Exception("glm type not supported"))
 
 
 def makegradelists():
@@ -288,19 +291,23 @@ def makegradelists():
 
 
 def makefiltercommand():
-    global Funcfile, Mixfile, filteredfile
+    global Funcfile, Mixfile, filteredfile, config
 
     badlist, dummy = makegradelists()
 
     # Non-aggressive denoising of the data using fsl_regfilt (partial regression), if requested
     if filteredfile is not None:
+        if config["usebatch"]:
+            denoisingcmd = ["sbatch", "--mem=8G", "--cpus-per-task=1", "--time=20"]
+        else:
+            denoisingcmd = []
         if len(badlist) > 0:
             fslDir = os.path.join(os.environ["FSLDIR"], "bin")
             if fslDir is None:
                 fslregfiltcmd = "fsl_regfilt"
             else:
                 fslregfiltcmd = os.path.join(fslDir, "fsl_regfilt")
-            denoisingcmd = [
+            denoisingcmd += [
                 fslregfiltcmd,
                 "-i",
                 os.path.abspath(Funcfile),
@@ -312,7 +319,7 @@ def makefiltercommand():
                 os.path.abspath(filteredfile),
             ]
         else:
-            denoisingcmd = [
+            denoisingcmd += [
                 "cp",
                 os.path.abspath(Funcfile),
                 os.path.abspath(filteredfile),
@@ -421,11 +428,11 @@ def keyPressed(evt):
         print("bad component file written")
     elif evt.key() == QtCore.Qt.Key_F:
         if keymods == "shift":
-            filterdata(execute=True)
-            print("ran glm filter")
+            filterdata(glmtype="fsl")
+            print("ran fsl_regfilt")
         else:
-            filterdata(execute=False)
-            print("printed glm filter command")
+            filterdata(glmtype=None)
+            print("printed fsl_regfilt command")
     else:
         print(evt.key())
 
@@ -1220,7 +1227,7 @@ def main():
     def initconfig():
         print("initializing preferences")
         config = {
-            "prefsversion": 4,
+            "prefsversion": 5,
             "componentlinewidth": 2,
             "keepcolor": "g",
             "discardcolor": "r",
@@ -1234,6 +1241,7 @@ def main():
             "motionlimitlinewidth": 4,
             "motionplotstyle": 1,
             "scalemotiontodata": False,
+            "usebatch": False,
         }
         return config
 
@@ -1247,7 +1255,7 @@ def main():
             prefsversion = config["prefsversion"]
         except KeyError:
             prefsversion = 0
-        if prefsversion < 4:
+        if prefsversion < 5:
             config = initconfig()
             io.writedicttojson(config, configfile)
 
