@@ -26,9 +26,9 @@
 A simple GUI for rating timecoursese by whatever metric you want
 """
 
-
 import argparse
 import os
+import subprocess
 import sys
 
 import numpy as np
@@ -260,14 +260,19 @@ def decrementgrade(whichcomponent):
     if usereferencefile:
         checkgrade(whichcomponent)
 
-def filterdata():
+
+def filterdata(execute=False):
     denoisingcmd = makefiltercommand()
     if denoisingcmd is not None:
-        print()
-        print()
-        print(denoisingcmd)
-        print()
-        print()
+        if execute:
+            subprocess.Popen(denoisingcmd, shell=False, stdin=None, stdout=None, stderr=None)
+        else:
+            print()
+            print()
+            print(" ".join(denoisingcmd))
+            print()
+            print()
+
 
 def makegradelists():
     global alldata, namelist
@@ -280,6 +285,7 @@ def makegradelists():
         else:
             goodlist.append(str(i))
     return badlist, goodlist
+
 
 def makefiltercommand():
     global Funcfile, Mixfile, filteredfile
@@ -294,26 +300,27 @@ def makefiltercommand():
                 fslregfiltcmd = "fsl_regfilt"
             else:
                 fslregfiltcmd = os.path.join(fslDir, "fsl_regfilt")
-            denoisingcmd = " ".join(
-                [
-                    fslregfiltcmd,
-                    "-i", os.path.abspath(Funcfile),
-                    "-d", os.path.abspath(Mixfile),
-                    "-f", '"' + ','.join(badlist) + '"',
-                    "-o", os.path.abspath(filteredfile),
-                ]
-            )
+            denoisingcmd = [
+                fslregfiltcmd,
+                "-i",
+                os.path.abspath(Funcfile),
+                "-d",
+                os.path.abspath(Mixfile),
+                "-f",
+                '"' + ",".join(badlist) + '"',
+                "-o",
+                os.path.abspath(filteredfile),
+            ]
         else:
-            denoisingcmd = " ".join(
-                [
-                    "cp",
-                    os.path.abspath(Funcfile),
-                    os.path.abspath(filteredfile),
-                ]
-            )
+            denoisingcmd = [
+                "cp",
+                os.path.abspath(Funcfile),
+                os.path.abspath(filteredfile),
+            ]
         return denoisingcmd
     else:
         return None
+
 
 def writegrades():
     global outputfile, runmode
@@ -332,11 +339,7 @@ def writegrades():
 
     denoisingcmd = makefiltercommand()
     if denoisingcmd is not None:
-        print()
-        print()
-        print(denoisingcmd)
-        print()
-        print()
+        print(" ".join(denoisingcmd))
 
 
 def windowResized(evt):
@@ -355,6 +358,12 @@ def keyPressed(evt):
 
     if verbose:
         print("processing keypress event")
+
+    keymods = None
+    if evt.modifiers() & QtCore.Qt.ShiftModifier:
+        keymods = "shift"
+    elif evt.modifiers() & QtCore.Qt.ControlModifier:
+        keymods = "ctrl"
 
     if evt.key() == QtCore.Qt.Key_Up:
         incrementgrade(whichcomponent)
@@ -411,8 +420,12 @@ def keyPressed(evt):
         writegrades()
         print("bad component file written")
     elif evt.key() == QtCore.Qt.Key_F:
-        filterdata()
-        print("ran glm filter")
+        if keymods == "shift":
+            filterdata(execute=True)
+            print("ran glm filter")
+        else:
+            filterdata(execute=False)
+            print("printed glm filter command")
     else:
         print(evt.key())
 
@@ -1042,7 +1055,12 @@ def main():
         BGfile, Funcfile, Motionfile = findfromfeatdir(args.featdir, BGfile, Funcfile, Motionfile)
         if runmode == "melodic_dataex":
             BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile = findfrommelodicdir(
-                os.path.join(args.featdir, "filtered_func_data.ica"), BGfile, ICfile, ICmask, Mixfile, melodicICstatsfile
+                os.path.join(args.featdir, "filtered_func_data.ica"),
+                BGfile,
+                ICfile,
+                ICmask,
+                Mixfile,
+                melodicICstatsfile,
             )
 
     if args.melodicdir is not None:
