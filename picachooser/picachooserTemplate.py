@@ -191,7 +191,7 @@ class Ui_MainWindow(object):
         self.label.setText(
             _translate(
                 "MainWindow",
-                'Right and left arrows step through components. Up and down arrows toggle component retention.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  ESC to write component file. "f" to filter data.',
+                'Right and left arrows step through components. Up and down arrows toggle component retention.  "r" to reset component.  "a", "c", and "s" select axial, coronal, or sagittal views.  ESC to write component file. "f" to show filter command, "F" to run filter.',
             )
         )
 
