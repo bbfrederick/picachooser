@@ -99,7 +99,6 @@ numpy==1.25.2
     #   nilearn
     #   pandas
     #   patsy
-    #   pyfftw
     #   pyqtgraph
     #   pywavelets
     #   rapidtide (setup.py)
@@ -140,8 +139,6 @@ pluggy==1.2.0
     # via pytest
 pycodestyle==2.11.0
     # via flake8
-pyfftw==0.13.1
-    # via rapidtide (setup.py)
 pyflakes==3.1.0
     # via flake8
 pygments==2.16.1

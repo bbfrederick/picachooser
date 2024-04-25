@@ -30,7 +30,6 @@ import picachooser.io as io
 # ---------------------------------------- Global constants -------------------------------------------
 defaultbutterorder = 6
 MAXLINES = 10000000
-donotbeaggressive = True
 
 # ----------------------------------------- Conditional imports ---------------------------------------
 try:
@@ -42,23 +41,11 @@ except ImportError:
 
 
 try:
-    from numba import jit
-
-    numbaexists = True
-except ImportError:
-    numbaexists = False
-numbaexists = False
-
-
-try:
     import nibabel as nib
 
     nibabelexists = True
 except ImportError:
     nibabelexists = False
-
-
-donotusenumba = False
 
 
 try:
@@ -69,29 +56,6 @@ try:
     pyfftw.interfaces.cache.enable()
 except ImportError:
     pyfftwexists = False
-
-
-def conditionaljit():
-    def resdec(f):
-        if (not numbaexists) or donotusenumba:
-            return f
-        return jit(f, nopython=False)
-
-    return resdec
-
-
-def conditionaljit2():
-    def resdec(f):
-        if (not numbaexists) or donotusenumba or donotbeaggressive:
-            return f
-        return jit(f, nopython=False)
-
-    return resdec
-
-
-def disablenumba():
-    global donotusenumba
-    donotusenumba = True
 
 
 # --------------------------- probability functions -------------------------------------------------
