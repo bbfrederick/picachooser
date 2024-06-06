@@ -1,5 +1,8 @@
  History of changes
 
+## Version 1.4.7 (6/5/24)
+* (PICAchooser) Fixed timecourse time axis display when no motion timecourses are used.
+
 ## Version 1.4.6 (2/23/24)
 * (rtgrader) Added new program - rtgrader - to do quality assessment of rapidtide datasets.
 * (Docker) Updated to basecontainer 0.3.2.

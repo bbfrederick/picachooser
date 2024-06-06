@@ -1295,10 +1295,11 @@ def main():
         config["motionlimitlinewidth"] = args.motionlimitlinewidth
 
     # set the sample rate
-    if domotion:
-        tr, timepoints = io.fmritimeinfo(Funcfile)
-    else:
-        tr = 1.0
+    # if domotion:
+    #    tr, timepoints = io.fmritimeinfo(Funcfile)
+    # else:
+    #    tr = 1.0
+    tr, timepoints = io.fmritimeinfo(Funcfile)
     samplerate = 1.0 / tr
 
     # read in the timecourses and their current labels
