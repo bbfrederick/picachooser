@@ -1,7 +1,16 @@
  History of changes
 
-## Version 1.4.7 (6/5/24)
+## Version 1.4.7 (6/18/24)
 * (PICAchooser) Fixed timecourse time axis display when no motion timecourses are used.
+* (PICAchooser) Added melodic_dataex mode.
+* (PICAchooser) Cleaned up filtering interface.
+* (PICAchooser) Use absolute paths internally.
+* (PICAchooser) Got filtering working.
+* (PICAchooser) Fixed TR specification.
+* (package) Made some proactive changes to avoid numpy 2.0.0 problems.
+* (package) Cleaned up dependencies for Python 3.12 compatibility.
+* (Docker) Updated to Python 3.12 basecontainer.
+* Merged LOTS of dependabot changes.
 
 ## Version 1.4.6 (2/23/24)
 * (rtgrader) Added new program - rtgrader - to do quality assessment of rapidtide datasets.
