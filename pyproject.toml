@@ -66,7 +66,7 @@ doc = [
 include-package-data = true 
 
 [tool.setuptools.packages.find]
-include = ['picachooser', 'cloud']
+include = ['picachooser']
 
 [tool.setuptools.package-data]
 picachooser = ['picachooser/*.py', 'picachooser/scripts/*']
@@ -105,7 +105,7 @@ exclude = '''
 '''
 
 [tool.isort]
-profile = "black"
+profile = 'black'
 multi_line_output = 3
 
 [tool.versioneer]
@@ -115,4 +115,3 @@ versionfile_source = "picachooser/_version.py"
 versionfile_build = "picachooser/_version.py"
 tag_prefix = "v"
 parentdir_prefix = "picachooser-"
-
