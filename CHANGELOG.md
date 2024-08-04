@@ -1,5 +1,9 @@
  History of changes
 
+## Version 1.4.8 (8/4/24)
+* (package) Updated setuptools files to a new, cleaner format, and including more URLs for packaging.
+* Merged dependabot changes.
+
 ## Version 1.4.7 (6/18/24)
 * (PICAchooser) Fixed timecourse time axis display when no motion timecourses are used.
 * (PICAchooser) Added melodic_dataex mode.
