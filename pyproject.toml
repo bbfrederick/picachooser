@@ -1,10 +1,12 @@
 [build-system]
-requires = ['setuptools', 'wheel', 'versioneer[toml]']
+requires = ["setuptools>=42", "cffi>=1.0.0", 'versioneer[toml]']
 build-backend = 'setuptools.build_meta'
 
 [project]
 name = 'picachooser'
 description = 'Lightweight GUI for sorting, classifying, and matching MELODIC ICA components.'
+keywords = ["fMRI", "ICA", "component matching", "visualization"]
+license = {text = "Apache Software License"}
 authors = [
   { name='Blaise Frederick', email='blaise.frederick@gmail.com' },
 ]
@@ -23,14 +25,14 @@ classifiers = [
 ]
 requires-python = '>=3.8'
 dependencies = [
-  'numpy>=1.16',
-  'pillow',
+  'numpy',
   'scipy',
   'pandas',
   'nibabel',
   'pyqtgraph',
+  'pillow',
 ]
-dynamic = ['version', 'license', 'keywords']
+dynamic = ['version']
 
 
 [project.urls]
@@ -39,7 +41,6 @@ dynamic = ['version', 'license', 'keywords']
 'Repository' = 'https://github.com/bbfrederick/picachooser.git'
 'Documentation' = 'https://picachooser.readthedocs.io'
 'Changelog' = 'https://github.com/bbfrederick/picachooser/blob/main/CHANGELOG.md'
-
 
 [project.optional-dependencies]
 test = [
@@ -80,7 +81,6 @@ picachooser = ['.eggs', '.git', '.github', '.pytest_cache']
 docs = ['picachooser[doc]']
 tests = ['picachooser[test]']
 all = ['picachooser[docs,tests]']
-
 
 [tool.black]
 line-length = 99

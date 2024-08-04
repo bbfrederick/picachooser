@@ -11,4 +11,4 @@ mamba install \
     pandas \
     pyqt \
     pyqt5-sip \
-    "pyqtgraph<0.13"
+    pyqtgraph

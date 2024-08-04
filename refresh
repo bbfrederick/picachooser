@@ -2,5 +2,5 @@
 
 git pull
 cleandirs
-pip install .
-rm -rf build dist rapidtide.egg-info
+pip install -e .
+rm -rf picachooser.egg-info
