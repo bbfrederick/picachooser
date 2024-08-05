@@ -34,7 +34,6 @@ dependencies = [
 ]
 dynamic = ['version']
 
-
 [project.urls]
 'Homepage' = 'https://github.com/bbfrederick/picachooser'
 'Bug Tracker' = 'https://github.com/bbfrederick/picachooser/issues'
