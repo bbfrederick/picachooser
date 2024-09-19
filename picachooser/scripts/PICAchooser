@@ -42,6 +42,13 @@ import picachooser.io as io
 import picachooser.LightboxItem as lb
 import picachooser.util as pica_util
 
+try:
+    from PyQt6.QtCore import QT_VERSION_STR
+except ImportError:
+    pyqtversion = 5
+else:
+    pyqtversion = 6
+
 hammingwindows = {}
 DEFAULT_RETAINTHRESH = 0.5
 
@@ -367,49 +374,49 @@ def keyPressed(evt):
         print("processing keypress event")
 
     keymods = None
-    if evt.modifiers() & QtCore.Qt.ShiftModifier:
+    if evt.modifiers() & QtCore.Qt.KeyboardModifier.ShiftModifier:
         keymods = "shift"
-    elif evt.modifiers() & QtCore.Qt.ControlModifier:
+    elif evt.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier:
         keymods = "ctrl"
 
-    if evt.key() == QtCore.Qt.Key_Up:
+    if evt.key() == QtCore.Qt.Key.Key_Up:
         incrementgrade(whichcomponent)
-    elif evt.key() == QtCore.Qt.Key_Down:
+    elif evt.key() == QtCore.Qt.Key.Key_Down:
         decrementgrade(whichcomponent)
-    elif evt.key() == QtCore.Qt.Key_Left:
+    elif evt.key() == QtCore.Qt.Key.Key_Left:
         whichcomponent = (whichcomponent - 1) % numelements
         print("IC set to:", whichcomponent + 1)
-    elif evt.key() == QtCore.Qt.Key_Right:
+    elif evt.key() == QtCore.Qt.Key.Key_Right:
         whichcomponent = (whichcomponent + 1) % numelements
         print("IC set to:", whichcomponent + 1)
-    elif evt.key() == QtCore.Qt.Key_A:
+    elif evt.key() == QtCore.Qt.Key.Key_A:
         mainwin.setorient("ax")
         mainwin.resetWinProps()
         if usereferencefile:
             altwin.setorient("ax")
             altwin.resetWinProps()
         print("Setting orientation to axial")
-    elif evt.key() == QtCore.Qt.Key_C:
+    elif evt.key() == QtCore.Qt.Key.Key_C:
         mainwin.setorient("cor")
         mainwin.resetWinProps()
         if usereferencefile:
             altwin.setorient("cor")
             altwin.resetWinProps()
         print("Setting orientation to coronal")
-    elif evt.key() == QtCore.Qt.Key_S:
+    elif evt.key() == QtCore.Qt.Key.Key_S:
         mainwin.setorient("sag")
         mainwin.resetWinProps()
         if usereferencefile:
             altwin.setorient("sag")
             altwin.resetWinProps()
         print("Setting orientation to sagittal")
-    elif evt.key() == QtCore.Qt.Key_D:
+    elif evt.key() == QtCore.Qt.Key.Key_D:
         print("Dumping main window information")
         mainwin.printWinProps()
         if usereferencefile:
             print("Dumping reference window information")
             altwin.printWinProps()
-    elif evt.key() == QtCore.Qt.Key_B:
+    elif evt.key() == QtCore.Qt.Key.Key_B:
         if usereferencefile:
             print("Blinking")
             blinkstatus = not blinkstatus
@@ -421,12 +428,12 @@ def keyPressed(evt):
                 altwin.setviewinfo(altinfo)
         else:
             pass
-    elif evt.key() == QtCore.Qt.Key_R:
+    elif evt.key() == QtCore.Qt.Key.Key_R:
         whichcomponent = 0
-    elif evt.key() == QtCore.Qt.Key_Escape:
+    elif evt.key() == QtCore.Qt.Key.Key_Escape:
         writegrades()
         print("bad component file written")
-    elif evt.key() == QtCore.Qt.Key_F:
+    elif evt.key() == QtCore.Qt.Key.Key_F:
         if keymods == "shift":
             filterdata(glmtype="fsl")
             print("ran fsl_regfilt")
@@ -558,7 +565,7 @@ def updateMotion():
         limitpen = pg.mkPen(
             config["motionlimitcolor"],
             width=config["motionlimitlinewidth"],
-            style=QtCore.Qt.DotLine,
+            style=QtCore.Qt.PenStyle.DotLine,
         )
         transtopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
         transtopLine.setZValue(20)
@@ -639,7 +646,7 @@ def updateMotion():
         limitpen = pg.mkPen(
             config["motionlimitcolor"],
             width=config["motionlimitlinewidth"],
-            style=QtCore.Qt.DotLine,
+            style=QtCore.Qt.PenStyle.DotLine,
         )
         rottopLine = pg.InfiniteLine(angle=0, movable=False, pen=limitpen)
         rottopLine.setZValue(20)
@@ -1448,10 +1455,16 @@ def main():
     whichcomponent = 0
 
     # make the main window
-    if dotimecourse:
-        import picachooser.picachooserTemplate as uiTemplate
+    if pyqtversion == 5:
+        if dotimecourse:
+            import picachooser.picachooserTemplate as uiTemplate
+        else:
+            import picachooser.picachooser_imonlyTemplate as uiTemplate
     else:
-        import picachooser.picachooser_imonlyTemplate as uiTemplate
+        if dotimecourse:
+            import picachooser.picachooserTemplate_qt6 as uiTemplate
+        else:
+            import picachooser.picachooser_imonlyTemplate_qt6 as uiTemplate
 
     app = QtWidgets.QApplication([])
     print("setting up output window")
@@ -1591,7 +1604,7 @@ def main():
         updateMotion()
     updateLightbox()
 
-    QtWidgets.QApplication.instance().exec_()
+    QtWidgets.QApplication.instance().exec()
 
 
 if __name__ == "__main__":

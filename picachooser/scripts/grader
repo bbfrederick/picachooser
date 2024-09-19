@@ -40,6 +40,13 @@ from scipy import fftpack
 import picachooser.LightboxItem as lb
 import picachooser.util as pica_util
 
+try:
+    from PyQt6.QtCore import QT_VERSION_STR
+except ImportError:
+    pyqtversion = 5
+else:
+    pyqtversion = 6
+
 hammingwindows = {}
 
 
@@ -190,15 +197,15 @@ def windowResized(evt):
 def keyPressed(evt):
     global whichfile, numelements, mainwin
 
-    if evt.key() == QtCore.Qt.Key_Up:
+    if evt.key() == QtCore.Qt.Key.Key_Up:
         incrementgrade(whichfile)
-    elif evt.key() == QtCore.Qt.Key_Down:
+    elif evt.key() == QtCore.Qt.Key.Key_Down:
         decrementgrade(whichfile)
-    elif evt.key() == QtCore.Qt.Key_Left:
+    elif evt.key() == QtCore.Qt.Key.Key_Left:
         whichfile = (whichfile - 1) % numelements
-    elif evt.key() == QtCore.Qt.Key_Right:
+    elif evt.key() == QtCore.Qt.Key.Key_Right:
         whichfile = (whichfile + 1) % numelements
-    elif evt.key() == QtCore.Qt.Key_Escape:
+    elif evt.key() == QtCore.Qt.Key.Key_Escape:
         writegrades()
         print("done")
     else:
@@ -470,13 +477,22 @@ def main():
     print("Read in", numelements, "files")
 
     # make the main window
-    if runmode == "timecourse":
-        import picachooser.graderTemplate as uiTemplate
-    elif runmode == "aroma":
-        import picachooser.aromaviewTemplate as uiTemplate
+    if pyqtversion == 5:
+        if runmode == "timecourse":
+            import picachooser.graderTemplate as uiTemplate
+        elif runmode == "aroma":
+            import picachooser.aromaviewTemplate as uiTemplate
+        else:
+            print("illegal runmode")
+            sys.exit()
     else:
-        print("illegal runmode")
-        sys.exit()
+        if runmode == "timecourse":
+            import picachooser.graderTemplate_qt6 as uiTemplate
+        elif runmode == "aroma":
+            import picachooser.aromaviewTemplate_qt6 as uiTemplate
+        else:
+            print("illegal runmode")
+            sys.exit()
 
     app = QtWidgets.QApplication([])
     print("setting up output window")
@@ -541,7 +557,7 @@ def main():
 
     # wire up keystrokes to control interface
 
-    QtWidgets.QApplication.instance().exec_()
+    QtWidgets.QApplication.instance().exec()
 
 
 if __name__ == "__main__":

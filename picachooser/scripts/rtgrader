@@ -39,6 +39,13 @@ import picachooser.io as io
 import picachooser.LightboxItem as lb
 import picachooser.util as pica_util
 
+try:
+    from PyQt6.QtCore import QT_VERSION_STR
+except ImportError:
+    pyqtversion = 5
+else:
+    pyqtversion = 6
+
 # fix for Big Sur on macOS
 os.environ["QT_MAC_WANTS_LAYER"] = "1"
 
@@ -116,19 +123,19 @@ def keyPressed(evt):
         print("processing keypress event")
 
     keymods = None
-    if evt.modifiers() & QtCore.Qt.ShiftModifier:
+    if evt.modifiers() & QtCore.Qt.KeyboardModifier.ShiftModifier:
         keymods = "shift"
-    elif evt.modifiers() & QtCore.Qt.ControlModifier:
+    elif evt.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier:
         keymods = "ctrl"
 
     badindices = np.where(grades == False)[0]
     goodindices = np.where(grades == True)[0]
 
-    if evt.key() == QtCore.Qt.Key_Up:
+    if evt.key() == QtCore.Qt.Key.Key_Up:
         incrementgrade()
-    elif evt.key() == QtCore.Qt.Key_Down:
+    elif evt.key() == QtCore.Qt.Key.Key_Down:
         decrementgrade()
-    elif evt.key() == QtCore.Qt.Key_Left:
+    elif evt.key() == QtCore.Qt.Key.Key_Left:
         if keymods == "shift":
             whichcomponent = pica_util.nextmatch(whichcomponent, badindices, backwards=True)
         elif keymods == "ctrl":
@@ -136,7 +143,7 @@ def keyPressed(evt):
         else:
             whichcomponent = (whichcomponent - 1) % numelements
         print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
-    elif evt.key() == QtCore.Qt.Key_Right:
+    elif evt.key() == QtCore.Qt.Key.Key_Right:
         if keymods == "shift":
             whichcomponent = pica_util.nextmatch(whichcomponent, badindices, backwards=False)
         elif keymods == "ctrl":
@@ -144,26 +151,26 @@ def keyPressed(evt):
         else:
             whichcomponent = (whichcomponent + 1) % numelements
         print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
-    elif evt.key() == QtCore.Qt.Key_A:
+    elif evt.key() == QtCore.Qt.Key.Key_A:
         for thewin in [lbwin1, lbwin2]:
             thewin.setorient("ax")
             thewin.resetWinProps()
         print("Setting orientation to axial")
-    elif evt.key() == QtCore.Qt.Key_C:
+    elif evt.key() == QtCore.Qt.Key.Key_C:
         for thewin in [lbwin1, lbwin2]:
             thewin.setorient("cor")
             thewin.resetWinProps()
         print("Setting orientation to coronal")
-    elif evt.key() == QtCore.Qt.Key_S:
+    elif evt.key() == QtCore.Qt.Key.Key_S:
         for thewin in [lbwin1, lbwin2]:
             thewin.setorient("sag")
             thewin.resetWinProps()
         print("Setting orientation to sagittal")
-    elif evt.key() == QtCore.Qt.Key_D:
+    elif evt.key() == QtCore.Qt.Key.Key_D:
         print("Dumping main window information")
         for thewin in [lbwin1, lbwin2]:
             thewin.printWinProps()
-    elif evt.key() == QtCore.Qt.Key_B:
+    elif evt.key() == QtCore.Qt.Key.Key_B:
         print("Blinking")
         blinkstatus = not blinkstatus
         if blinkstatus:
@@ -172,10 +179,10 @@ def keyPressed(evt):
         else:
             lbwin1.setviewinfo(leftinfo)
             lbwin2.setviewinfo(rightinfo)
-    elif evt.key() == QtCore.Qt.Key_R:
+    elif evt.key() == QtCore.Qt.Key.Key_R:
         whichcomponent = 0
         print(f"Index is {whichcomponent}, label is {datasetlabels[whichcomponent]}")
-    elif evt.key() == QtCore.Qt.Key_Escape:
+    elif evt.key() == QtCore.Qt.Key.Key_Escape:
         goodindices = []
         goodlabels = []
         badindices = []
@@ -491,7 +498,10 @@ def main():
             grades[idx] = False
 
     # make the main window
-    import picachooser.rtgraderTemplate as uiTemplate
+    if pyqtversion == 5:
+        import picachooser.rtgraderTemplate as uiTemplate
+    else:
+        import picachooser.rtgraderTemplate_qt6 as uiTemplate
 
     app = QtWidgets.QApplication([])
     print("setting up output window")
@@ -570,7 +580,7 @@ def main():
     updateTCinfo()
     updateLightboxes()
 
-    QtWidgets.QApplication.instance().exec_()
+    QtWidgets.QApplication.instance().exec()
 
 
 if __name__ == "__main__":
