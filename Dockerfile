@@ -31,7 +31,7 @@ RUN echo $GITVERSION > /src/picachooser/VERSION
 # init and install picachooser
 RUN uv pip install --upgrade pip
 RUN cd /src/picachooser && \
-    uv pip install . && \
+    uv pip install .
 RUN chmod -R a+r /src/picachooser
 
 # install versioneer
@@ -55,7 +55,7 @@ RUN cp ~/.bashrc /home/$USER/.bashrc; chown $USER /home/$USER/.bashrc
 WORKDIR /home/$USER
 ENV HOME="/home/$USER"
 
-ENV IS_DOCKER_8395080871=1
+ENV IN_DOCKER_CONTAINER=1
 
 RUN ldconfig
 WORKDIR /tmp/
