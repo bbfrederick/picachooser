@@ -21,18 +21,23 @@ RUN echo "GITVERSION: "$GITVERSION
 RUN echo "GITSHA: "$GITSHA
 RUN echo "GITDATE: "$GITDATE
 
-# Switch to root
-USER root
-
 # Installing precomputed python packages
 RUN uv pip install pillow 
 
-# Install PICAchooser
+# copy PICAchooser into container
 COPY . /src/picachooser
 RUN echo $GITVERSION > /src/picachooser/VERSION
+
+# init and install picachooser
+RUN uv pip install --upgrade pip
 RUN cd /src/picachooser && \
     uv pip install . && \
-    rm -rf /src/picachooser/build /src/picachooser/dist
+RUN chmod -R a+r /src/picachooser
+
+# install versioneer
+RUN cd /src/rapidtide && \
+    versioneer install --no-vendor && \
+    rm -rf /src/rapidtide/build /src/picachooser/dist
 
 # clean up
 RUN pip cache purge
