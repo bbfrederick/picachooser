@@ -35,9 +35,9 @@ RUN cd /src/picachooser && \
 RUN chmod -R a+r /src/picachooser
 
 # install versioneer
-RUN cd /src/rapidtide && \
+RUN cd /src/picachooser && \
     versioneer install --no-vendor && \
-    rm -rf /src/rapidtide/build /src/picachooser/dist
+    rm -rf /src/picachooser/build /src/picachooser/dist
 
 # clean up
 RUN pip cache purge

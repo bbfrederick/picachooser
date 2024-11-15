@@ -34,9 +34,9 @@ current_dir = os.getcwd()
 os.chdir(os.path.dirname(versioneer.__file__))
 
 versioneer.VCS = "git"
-versioneer.versionfile_source = "../rapidtide/_version.py"
-versioneer.versionfile_build = "../rapidtide/_version.py"
-versioneer.tag_prefix = "rapidtide-"  # tags are like rapidtide-1.2.0
+versioneer.versionfile_source = "../picachooser/_version.py"
+versioneer.versionfile_build = "../picachooser/_version.py"
+versioneer.tag_prefix = "picachooser-"  # tags are like picachooser-1.2.0
 versioneer.parentdir_prefix = ".."
 
 __version = versioneer.get_version().replace(".dirty", "")
