@@ -1,6 +1,7 @@
 #!/bin/bash
 
 MYIPADDRESS=`ifconfig en0 | grep 'inet ' | awk '{print $2}'`
+VERSION=latest
 
 #docker run -it picachooser bash
 
@@ -15,7 +16,7 @@ docker run \
     -it \
     -e DISPLAY=${MYIPADDRESS}:0 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -u picachooser fredericklab/picachooser:latest \
+    -u picachooser fredericklab/picachooser:${VERSION} \
     PICAchooser \
         fix \
         --featdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat \

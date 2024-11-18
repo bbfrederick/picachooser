@@ -1,3 +1,4 @@
 #!/bin/bash
 
-docker run -it fredericklab/picachooser xyzzy
+VERSION=latest
+docker run -it fredericklab/picachooser:${VERSION} xyzzy

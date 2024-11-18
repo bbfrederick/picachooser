@@ -1,6 +1,6 @@
- History of changes
+History of changes
 
-## Version 1.4.9 (10/24/24)
+## Version 1.4.9 (11/18/24)
 * (Docker) Modernized build based on a new, uv based basecontainer.
 * (Docker) Fixed a lot of deprecation warnings.
 * (PICAchooser_dispatcher) Included the newer scripts, fixed some regressions caused by updating basecontainer.
