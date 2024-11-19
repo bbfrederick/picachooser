@@ -24,9 +24,6 @@ RUN echo "GITDATE: "$GITDATE
 # Installing precomputed python packages
 RUN uv pip install pillow 
 
-# security patches
-RUN uv pip install "cryptography>=42.0.4" "urllib3>=1.26.17"
-
 # copy PICAchooser into container
 COPY . /src/picachooser
 RUN echo $GITVERSION > /src/picachooser/VERSION
@@ -41,6 +38,9 @@ RUN chmod -R a+r /src/picachooser
 RUN cd /src/picachooser && \
     versioneer install --no-vendor && \
     rm -rf /src/picachooser/build /src/picachooser/dist
+
+# security patches
+RUN uv pip install "cryptography>=42.0.4" "urllib3>=1.26.17"
 
 # clean up
 RUN pip cache purge
