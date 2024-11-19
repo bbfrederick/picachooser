@@ -1,5 +1,5 @@
 # Start from the fredericklab base container
-FROM fredericklab/basecontainer:v0.4.1
+FROM fredericklab/basecontainer:latest
 
 # get build arguments
 ARG BUILD_TIME
