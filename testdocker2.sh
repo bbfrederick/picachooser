@@ -10,6 +10,7 @@ xhost +
 #xhost +si:localuser:picachooser
 
 # Allow your local user access via xhost: xhost +SI:localuser:picachooser and create a similar user with docker run option: --user=$(id -u):$(id -g)
+docker pull fredericklab/picachooser:${VERSION}
 docker run \
     --network host\
     --volume=/Users/frederic:/Users/frederic \
