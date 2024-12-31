@@ -1,5 +1,8 @@
 History of changes
 
+## Version 1.4.9.1 (12/31/24)
+* (Docker) Rebuilt on the newest basecontainer with several security fixes.
+
 ## Version 1.4.9 (11/18/24)
 * (Docker) Modernized build based on a new, uv based basecontainer.
 * (Docker) Fixed a lot of deprecation warnings.
