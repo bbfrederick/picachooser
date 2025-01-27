@@ -58,7 +58,7 @@ class KeyPressWindow(QtWidgets.QMainWindow):
         super().__init__(*args, **kwargs)
 
     def closeEvent(self, event):
-        writecorrespondance()
+        writecorrespondence()
 
     def keyPressEvent(self, ev):
         self.sigKeyPress.emit(ev)
@@ -100,7 +100,7 @@ def decrementsorttype():
     selectsort()
 
 
-def writecorrespondance():
+def writecorrespondence():
     global alldata1, numelements1, Correspondancefile, indexmap, thecorrcoeffs
 
     outputlist = ["idx1\tidx2\tcorrcoeff"]
@@ -174,8 +174,8 @@ def keyPressed(evt):
     elif evt.key() == QtCore.Qt.Key.Key_R:
         whichcomponent = 0
     elif evt.key() == QtCore.Qt.Key.Key_Escape:
-        writecorrespondance()
-        print("correspondance file written")
+        writecorrespondence()
+        print("correspondence file written")
     else:
         print(evt.key())
 
@@ -421,7 +421,7 @@ def main():
     try:
         args = parser.parse_args()
     except SystemExit:
-        print("Use --help option for detailed informtion on options.")
+        print("Use --help option for detailed information on options.")
         raise
 
     # make sure we can find the required input files

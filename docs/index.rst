@@ -8,7 +8,7 @@
 The PICAchooser package
 =======================
 
-PICAchooser is a suite of simple gui tools for scanning through MELODIC probabalistic ICA
+PICAchooser is a suite of simple gui tools for scanning through MELODIC probabilistic ICA
 runs and quickly making decisions about which components are worth keeping, and
 what relates to what. These tools each only do one thing, but they do them
 quickly and easily using only keyboard input. Current programs are

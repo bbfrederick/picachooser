@@ -70,7 +70,7 @@ of these overrides any location inferred from --melodicdir or --featdir.:
                         by MELODIC (usually found in
                         MELODICDIR/mask.nii.gz).
   --timecoursefile MIXFILE
-                        The timecourses of the independant
+                        The timecourses of the independent
                         components (usually found in
                         MELODICDIR/melodic_mix),
   --ICstatsfile STATSFILE
@@ -290,7 +290,7 @@ As a bonus, if you also set:
 Then when you save your bad component file, you'll see the command
 necessary to refilter your data printed to the terminal window. I
 haven't investigated far enough to know when the smoothing implied in
-the name of the exisiting filtered file comes from, so there may be some
+the name of the existing filtered file comes from, so there may be some
 other steps to get to exactly the output you'd get from fmriprep...
 
 melodicomp
@@ -299,7 +299,7 @@ melodicomp
 melodicomp handles a slightly different task - its job is to allow for
 rapid comparison of two melodic analyses. In this case, you want to
 match components between the two analyses (the chances that you'll get
-the same components in the same order between two analyses is basicaly
+the same components in the same order between two analyses is basically
 zero, so you need to match them up). We do this with a spatial
 cross-correlation - higher cross-correlation means the the components
 look more like each other. This works surprisingly well. We then display
