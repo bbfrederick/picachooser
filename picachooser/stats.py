@@ -517,7 +517,7 @@ def getfracvals(datamat, thefracs, numbins=200, displayplots=False, nozero=False
         maskmat = datamat[np.where(datamat != 0.0)]
         if len(maskmat) == 0:
             for thisfrac in thefracs:
-                thevals.appen(0.0)
+                thevals.append(0.0)
             return thevals
     else:
         maskmat = datamat
@@ -613,7 +613,7 @@ def makemask(image, threshpct=25.0, verbose=False, nozero=False):
         print(
             " threshpct:",
             threshpct,
-            " mask threshhold:",
+            " mask threshold:",
             threshval,
         )
     themask = np.where(image > threshval, np.int16(1), np.int16(0))

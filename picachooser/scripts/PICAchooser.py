@@ -835,7 +835,7 @@ def main():
         metavar="MIXFILE",
         type=lambda x: pica_util.is_valid_file(parser, x),
         help=(
-            "The timecourses of the independant components (usually found in MELODICDIR/melodic_mix),"
+            "The timecourses of the independent components (usually found in MELODICDIR/melodic_mix),"
         ),
         default=None,
     )

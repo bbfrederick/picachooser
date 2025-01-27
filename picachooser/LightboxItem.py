@@ -492,7 +492,7 @@ class LightboxItem(QtWidgets.QWidget):
         self.setorient(self.orientation)
 
         if self.verbose:
-            print("LightboxItem intialization:")
+            print("LightboxItem initialization:")
             print("    Dimensions:", self.xdim, self.ydim, self.zdim)
             print("    Voxel sizes:", self.xsize, self.ysize)
             print("    FOVs:", self.xfov, self.yfov)

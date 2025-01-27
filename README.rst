@@ -4,7 +4,7 @@ PICAchooser (the package)
 .. figure:: https://raw.githubusercontent.com/bbfrederick/picachooser/master/images/picalogo.png
    :alt: Logo
 
-A set of simple gui tools for scanning through MELODIC probabalistic ICA
+A set of simple gui tools for scanning through MELODIC probabilistic ICA
 runs and quickly making decisions about which components to retain, and
 what relates to what. These tools each only do one thing, but they do them
 quickly and easily using only keyboard input. Current programs are
@@ -18,7 +18,7 @@ What's in here?
 PICAchooser
 -----------
 Lets you step through the components in an ICA analysis (from many sources), and select which components you
-want to retain.  In addition to showing the spatial ICs, it also displays the componnent timecourses,
+want to retain.  In addition to showing the spatial ICs, it also displays the component timecourses,
 motion traces, and the correlation between them, to help with your decision making.
 
 Once you launch, you do everything with keyboard commands, and it's been optimized to go as fast as possible, so

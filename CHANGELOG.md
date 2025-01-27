@@ -76,10 +76,10 @@ History of changes
 * Added reset component keystroke to PICAchooser and melodicomp.
 
 ## Version 1.2.2 (4/5/20)
-* More fiddling to get deplyment working again.
+* More fiddling to get deployment working again.
 
 ## Version 1.2.1 (4/5/20)
-* Fiddled with .gitignore to try to get deplyment working again.
+* Fiddled with .gitignore to try to get deployment working again.
 * Added a help line to the bottom of grader GUI window.
 
 ## Version 1.2.0 (4/5/20)

@@ -400,7 +400,7 @@ def main():
     try:
         args = parser.parse_args()
     except SystemExit:
-        print("Use --help option for detailed informtion on options.")
+        print("Use --help option for detailed information on options.")
         raise
 
     runmode = "aroma"
