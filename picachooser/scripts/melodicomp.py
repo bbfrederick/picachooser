@@ -627,5 +627,9 @@ def main():
     QtWidgets.QApplication.instance().exec()
 
 
-if __name__ == "__main__":
+def entrypoint():
     main()
+
+
+if __name__ == "__main__":
+    entrypoint()

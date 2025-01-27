@@ -50,5 +50,8 @@ def main():
         print(thecommand[0], "is not a script in the PICAchooser package")
 
 
-if __name__ == "__main__":
+def entrypoint():
     main()
+
+if __name__ == "__main__":
+    entrypoint()
