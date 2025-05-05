@@ -305,10 +305,13 @@ def makefiltercommand():
     # Non-aggressive denoising of the data using fsl_regfilt (partial regression), if requested
     if filteredfile is not None:
         if config["usebatch"]:
+            print("using batch processing")
             denoisingcmd = ["sbatch", "--mem=8G", "--cpus-per-task=1", "--time=20"]
         else:
+            print("using local processing")
             denoisingcmd = []
         if len(badlist) > 0:
+            print("bad components: ", badlist)
             fslDir = os.path.join(os.environ["FSLDIR"], "bin")
             if fslDir is None:
                 fslregfiltcmd = "fsl_regfilt"
@@ -326,6 +329,7 @@ def makefiltercommand():
                 os.path.abspath(filteredfile),
             ]
         else:
+            print("no bad components")
             denoisingcmd += [
                 "cp",
                 os.path.abspath(Funcfile),
@@ -333,6 +337,7 @@ def makefiltercommand():
             ]
         return denoisingcmd
     else:
+        print("no filtered file")
         return None
 
 
@@ -1606,8 +1611,10 @@ def main():
 
     QtWidgets.QApplication.instance().exec()
 
+
 def entrypoint():
     main()
+
 
 if __name__ == "__main__":
     entrypoint()
