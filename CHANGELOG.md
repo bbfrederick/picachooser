@@ -1,5 +1,9 @@
 History of changes
 
+## Version 1.4.9.2 (6/5/25)
+* (Docker) Turned on provenance and sbom in Docker builds.
+* (Docker) Rebuilt on the newest basecontainer with several security fixes.
+
 ## Version 1.4.9.1 (12/31/24)
 * (Docker) Rebuilt on the newest basecontainer with several security fixes.
 
