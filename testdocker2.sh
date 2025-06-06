@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DATADIR=/Users/frederic/Dropbox_PHC/MR_data/gradertest
+
 MYIPADDRESS=`ifconfig en0 | grep 'inet ' | awk '{print $2}'`
 VERSION=latest
 
@@ -10,15 +12,15 @@ xhost +
 docker pull fredericklab/picachooser:${VERSION}
 docker run \
     --network host\
-    --volume=/Users/frederic:/Users/frederic \
+    --volume=${DATADIR}:${DATADIR} \
     -it \
     -e DISPLAY=${MYIPADDRESS}:0 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -u picachooser fredericklab/picachooser:${VERSION} \
     PICAchooser \
 	melodic \
-	--featdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat \
-	--melodicdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica \
+	--featdir ${DATADIR}/079N_resting_visit1.feat \
+	--melodicdir ${DATADIR}/079N_resting_visit1.feat/filtered_func_data.ica \
         --usereferencefile \
         --retainthresh 1.1 \
-	--ICreffile /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica/melodic_IC.nii.gz
+	--ICreffile ${DATADIR}/079N_resting_visit1.feat/filtered_func_data.ica/melodic_IC.nii.gz
