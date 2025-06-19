@@ -237,5 +237,5 @@ tqdm==4.66.3
     # via rapidtide (setup.py)
 tzdata==2023.3
     # via pandas
-urllib3==2.2.2
+urllib3==2.5.0
     # via requests
