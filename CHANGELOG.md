@@ -1,8 +1,10 @@
 History of changes
 
-## Version 1.4.9.2 (6/5/25)
+## Version 1.4.9.2 (8/18/25)
+* (picachooser) Made some changes to batch processing
 * (Docker) Turned on provenance and sbom in Docker builds.
 * (Docker) Rebuilt on the newest basecontainer with several security fixes.
+* Merged LOTS of dependabot changes.
 
 ## Version 1.4.9.1 (12/31/24)
 * (Docker) Rebuilt on the newest basecontainer with several security fixes.
