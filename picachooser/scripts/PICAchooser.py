@@ -382,6 +382,7 @@ def keyPressed(evt):
     global whichcomponent, numelements, mainwin, verbose, domotion, dotimecourse
     global maininfo, altwin, altinfo, blinkstatus
     global usereferencefile
+    global outputfile
 
     if verbose:
         print("processing keypress event")
@@ -445,7 +446,7 @@ def keyPressed(evt):
         whichcomponent = 0
     elif evt.key() == QtCore.Qt.Key.Key_Escape:
         writegrades()
-        print("bad component file written")
+        print(f"bad component list written to {outputfile}")
     elif evt.key() == QtCore.Qt.Key.Key_F:
         if keymods == "shift":
             filterdata(glmtype="fsl")
