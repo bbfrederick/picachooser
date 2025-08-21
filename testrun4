@@ -1,3 +1,5 @@
+#!/bin/bash
+
 PICAchooser \
     melodic \
     --featdir /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat \

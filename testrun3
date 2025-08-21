@@ -1,3 +1,5 @@
+#!/bin/bash
+
 melodicomp \
     /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica/melodic_IC.nii.gz \
     /Users/frederic/Dropbox_PHC/MR_data/gradertest/079N_resting_visit1.feat/filtered_func_data.ica/melodic_IC.nii.gz 

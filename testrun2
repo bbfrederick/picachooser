@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #PICAchooser \
 #    groupmelodic \
 #    --backgroundfile /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode/mean.nii.gz \
