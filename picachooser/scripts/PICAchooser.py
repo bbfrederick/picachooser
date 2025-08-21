@@ -269,7 +269,7 @@ def decrementgrade(whichcomponent):
 
 
 def filterdata(glmtype=None):
-    denoisingcmd = makefiltercommand()
+    denoisingcmd = makefiltercommand(debug=False)
     if denoisingcmd is not None:
         if glmtype is None:
             print()
@@ -297,10 +297,16 @@ def makegradelists():
     return badlist, goodlist
 
 
-def makefiltercommand():
+def makefiltercommand(debug=False):
     global Funcfile, Mixfile, filteredfile, config
 
     badlist, dummy = makegradelists()
+
+    if debug:
+        print("makefiltercommand:")
+        print(f"\t{badlist=}")
+        print(f"\t{filteredfile=}")
+        print(f"\t{config['usebatch']=}")
 
     # Non-aggressive denoising of the data using fsl_regfilt (partial regression), if requested
     if filteredfile is not None:
@@ -335,6 +341,8 @@ def makefiltercommand():
                 os.path.abspath(Funcfile),
                 os.path.abspath(filteredfile),
             ]
+        if debug:
+            print("denoising command: ", " ".join(denoisingcmd))
         return denoisingcmd
     else:
         print("no filtered file")
@@ -356,7 +364,7 @@ def writegrades():
     with open(outputfile, "w") as thefile:
         thefile.write(outputstring + "\n")
 
-    denoisingcmd = makefiltercommand()
+    denoisingcmd = makefiltercommand(debug=False)
     if denoisingcmd is not None:
         print(" ".join(denoisingcmd))
 
@@ -1220,7 +1228,14 @@ def main():
         )
         sys.exit()
 
-    filteredfile = args.filteredfile
+    if args.filteredfile is not None:
+        filteredfile = args.filteredfile
+    else:
+        if runmode != "groupmelodic":
+            FuncfileDir, FuncfileName = os.path.split(os.path.abspath(Funcfile))
+            filteredfile = os.path.join(FuncfileDir, "filtered_func_data_picachooserglm.nii.gz")
+        else:
+            Funcfile = None
 
     if verbose:
         print(f"ICfile: {ICfile}")
