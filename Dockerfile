@@ -40,10 +40,6 @@ RUN cd /src/picachooser && \
     uv pip install .
 RUN chmod -R a+r /src/picachooser
 
-# install versioneer 
-#RUN cd /src/picachooser && \
-#   ./versioneer install --no-vendor
-
 # clean up build directories
 RUN rm -rf /src/picachooser/build /src/picachooser/dist
 
