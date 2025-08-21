@@ -1,5 +1,9 @@
 History of changes
 
+## Version 1.5.1 (8/21/25)
+* (picachoser) Write out name of bad component file when saving.
+* (Docker) Fixed the build script.
+
 ## Version 1.5.0 (8/21/25)
 * (picachooser) Fixed glm filtering.
 * (picachooser) Fixed groupmelodic processing.
