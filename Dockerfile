@@ -66,7 +66,7 @@ RUN ldconfig
 WORKDIR /tmp/
 
 # initialize user mamba
-RUN /opt/miniforge3/mamba shell
+RUN /opt/miniforge3/bin/mamba shell
 RUN echo "mamba activate science" >> /home/picachooser/.bashrc
 
 # set to non-root user
