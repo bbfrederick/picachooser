@@ -10,5 +10,5 @@
 
 PICAchooser \
     groupmelodic \
-    --melodicdir /Volumes/skohut/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode \
+    --melodicdir /Volumes/skohut/bids_94T/ss_blood_flow/melodic/rapidtided_0p15_cathinone/25mode \
     --verbose

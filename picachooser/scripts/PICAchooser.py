@@ -1235,7 +1235,7 @@ def main():
             FuncfileDir, FuncfileName = os.path.split(os.path.abspath(Funcfile))
             filteredfile = os.path.join(FuncfileDir, "filtered_func_data_picachooserglm.nii.gz")
         else:
-            Funcfile = None
+            filteredfile = None
 
     if verbose:
         print(f"ICfile: {ICfile}")
@@ -1326,7 +1326,10 @@ def main():
     #    tr, timepoints = io.fmritimeinfo(Funcfile)
     # else:
     #    tr = 1.0
-    tr, timepoints = io.fmritimeinfo(Funcfile)
+    if Funcfile is not None:
+        tr, timepoints = io.fmritimeinfo(Funcfile)
+    else:
+        tr = 1.0
     samplerate = 1.0 / tr
 
     # read in the timecourses and their current labels
