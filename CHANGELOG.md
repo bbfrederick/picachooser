@@ -1,6 +1,8 @@
 History of changes
 
-## Version 1.4.9.2 (8/21/25)
+## Version 1.5.0 (8/21/25)
+* (picachooser) Fixed glm filtering.
+* (picachooser) Fixed groupmelodic processing.
 * (picachooser) Made some changes to batch processing.
 * (package) Moved to pyproject.toml.
 * (package) Fixed version detection.
