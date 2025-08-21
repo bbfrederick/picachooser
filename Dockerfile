@@ -42,7 +42,7 @@ RUN chmod -R a+r /src/picachooser
 
 # install versioneer and clean up
 RUN cd /src/picachooser && \
-    versioneer install --no-vendor && \
+    ./versioneer install --no-vendor && \
     rm -rf /src/picachooser/build /src/picachooser/dist
 
 # update the paths to libraries
