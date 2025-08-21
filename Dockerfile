@@ -5,6 +5,7 @@ FROM fredericklab/basecontainer:latest-release
 ARG BUILD_TIME
 ARG BRANCH
 ARG GITVERSION
+ARG GITDIRECTVERSION
 ARG GITSHA
 ARG GITDATE
 
@@ -14,12 +15,14 @@ ENV BRANCH=$BRANCH
 ENV GITVERSION=${GITVERSION}
 ENV GITSHA=${GITSHA}
 ENV GITDATE=${GITDATE}
+ENV GITDIRECTVERSION=${GITDIRECTVERSION}
 
 RUN echo "BRANCH: "$BRANCH
 RUN echo "BUILD_TIME: "$BUILD_TIME
 RUN echo "GITVERSION: "$GITVERSION
 RUN echo "GITSHA: "$GITSHA
 RUN echo "GITDATE: "$GITDATE
+RUN echo "GITDIRECTVERSION: "$GITDIRECTVERSION
 
 # Installing precomputed python packages
 RUN uv pip install pillow 
@@ -51,10 +54,11 @@ RUN useradd \
     --groups users \
     --home /home/$USER \
     $USER
+RUN chown -R $USER /src/$USER
 RUN cp ~/.bashrc /home/$USER/.bashrc; chown $USER /home/$USER/.bashrc
 
 WORKDIR /home/$USER
-ENV HOME="/home/$USER"
+ENV HOME="/home/picachooser"
 
 ENV IN_DOCKER_CONTAINER=1
 
@@ -62,8 +66,12 @@ RUN ldconfig
 WORKDIR /tmp/
 
 # set to non-root user and initialize mamba
-USER $USER
 RUN /opt/miniforge3/bin/mamba init
+RUN echo "mamba activate science" >> /home/rapidtide/.bashrc
+RUN echo "/opt/miniforge3/bin/mamba activate science" >> /home/rapidtide/.bashrc
+
+# switch to the picachooser user
+USER picachooser
 
 ENTRYPOINT ["/opt/miniforge3/envs/science/bin/PICAchooser_dispatcher"]
 
