@@ -66,9 +66,8 @@ RUN ldconfig
 WORKDIR /tmp/
 
 # set to non-root user and initialize mamba
-RUN /root/.local/share/mamba/envs/science/bin/mamba init
-RUN echo "mamba activate science" >> /home/rapidtide/.bashrc
-RUN echo "/root/.local/share/mamba/envs/science/bin/mamba activate science" >> /home/picachooser/.bashrc
+RUN /root/.local/share/mamba/envs/science/bin/mamba shell
+RUN echo "mamba activate science" >> /home/picachooser/.bashrc
 
 # switch to the picachooser user
 USER picachooser
