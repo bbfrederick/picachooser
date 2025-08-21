@@ -40,10 +40,12 @@ RUN cd /src/picachooser && \
     uv pip install .
 RUN chmod -R a+r /src/picachooser
 
-# install versioneer and clean up
-RUN cd /src/picachooser && \
-    ./versioneer install --no-vendor && \
-    rm -rf /src/picachooser/build /src/picachooser/dist
+# install versioneer 
+#RUN cd /src/picachooser && \
+#   ./versioneer install --no-vendor
+
+# clean up build directories
+RUN rm -rf /src/picachooser/build /src/picachooser/dist
 
 # update the paths to libraries
 RUN ldconfig
