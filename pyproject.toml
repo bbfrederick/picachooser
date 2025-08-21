@@ -1,5 +1,5 @@
 [build-system]
-requires = ['setuptools>=42', 'cffi>=1.0.0', 'versioneer[toml]']
+requires = ['setuptools>=42', 'cffi>=1.0.0', 'versioneer[toml]==0.29']
 build-backend = 'setuptools.build_meta'
 
 [project]
@@ -7,9 +7,6 @@ name = 'picachooser'
 description = 'Lightweight GUI for sorting, classifying, and matching MELODIC ICA components.'
 keywords = ['fMRI', 'ICA', 'component matching', 'visualization']
 license = {text = 'Apache Software License'}
-authors = [
-  { name='Blaise Frederick', email='blaise.frederick@gmail.com' },
-]
 readme = 'README.rst'
 classifiers = [
     'Operating System :: OS Independent',
@@ -34,6 +31,9 @@ dependencies = [
   'pillow',
 ]
 dynamic = ['version']
+authors = [
+  { name='Blaise Frederick', email='blaise.frederick@gmail.com' },
+]
 
 [project.urls]
 'Homepage' = 'https://github.com/bbfrederick/picachooser'
@@ -56,10 +56,10 @@ doc = [
   'sphinx_rtd_theme',
   'sphinx-argparse',
   'sphinx-gallery',
-  'm2r',
+  'myst-parser',
   'numpydoc',
-  'recommonmark',
-  'mistune',
+  'sphinxcontrib-bibtex',
+  'tomlkit',
 ]
 
 [project.scripts]
