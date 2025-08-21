@@ -66,11 +66,9 @@ RUN ldconfig
 WORKDIR /tmp/
 
 # set to non-root user and initialize mamba
-RUN /root/.local/share/mamba/envs/science/bin/mamba shell
-RUN echo "mamba activate science" >> /home/picachooser/.bashrc
-
-# switch to the picachooser user
 USER picachooser
+RUN /opt/miniforge3/mamba shell
+RUN echo "mamba activate science" >> /home/picachooser/.bashrc
 
 ENTRYPOINT ["/opt/miniforge3/envs/science/bin/PICAchooser_dispatcher"]
 
