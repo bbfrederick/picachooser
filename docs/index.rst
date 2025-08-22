@@ -32,7 +32,6 @@ Contents
    :maxdepth: 2
 
    introduction.rst
-   whats_new.rst
    installation.rst
    usage.rst
    contributing.rst
