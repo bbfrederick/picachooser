@@ -1,7 +1,8 @@
 History of changes
 
-## Version 1.5.1 (8/21/25)
+## Version 1.5.1 (8/22/25)
 * (picachoser) Write out name of bad component file when saving.
+* (docs) Fixed document builds on readthedocs, and buffed up the organization.
 * (Docker) Fixed the build script.
 
 ## Version 1.5.0 (8/21/25)
