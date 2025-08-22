@@ -2,6 +2,7 @@ History of changes
 
 ## Version 1.5.1 (8/22/25)
 * (picachoser) Write out name of bad component file when saving.
+* (deployment) Attempt to fix pypi deployment.
 * (docs) Fixed document builds on readthedocs, and buffed up the organization.
 * (Docker) Fixed the build script.
 
