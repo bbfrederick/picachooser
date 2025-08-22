@@ -14,6 +14,17 @@ what relates to what. These tools each only do one thing, but they do them
 quickly and easily using only keyboard input. Current programs are
 PICAchooser, melodicomp, and grader.
 
+HTML documentation is here: http://picachooser.readthedocs.io/en/latest/
+
+.. image:: https://img.shields.io/pypi/v/picachooser.svg
+   :target: https://pypi.python.org/pypi/picachooser/
+.. image:: https://img.shields.io/pypi/pyversions/picachooser.svg
+   :target: https://pypi.python.org/pypi/picachooser/
+.. image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+   :target: https://opensource.org/licenses/Apache-2.0
+.. image:: https://readthedocs.org/projects/picachooser/badge/?version=latest
+   :target: http://picachooser.readthedocs.io/en/dev/?badge=latest
+
 
 Contents
 ========
@@ -27,8 +38,11 @@ Contents
    contributing.rst
 
 
-.. image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
-   :target: https://opensource.org/licenses/Apache-2.0
+.. toctree::
+   :maxdepth: 2
+   :caption: History:
+
+   whats_new.rst
 
 
 Indices and tables
