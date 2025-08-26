@@ -1,5 +1,8 @@
 History of changes
 
+## Version 1.5.2 (8/26/25)
+* (picachooser) Gracefully handle filtering options if FSLDIR is not defined.
+
 ## Version 1.5.1 (8/22/25)
 * (picachoser) Write out name of bad component file when saving.
 * (deployment) Attempt to fix pypi deployment.

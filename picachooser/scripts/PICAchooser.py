@@ -318,11 +318,12 @@ def makefiltercommand(debug=False):
             denoisingcmd = []
         if len(badlist) > 0:
             print("bad components: ", badlist)
-            fslDir = os.path.join(os.environ["FSLDIR"], "bin")
-            if fslDir is None:
-                fslregfiltcmd = "fsl_regfilt"
-            else:
+            try:
+                fslDir = os.path.join(os.environ["FSLDIR"], "bin")
                 fslregfiltcmd = os.path.join(fslDir, "fsl_regfilt")
+            except KeyError:
+                fslregfiltcmd = "fsl_regfilt"
+
             denoisingcmd += [
                 fslregfiltcmd,
                 "-i",
