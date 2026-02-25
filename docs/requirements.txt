@@ -59,7 +59,7 @@ packaging==25.0
     #   sphinx
 pandas==2.3.2
     # via picachooser (../pyproject.toml)
-pillow==11.3.0
+pillow==12.1.1
     # via
     #   picachooser (../pyproject.toml)
     #   sphinx-gallery
